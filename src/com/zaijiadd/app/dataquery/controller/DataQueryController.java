@@ -26,6 +26,7 @@ import com.zaijiadd.app.common.utils.ContainerUtils;
 import com.zaijiadd.app.common.utils.ParseUtils;
 import com.zaijiadd.app.dataquery.schedule.ScheduleTask;
 import com.zaijiadd.app.dataquery.service.DataQueryService;
+import com.zaijiadd.app.external.dao.ExternalDataDAO;
 
 @RequestMapping ( "/query" )
 @Controller
@@ -36,7 +37,7 @@ public class DataQueryController extends BaseController {
 
 	@Autowired
 	private DataQueryService service;
-
+	
 	@RequestMapping ( value = "/dataList", method = RequestMethod.POST )
 	@ResponseBody
 	public Map<String, Object> dataList( HttpServletRequest request ) {

@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.zaijiadd.app.dataquery.dao.YjsReqMsgDao;
 import com.zaijiadd.app.dataquery.entity.YjsReqMsg;
 import com.zaijiadd.app.dataquery.service.DataQueryService;
+import com.zaijiadd.app.external.dao.ExternalDataDAO;
 
 public class DataQueryServiceImpl implements DataQueryService {
 	@Autowired
 	YjsReqMsgDao yjsReqMsgDao;
+	
 
 	@Override
 	public List<Map<String, Object>> queryReqMsg( Map<String, Object> param ) {
@@ -68,10 +70,10 @@ public class DataQueryServiceImpl implements DataQueryService {
 		return yjsReqMsgDao.dataImport( param );
 	}
 	
-	@Override
-	public List<Map<String, Object>> externalDataImport( Map<String, Object> param ) {
-		return yjsReqMsgDao.dataImport( param );
-	}
+//	@Override
+//	public List<Map<String, Object>> externalDataImport( Map<String, Object> param ) {
+//		return externalDataDao.importHomeVisitorData( param );
+//	}
 
 	@Override
 	public void dataInsert( Map<String, Object> param ) {
