@@ -49,6 +49,7 @@ public class DataQueryController extends BaseController {
 		String cs = jsonRequest.getString( "cs" );
 		String zt = jsonRequest.getString( "zt" );
 		String uid = jsonRequest.getString( "uid" );
+		String dtlsts = jsonRequest.getString( "dtlsts" );
 		String page = jsonRequest.getString( "page" );
 		Integer pageCount = jsonRequest.getInteger( "pageCount" );
 		if ( pageCount == null || pageCount == 0 ) {
@@ -62,6 +63,7 @@ public class DataQueryController extends BaseController {
 		param.put( "txnsts", zt );
 		param.put( "cuser", uid );
 		param.put( "uid", uid );
+		param.put( "dtlsts", dtlsts );
 		param.put( "start", ( Integer.parseInt( page ) - 1 ) * pageCount );
 		param.put( "end", pageCount );
 
@@ -69,18 +71,18 @@ public class DataQueryController extends BaseController {
 		logger.info( "roleid:" + user.get( "roleid" ) );
 		String roleid = user.get( "roleid" ).toString();
 		Integer dataCount = 0;
-		if ( "1".equals( roleid ) ) {// 管理员
+		if ( "0".equals( roleid ) ) {// 管理员
 			logger.info( "管理员" );
 			param.put( "cuser", null );
 			resData = service.queryReqMsg( param );
 			dataCount = service.queryReqMsgByCount( param );
-		} else if ( "2".equals( roleid ) ) {// 城市ceo
+		} else if ( "1".equals( roleid ) ) {// 城市ceo
 			logger.info( "城市ceo" );
 			param.put( "cuser", null );
 			param.put( "city", user.get( "orgid" ) );
 			resData = service.queryReqMsg( param );
 			dataCount = service.queryReqMsgByCount( param );
-		} else if ( "3".equals( roleid ) ) {
+		} else if ( "2".equals( roleid ) ) {
 			logger.info( "部门主管" );
 			param.put( "cuser", null );
 			param.put( "city", user.get( "upid" ) );

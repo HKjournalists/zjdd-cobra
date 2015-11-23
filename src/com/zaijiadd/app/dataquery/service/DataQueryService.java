@@ -34,5 +34,8 @@ public interface DataQueryService {
 	public List<Map<String,Object>> dataImport(Map<String,Object> param);
 	public void dataInsert(Map<String, Object> param);
 	public Map<String, Object> timeInfo(Map<String, Object> param);
+	
+	
+	List<Map<String, Object>> externalDataImport( Map<String, Object> param );
 
 }

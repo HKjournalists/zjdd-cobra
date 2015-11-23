@@ -20,9 +20,12 @@
     </context:component-scan>    
   
     <import resource="classpath:db/datasource.xml"/>    
+    
+    <import resource="classpath:db/datasource_data.xml"/>
    
     <import resource="classpath:db/mybatis_spring.xml"/>
     
+    <import resource="classpath:db/mybatis_spring_data.xml"/>
     
     <!-- spring定时器start -->
     <bean name="scheduleTask" class="com.zaijiadd.app.dataquery.schedule.ScheduleTask" />
@@ -49,7 +52,7 @@
        <!-- 添加触发器 -->
        <property name="triggers">
            <list>
-              <ref bean="cronTrigger" />
+<!--               <ref bean="cronTrigger" /> -->
            </list>
        </property>
     </bean>

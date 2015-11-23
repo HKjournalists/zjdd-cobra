@@ -21,13 +21,14 @@ public class ScheduleTask {
 	private DataQueryService service;
 	
 	public void dataImport(){
+		
 		logger.info("数据定时导入... ...");
 		Map<String,Object> param = new HashMap<String,Object>();
 		//获取最新导入数据的时间，查询比其时间晚的所有数据，即为最新产生的数据
 		Map<String,Object> timeInfo = service.timeInfo(param);
 		if(timeInfo!=null&&timeInfo.get("protim")!=null)
 			param.put("created_at", timeInfo.get("protim"));
-		List<Map<String,Object>> resData = service.dataImport(param);
+		List<Map<String,Object>> resData = service.externalDataImport(param);
 		for(Map<String,Object> map:resData){
 			//数据插入数据表
 			param.put("cussrc", map.get("channel"));//客户来源
@@ -49,8 +50,11 @@ public class ScheduleTask {
 			param.put("dtlsts", "01");//状态，默认无组未分配
 			param.put("salman", "");//销售代表
 			param.put("remark", map.get("remark"));//备注
+			
 			service.dataInsert(param);
+			
 		}
+		
 	}
 	
 //	public void DataImport(){

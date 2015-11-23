@@ -67,6 +67,11 @@ public class DataQueryServiceImpl implements DataQueryService {
 	public List<Map<String, Object>> dataImport( Map<String, Object> param ) {
 		return yjsReqMsgDao.dataImport( param );
 	}
+	
+	@Override
+	public List<Map<String, Object>> externalDataImport( Map<String, Object> param ) {
+		return yjsReqMsgDao.dataImport( param );
+	}
 
 	@Override
 	public void dataInsert( Map<String, Object> param ) {
