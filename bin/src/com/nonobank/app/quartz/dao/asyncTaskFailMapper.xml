@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.quartz.dao.AsyncTaskFailDAO">
+	
+	<insert id="addAsyncFailTask" parameterType="asyncTask">
+	    INSERT INTO async_task_fail
+            (bussiness_key,
+             job_code,
+             retry_time,
+             priority,
+             remark,
+             created_date,
+             updated_date)
+        values(
+            #{bussinessKey},
+            #{jobCode},
+            #{retryTime},
+            #{priority},
+            #{remark},
+            now(),
+            now()
+        )
+	</insert>
+	<select id="isErrorLogExists" parameterType="java.lang.String" resultType="java.lang.Integer">
+	    select count(1) from async_task_fail where bussiness_key = #{value}
+	</select>
+</mapper>

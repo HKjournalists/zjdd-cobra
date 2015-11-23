@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.order.v4.dao.WithdrawInfoDAO">
+	
+	<select id="getWithdrawCountByDate" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			withdraw_reward
+		WHERE
+			DATE_FORMAT( create_date, '%Y%m%d' ) = #{transDate}
+		AND user_code = #{userCode}
+		AND status in(2,3)
+		<if test="transCode != null and transCode != ''">
+		AND trans_code = #{transCode}
+		</if>
+	</select>
+	<select id="getWithdrawAmountByDate" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+		SELECT
+			ifnull( sum( withdraw_amount ), 0.00 )
+		FROM
+			withdraw_reward
+		WHERE
+			DATE_FORMAT( create_date, '%Y%m%d' ) = #{transDate}
+		AND user_code = #{userCode}
+		AND status in(2,3)
+	</select>
+	<select id="getAutoWithdrawInfoByStatus" parameterType="java.lang.Integer" resultType="autoWithdrawDto">
+		SELECT
+			t.orderid orderId,
+			t.withdraw_amount amount,
+			a.real_name creditName,
+			b.bank_card_number bankCardNumber,
+			c.city_name provinceCity,
+			d.bank_name bankName,
+			d.bank_name kaihuhang,
+			t.user_code userCode
+		FROM
+			withdraw_reward t
+		INNER JOIN user_detail a ON a.user_code = t.user_code
+		INNER JOIN user_bind_card b ON b.user_code = t.user_code
+		INNER JOIN system_city_define c ON c.city_id = b.city_id
+		INNER JOIN bank_define d ON d.bank_code = b.bank_code
+		WHERE
+			t.status = #{status}
+	</select>
+
+</mapper>

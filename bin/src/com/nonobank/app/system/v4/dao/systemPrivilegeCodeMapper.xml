@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.system.v4.dao.SystemPrivilegeCodeDAO">
+	
+	<insert id="insertPrivilegeCode" parameterType="java.util.Map">
+		insert into system_privilege_code
+			( privilege_code, privilege_amount, description, create_date )
+		values
+			( #{privilegeCode}, #{privilegeAmount}, #{description}, now() )
+	</insert>
+	<select id="isPrivilegeCodeExist" parameterType="java.lang.String" resultType="java.lang.Integer">
+		SELECT count(1) FROM system_privilege_code WHERE privilege_code = #{privilegeCode}
+	</select>
+	<select id="getPrivilegeCode" parameterType="java.lang.String" resultType="systemPrivilegeCodeDto">
+		SELECT
+			t.privilege_code privilegeCode,
+			t.is_used isUsed,
+			t.object_mobile objectMobile,
+			t.privilege_amount privilegeAmount,
+			t.effective_days effectiveDays
+		FROM
+			system_privilege_code t
+		WHERE
+			t.privilege_code = #{privilegeCode}
+	</select>
+	<select id="isUserDrewPrivilege" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			count(1)
+		FROM
+			activity_user_detail t
+		INNER JOIN user a ON a.user_code = t.user_code
+		WHERE
+			a.mobile_number = #{mobile}
+		AND t.activity_reward_id = #{activityRewardid}
+	</select>
+	<update id="updatePrivilegeCode" parameterType="java.util.Map">
+		update system_privilege_code set is_used = #{isUsed}, object_mobile = #{objectMobile}
+		where privilege_code = #{privilegeCode}
+	</update>
+
+</mapper>

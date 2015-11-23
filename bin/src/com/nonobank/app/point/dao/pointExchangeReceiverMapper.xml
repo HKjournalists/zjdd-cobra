@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.point.dao.PointExchangeReceiverDao">
+    <select id="get" parameterType="pointExchangeReceiver" resultType="pointExchangeReceiver">
+        SELECT r.point_exchange_receiver_id pointExchangeReceiverId,r.user_code userCode,r.receiver_name receiverName ,
+            r.receiver_address receiverAddress,r.receiver_mobile receiverMobile,r.created_date createdDate,r.updated_date updatedDate,IFNULL(is_default,0) isDefault
+        FROM point_exchange_receiver r
+        WHERE r.user_code=#{userCode}
+        ORDER BY r.is_default DESC , r.created_date DESC
+    </select>
+    <insert id="insert" parameterType="pointExchangeReceiver" keyColumn="point_exchange_receiver_id" keyProperty="pointExchangeReceiverId">
+      INSERT INTO point_exchange_receiver(user_code,receiver_name,receiver_address,receiver_mobile,created_date,updated_date,point_consume_id,is_default)
+      VALUES(#{userCode},#{receiverName},#{receiverAddress},#{receiverMobile},NOW(),NOW(),#{pointConsumeId},#{isDefault})
+    </insert>
+    <update id="updateIsDefault" parameterType="pointExchangeReceiver">
+        UPDATE point_exchange_receiver r
+        SET r.is_default=#{isDefault},updated_date=NOW()
+        WHERE r.user_code=#{userCode}
+        <if test="null != pointExchangeReceiverId">AND point_exchange_receiver_id=#{pointExchangeReceiverId}</if>
+    </update>
+</mapper>

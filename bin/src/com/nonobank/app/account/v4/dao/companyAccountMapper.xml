@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nonobank.app.account.v4.dao.CompanyAccountDao">
+    <update id="update" parameterType="com.nonobank.app.account.v4.entity.CompanyAccount">
+        UPDATE company_account
+        <set>
+            user_code=#{userCode}
+            <if test="null != investAmount">,total_invest = total_invest+#{investAmount}</if>
+            <if test="null != withdrawAmount">,total_withdraw=total_withdraw+#{withdrawAmount}</if>
+            <if test="null != incomeAmount">,total_income=total_income+#{incomeAmount}</if>
+            <if test="null != incomeWithdraweAmount">,total_income_withdraw=total_income_withdraw+#{incomeWithdraweAmount}</if>
+            <if test="null != updateDate">,update_date=#{updateDate}</if>
+        </set>
+        WHERE user_code=#{userCode}
+    </update>
+
+    <insert id="insertLog" parameterType="com.nonobank.app.account.v4.entity.CompanyAccountLog">
+        INSERT INTO company_account_log(user_code,trans_type,amount,create_date)
+        VALUES(#{userCode},#{transType},#{amount},#{createDate})
+    </insert>
+
+    <select id="getByUserCode" parameterType="com.nonobank.app.account.v4.entity.CompanyAccount" resultType="com.nonobank.app.account.v4.entity.CompanyAccount">
+       SELECT company_account_id companyAccountId,user_code userCode,total_invest totalInvest,total_withdraw totalWithdraw,total_income totalIncome,total_income_withdraw totalIncomeWithdraw,create_date createDate,update_date updateDate
+       FROM company_account
+       WHERE user_code=#{userCode};
+    </select>
+</mapper>

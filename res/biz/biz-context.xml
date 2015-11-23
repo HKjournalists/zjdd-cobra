@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"	
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-4.1.xsd
+        ">
+
+	<context:property-placeholder
+		location="classpath*:*.properties" />
+	
+	
+	<context:annotation-config /> 	
+	<context:component-scan base-package="com.zaijiadd.app.*" use-default-filters="false">
+        <context:include-filter type="regex" expression="com.zaijiadd.app.*"/>
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>    
+  
+    <import resource="classpath:db/datasource.xml"/>    
+   
+    <import resource="classpath:db/mybatis_spring.xml"/>
+    
+    
+    <!-- spring定时器start -->
+    <bean name="scheduleTask" class="com.zaijiadd.app.dataquery.schedule.ScheduleTask" />
+    <bean id="methodInvokingJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+       <property name="targetObject">
+           <ref bean="scheduleTask" />
+       </property>
+       <property name="targetMethod">
+           <value>dataImport</value>
+       </property>
+    </bean>
+    <!-- 配置触发器 -->
+    <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <!-- 这里不可以直接在属性jobDetail中引用taskJob，因为他要求的是一个jobDetail类型的对象，所以我们得通过MethodInvokingJobDetailFactoryBean来转一下 -->
+       <property name="jobDetail">
+           <ref bean="methodInvokingJobDetail" />
+       </property>
+       <!-- 每天的8点到21点每隔1分钟触发，具体说明见附录 -->
+       <property name="cronExpression">
+           <value>0 * 08-23 * * ?</value>
+       </property>
+    </bean>
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+       <!-- 添加触发器 -->
+       <property name="triggers">
+           <list>
+              <ref bean="cronTrigger" />
+           </list>
+       </property>
+    </bean>
+
+    <!-- spring定时器end -->
+</beans>

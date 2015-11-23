@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.system.dao.SystemAccountingHandleDAO">
+	
+    <insert id="insertTrandtl" parameterType="transdtlInfo" >
+    	insert into 
+    		trans_detail( trans_date, trans_time, user_code, trans_code, product_code, 
+    			amount, status, create_date, update_date, 
+    			message, dcflag, month_rate_id, user_card_code )
+    		values( #{transdate}, #{transtime}, #{userCode}, #{transCode}, #{productCode},
+    			#{amount}, #{status}, now(), now(), 
+    			#{message}, #{dcflag}, #{monthRateId}, #{userCardCode} )
+    </insert>
+	<select id="queryTransdtl" parameterType="transdtlInfo" resultType="java.lang.Integer">
+		select 
+			count(*) 
+		from
+			trans_detail t
+		where
+			t.trans_date = #{transdate}
+		and
+			t.trans_time = #{transtime}
+		and
+			t.user_code = #{userCode}
+		and
+			t.trans_code = #{transCode}
+		and
+			t.product_code = #{productCode}
+		and
+			t.amount = #{amount}
+	</select>
+	<update id="updateTransdtl" parameterType="transdtlInfo">
+		update trans_detail
+		set status = #{status}, update_date = now()
+		where trans_date = #{transdate}
+		and trans_time = #{transtime}
+		and user_code = #{userCode}
+		and trans_code = #{transCode}
+	</update>
+	<select id="countAmountByCondition" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+		SELECT
+			sum(t.invest_amount) totalAmount
+		FROM
+			user_product t
+		WHERE
+			date_format(t.created_date, '%Y%m%d') = #{accdate}
+		<if test="productCode!=null and productCode!=''">
+	    AND t.product_code = #{productCode}
+	      </if>
+		AND t.trans_code = #{transCode}
+		AND t.status = '2'
+	</select>
+</mapper>

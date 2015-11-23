@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.product.v4.dao.ProductInfoDetailDAO">
+	
+	<select id="getProductInfoDetail" parameterType="java.lang.String" resultType="productInfoDetail">
+		SELECT
+			t.product_info_detail_id productInfoDetailId,
+			t.product_code productCode,
+			t.product_detail_name productDetailName,
+			t.invest_total_amount investTotalAmount,
+			t.invest_amount_min investAmountMin,
+			t.invest_amount_max investAmountMax,
+			t.per_copy_amount perCopyAmount,
+			t.rate rate,
+			t.periods_id periodsId
+		FROM
+			product_info_detail t
+		WHERE
+			t.product_code = #{productCode}
+		AND t.status = 1
+		ORDER BY
+			t.create_date
+		LIMIT 1
+	</select>
+	<update id="updateProductInfo" parameterType="java.util.Map">
+		update product_info_detail
+		<if test="transAmount != null and transAmount != ''">
+			set invest_total_amount = invest_total_amount + #{transAmount}
+		</if>
+		<if test="status != null and transAmount != ''">
+			set status = #{status}
+		</if>
+		where product_info_detail_id = #{productId}
+	</update>
+	<select id="getProductInfoDetailById" parameterType="java.lang.Integer" resultType="productInfoDetail">
+		SELECT
+			t.product_info_detail_id productInfoDetailId,
+			t.product_code productCode,
+			t.product_detail_name productDetailName,
+			t.invest_total_amount investTotalAmount,
+			t.invest_amount_min investAmountMin,
+			t.invest_amount_max investAmountMax,
+			t.per_copy_amount perCopyAmount,
+			t.rate rate,
+			t.periods_id periodsId
+		FROM
+			product_info_detail t
+		WHERE
+			t.product_info_detail_id = #{productId}
+		AND t.status = 1
+		ORDER BY
+			t.create_date
+		LIMIT 1
+	</select>
+	<insert id="insertProductInfo" parameterType="java.util.Map">
+		INSERT INTO product_info_detail (
+			product_code,
+			product_detail_name,
+			invest_total_amount,
+			invest_amount_min,
+			invest_amount_max,
+			per_copy_amount,
+			rate,
+			periods_id,
+			create_date
+		)
+		VALUES
+			(
+				#{productCode}, 
+				#{productDetailName}, 
+				#{investTotalAmount}, 
+				#{investAmountMin}, 
+				#{investAmountMax}, 
+				#{perCopyAmount}, 
+				#{rate}, 
+				#{periodsId}, 
+				now() )
+	</insert>
+	<select id="countFinanceCountByProductId" resultType="java.lang.Integer" parameterType="java.util.Map">
+		SELECT
+			count(DISTINCT user_code)
+		FROM
+			trans_detail
+		WHERE
+			product_code = #{productCode}
+		AND month_rate_id = #{productId}
+		AND trans_code = 1
+		AND status = 2
+	</select>
+	<select id="getFinanceUserListByProductId" resultType="financeUserInfoDto" parameterType="java.util.Map">
+		SELECT
+			t.amount financeAmount,
+			a.real_name realName
+		FROM
+			trans_detail t
+		INNER JOIN user_detail a ON a.user_code = t.user_code
+		WHERE
+			t.product_code = #{productCode}
+		AND t.month_rate_id = #{productId}
+		AND t.trans_code = 1
+		AND t.status = 2
+		AND t.amount >= 100
+		ORDER BY t.create_date DESC
+		LIMIT 10
+	</select>
+	<select id="getFinanceUserListByProductIdNew" resultType="financeUserInfoDto" parameterType="java.util.Map">
+		SELECT
+			t.amount financeAmount,
+			CONCAT(left(a.real_name,1),'*') realName,
+			DATE_FORMAT(t.create_date,'%Y-%m-%d') financeDate	
+		FROM
+			trans_detail t
+		INNER JOIN user_detail a ON a.user_code = t.user_code
+		WHERE
+			t.product_code = #{productCode}
+		AND t.month_rate_id = #{productId}
+		AND t.trans_code = 1
+		AND t.status = 2
+		AND t.amount >= 100
+		ORDER BY t.create_date DESC
+		LIMIT 50
+	</select>
+	
+</mapper>

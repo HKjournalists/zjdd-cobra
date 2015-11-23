@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.system.dao.SystemOperatorDAO">
+	<select id="validOperatorCode" parameterType="java.lang.String" resultType="java.lang.Integer">
+		select count(*) from operator_info
+		where operator_code = #{operatorCode}
+	</select>
+	<select id="isOperatorExist" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(*) from operator_info
+		where operator_code = #{operatorCode}
+		and operator_password = #{operatorPwd}
+	</select>
+</mapper>

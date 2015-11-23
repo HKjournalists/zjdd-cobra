@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.user.dao.IndexInfoDAO">
+	
+	<select id="getNavigationList" resultType="navigationInfo">
+		SELECT
+			t.navigation_name navigationName,
+			t.navigation_type navigationType,
+			t.post_url postUrl,
+			t.picture_url pictureUrl,
+			t.sort_index sortIndex,
+			t.new_navigation_id newNavigationId
+		FROM
+			news_navigation_info t
+		WHERE
+			t.navigation_type IN (1, 2)
+		and t.status = 1
+		ORDER BY
+			t.sort_index
+	</select>
+	
+	<select id="getNavigationByType" resultType="navigationInfo">
+		SELECT
+			t.navigation_name navigationName,
+			t.navigation_type navigationType,
+			t.post_url postUrl,
+			t.picture_url pictureUrl,
+			t.sort_index sortIndex,
+			t.navigation_content navigationContent
+		FROM
+			news_navigation_info t
+		WHERE
+			t.navigation_type = #{navigationType}
+		AND
+			t.status = 1
+		ORDER BY
+			t.sort_index
+	</select>
+	
+</mapper>

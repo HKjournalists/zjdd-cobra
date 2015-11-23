@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.autentication.dao.AuthenticationLogDAO">
+	
+	<insert id="addAuthenLog" parameterType="authenLog" useGeneratedKeys="true" keyProperty="authenLogId">
+		insert into authen_log(user_code,
+		      authen_type,
+		      request_param,
+		      response_param,
+		      status,
+		      certificate_number,
+		      created_date,
+		      updated_date) values(
+		          #{userCode},
+		          #{authenType},
+		          #{requestParam},
+		          #{responseParam},
+		          #{status},
+		          #{certificateNumber},
+		          now(),
+		          now()
+		      )
+	</insert>
+    <update id="updateAuthenLog" parameterType="authenLog" >
+		update  authen_log 
+		set response_param=#{responseParam},
+		status=#{status},
+		authen_result=#{authenResult},
+		updated_date = now()
+		where authen_log_id=#{authenLogId}		     
+	</update>
+	<select id="failAuthenPerDay" parameterType="java.util.Map" resultType="java.lang.Integer">
+	     select count(1) from authen_log
+	     where user_code =#{userCode}
+	     and authen_result='0'
+	     <if test="certificateNumber!=null and certificateNumber!=''">
+	        and certificate_number= #{certificateNumber}
+	     </if>
+	     and updated_date>=from_days(to_days(now()))
+	</select>
+	
+</mapper>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.debt.dao.DebtRefundHandleLogDAO">
+	<insert id="addDebtRefundHandleLog" parameterType="debtRefundHandLog">
+	    insert into debt_refund_handle_log(debt_detail_id,amount,created_date,updated_date)
+	    values(#{debtDetailId},#{amount},now(),now())
+	</insert>	
+</mapper>

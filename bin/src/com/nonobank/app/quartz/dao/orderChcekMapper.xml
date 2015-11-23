@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.quartz.dao.OrderCheckDAO">
+
+
+    <!--    补单数据： 当天所有的未接受到消息的已经在30分钟内返回失败的, 防止块钱返回有点延迟，时间放到2分钟前     -->
+	<select id= "queryAddOrderByDatePeriod" parameterType="java.util.Map" resultType="tradeOrderEntity">
+	    <![CDATA[
+	    select 
+	        order_id orderId,user_code userCode
+	    from third_trade_log  t 
+	    where t.create_date>=#{startDate}   
+	     and t.create_date<=date_add(now(),interval -2 minute)     
+          and trans_status='TR1'
+          and not exists(
+            select 1 from third_trade_log t2 
+            where t2.order_id = t.order_id  
+            and trans_status='TR2'             
+         ) 
+          and exists(
+            select 1 from order_info t2 where t2.order_id = t.order_id
+          )
+                     
+       union 
+       select 
+	        order_id orderId,user_code userCode
+	    from third_trade_log  t 
+	    where t.create_date>=date_add(now(),interval -30 minute) 
+	     and t.create_date<=date_add(now(),interval -2 minute)       
+          and trans_status='TR1'
+          and exists(
+                select 1 from third_trade_log t2 
+            where t2.order_id = t.order_id  
+            and trans_status='TR2' 
+            and response_code<>'00'     
+          )
+           and exists(
+            select 1 from order_info t2 where t2.order_id = t.order_id
+          )
+          
+         ]]>
+	</select>
+	
+	
+	 <!--    预警数据： 30分钟内所有的数据     -->
+	<select id= "queryWarningByDatePeriod" parameterType="java.util.Map" resultType="tradeOrderEntity">
+	    <![CDATA[
+	   select 
+	       distinct order_id orderId,user_code userCode
+	    from third_trade_log  t 
+	    where t.create_date>=date_add(now(),interval -30 minute)        
+          and trans_status='TR1'
+         ]]>
+	</select>
+   
+   <select id= "isOrderDebtSuccess" parameterType="java.lang.String" resultType="java.lang.Integer">
+	    <![CDATA[
+	    select count(1) from user_product where order_id = #{value}	   
+         ]]>
+	</select>
+	  <select id= "isOrderSuccess" parameterType="java.lang.String" resultType="java.lang.Integer">
+	    <![CDATA[
+	    select count(1) from order_info where order_id = #{value} and status='5'	   
+         ]]>
+	</select>
+	
+	 <select id= "isTradeSuccess" parameterType="java.lang.String" resultType="java.lang.Integer">
+	    <![CDATA[
+	    select count(1) from third_trade_log where order_id = #{value} and response_code='00' and trans_status='TR2' 
+         ]]>
+	</select>
+	
+	
+	<select id="getAdminMobileList" resultType="java.lang.String">
+	    select mobile_number from admin_info
+	</select>
+</mapper>

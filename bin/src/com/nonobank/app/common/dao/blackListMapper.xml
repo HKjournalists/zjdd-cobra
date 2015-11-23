@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.common.dao.BlackListDAO">
+
+	
+	<select id="registerListByDeviceId" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			t.user_code
+		FROM
+			user t,user_product t2
+		WHERE
+			t.device_id = #{deviceId}	
+			and t.user_code = t2.user_code	
+			and user_type=#{userType}
+			and t2.trans_code = '1'
+			and device_id is not null			
+			<![CDATA[
+			and device_id <>'000000000000000'
+			and device_id <>'111111111111111'
+			and device_id<>'0'
+			]]>
+			
+	</select> 
+	<!--   统计投资金额大于1的用户     -->
+	<select id="investAmountEqualOne" parameterType="java.util.Map" resultType="java.lang.Integer">	
+	  select count(1) from (	
+      select user_code,sum(invest_amount) amount from user_product t where t.user_code in 
+      <foreach collection="userList" item="userCode" open="(" close=")" separator=",">
+             #{userCode} 
+      </foreach>       
+      and trans_code = 1 
+      <![CDATA[
+      and ifnull(t.status,'1')<>'A' 
+      ]]>
+      group by user_code
+      ) a where a.amount=1     
+	</select>
+    <insert id="addBlackListInfo" parameterType="blackListDto">
+        insert into black_list(device_id,mobile_number,device_type)
+         values(    		
+  		    #{deviceId},
+  			#{mobileNumber},
+ 		    #{deviceType}
+         )        
+    </insert>
+    <select id="getBlackInfoByMobileNumber" parameterType="java.lang.String" resultType="blackListDto">
+        select device_id deviceId,mobile_number mobileNumber,device_type deviceType,is_lock isLock
+        from black_list where mobile_number =#{value}
+    </select>
+    <select id="investAmountLargerThanOne" parameterType="java.lang.String" resultType="java.lang.Integer">
+       select count(1) from user_product where user_code = (
+           select user_code from user where mobile_number=#{value}
+       )
+       and trans_code='1'
+       and invest_amount>1
+       <![CDATA[
+       and status<>'A'
+       ]]>
+    </select>
+    
+</mapper>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.user.dao.UserDetailDAO">
+    <insert id="insertUserDetail" parameterType="userDetail" >
+        INSERT INTO user_detail
+            (user_code,
+             certificate_type,
+             certificate_number,
+             real_name,
+             pay_password,
+             has_pay_password,
+             is_mobile_authen,
+             mobile_authen_time,
+             is_certificate_authen,
+             certificate_authen_time,
+             register_time,            
+             is_bind_bankcard,
+             register_approach,
+             openid,
+             operation)
+		VALUES (#{userCode},
+				#{certificateType},
+				#{certificateNumber},
+				#{realName},
+				#{payPassword},
+				IFNULL(#{hasPayPassword},'0'),
+				IFNULL(#{isMobileAuthen},'0'),
+				#{mobileAuthenTime},
+				IFNULL(#{isCertificateAuthen},'0'),
+				#{certificateAuthenTime},
+				#{registerTime},
+				IFNULL(#{isBindBankcard},'0'),
+				IFNULL(#{registerApproach},'00'),
+				#{openid},
+				#{operation}
+				)
+    </insert>
+
+    <select id="getUserDetail" parameterType="java.lang.String" resultType="userDetail">
+		select user_code userCode,
+             certificate_type certificateType,
+             certificate_number certificateNumber,
+             real_name realName,
+             pay_password  payPassword,
+             has_pay_password hasPayPassword,
+             is_mobile_authen isMobileAuthen,
+             is_certificate_authen isCertificateAuthen,
+             is_bind_bankcard isBindBankcard
+          from user_detail t where t.user_code=#{userCode}
+	</select>
+	
+	<update id="updateUserDetail" parameterType = "userDetail">	   
+	    UPDATE user_detail u 
+	    <trim prefix="set" suffixOverrides=",">
+	      <if test="certificateType!=null and certificateType!=''">
+	         u.certificate_type=#{certificateType},
+	      </if>
+	      <if test="certificateNumber!=null and certificateNumber!=''">
+	          u.certificate_number=#{certificateNumber},
+	      </if>
+	      <if test="realName!=null and realName!=''">
+	         u.real_name=#{realName},
+	      </if>
+	       <if test="payPassword!=null and payPassword!=''">
+	         u.pay_passowrd=#{payPassword},u.has_pay_password='1',
+	      </if>
+	       <if test="isMobileAuthen!=null and isMobileAuthen!=''">
+	         u.is_mobile_authen=#{isMobileAuthen},
+	      </if>
+	       <if test="mobileAuthenTime!=null and mobileAuthenTime!=''">
+	         u.mobile_authen_time=#{mobileAuthenTime},
+	      </if>
+	       <if test="isCertificateAuthen!=null and isCertificateAuthen!=''">
+	         u.is_certificate_authen=#{isCertificateAuthen},
+	      </if>
+	      <if test="certificateAuthenTime!=null and certificateAuthenTime!=''">
+	         u.certificate_authen_time=#{certificateAuthenTime},
+	      </if>
+	      <if test="registerTime!=null and registerTime!=''">
+	         u.register_time=#{registerTime},
+	      </if>
+	      <if test="isBindBankcard !=null and isBindBankcard != ''">
+	      	u.is_bind_bankcard = #{isBindBankcard},
+	      </if>	      
+	      <if test="openid!=null and openid!=''">
+	          u.openid=#{openid},
+	      </if>
+	      <if test="registerApproach!=null and registerApproach!=''">
+	          u.register_approach=#{registerApproach}
+	      </if>		        
+	    </trim>
+        WHERE u.user_code=#{userCode}
+	</update>
+	
+	<select id="isExistUserDetail" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+	    select count(*) from user_detail t where t.user_code =#{value}
+	</select>
+	<select id="isPayPasswordExist" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			user_detail t
+		WHERE
+			t.user_code = #{userCode}
+		AND t.pay_password = #{payPassword}
+	</select>
+	
+	<select id="isOpenIdExist" parameterType="java.util.Map" resultType="java.lang.Integer">
+	   SELECT COUNT(1)
+       FROM user_detail d
+       WHERE d.openid =#{openid} 
+         <if test="approach!=null and approach!=''">
+              AND register_approach =#{approach} 
+         </if>         
+         <if test="operation!=null and operation!=''">
+             and d.operation = #{operation}
+         </if>
+	</select>
+	
+	<update id="updateWeiXinOperation" parameterType="java.util.Map">
+	    update user_detail d set d.operation=#{operation} where d.openid=#{openid}
+	</update>
+	<select id="getUserCodeByOpenId" parameterType="java.util.Map" resultType="java.lang.Integer">
+	    select d.user_code from user_detail d
+	    where d.openid=#{openid}
+	    <if test="approach!=null and approach!=''">
+	         and d.register_approach=#{approach}	
+	    </if>
+	       
+	</select>
+	<update id="addOpenId" parameterType="java.util.Map">
+	    update user_detail d set d.openid=#{openid}
+	    where d.user_code = (select user_code from user where mobile_number=#{mobileNumber} )
+	</update>
+	<select id="getOpenIdByMobile" parameterType="java.util.Map" resultType="java.lang.String">
+	    select openid from user_detail d
+	    where d.user_code = (select user_code from user where mobile_number=#{mobileNumber})
+	</select>
+	<update id="cleanOpenId" parameterType="java.lang.String" >
+	    update user_detail d set d.openid=null where d.openid=#{value}
+	</update>
+	<select id="getMobileNumberByOpenId" parameterType="java.lang.String" resultType="java.lang.String">
+	    select mobile_number from user where user_code=(select user_code from user_detail d where d.openid=#{value})
+	</select>
+	<select id="isBindCardByUserCode" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		SELECT
+			ifnull(is_bind_bankcard, 0)
+		FROM
+			user_detail
+		WHERE
+			user_code = #{userCode}
+	</select>
+	<select id="getUserDetailByMobile" parameterType="java.lang.String" resultType="userDetail">
+        select
+  			t.user_code userCode,
+  			t1.certificate_number certificateNumber,
+  			t1.real_name realName
+		from user t,
+  			user_detail t1
+		where t1.user_code = t.user_code
+    		and t.mobile_number =#{value}  
+    </select>    
+    <select id="getUserInfoByCertificateNo" parameterType="java.lang.String" resultType="java.util.Map">
+        select
+  			mobile_number mobileNumber,
+  			user_code userCode
+		from user t
+		where t.user_code = (select user_code from user_detail where certificate_number=#{value} limit 1)  
+    </select>
+    
+    <update id="updateMxdUserFlag" parameterType="java.lang.Integer">
+        update user_detail set is_mxd_student='1' where user_code= #{value}
+    </update>
+    <select id="getMxdUserFlag" parameterType="java.lang.Integer" resultType="java.lang.String">
+        select is_mxd_student from user_detail where user_code= #{value}
+    </select>
+</mapper>

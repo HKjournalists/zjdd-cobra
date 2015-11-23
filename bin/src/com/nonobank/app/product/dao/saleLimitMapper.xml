@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.product.dao.SaleLimitDAO">
+	<select id="getSaleLimitInfo" resultType="saleLimit" >
+	   <![CDATA[
+	    select 
+          sale_limit_id saleLimitId,
+          date_format(concat(date_format(now(),'%Y-%m-%d'),' ',day_begin_time),'%Y-%m-%d %H:%i:%s') dayBeginTime,
+          date_format(concat(date_format(now(),'%Y-%m-%d'),' ',day_end_time),'%Y-%m-%d %H:%i:%s') dayEndTime,
+   		  day_limit_amount dayLimitAmount,
+          begin_date beginDate,
+          end_date endDate,
+          effective_date effectiveDate,
+          invalid_date invalidDate,
+          message message
+       from sale_limit
+       where effective_date<=now()
+         and invalid_date> now()
+         and begin_date<=now()
+         and end_date>now() 
+        ]]>
+	</select>
+	<select id="getDayRechargeAmount" resultType="java.math.BigDecimal">
+	     select sum(amount) from trans_detail 
+	     where trans_date =date_format(now(),'%Y%m%d') 
+	     and trans_code = 1 
+	     and status = 2
+	</select>
+	
+	<select id="getDayWithdrawAmount" resultType="java.math.BigDecimal">
+	    select sum(withdraw_amount) 
+	    from withdraw_reward 
+	    where create_date>date(now()) 
+	    and trans_code = 2 
+	    and status in (2,3)
+	</select>
+    
+</mapper>

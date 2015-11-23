@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.user.dao.UserRewardDAO">
+	<select id="getUserRewardList" parameterType="java.lang.Integer" resultType="userRewardDto">		
+		SELECT
+  			ur.user_reward_id    userRewardId,
+  			(SELECT
+     			rd.type
+   			 FROM reward_define rd
+   			 WHERE rd.reward_code = ur.reward_code
+   			 )    rewardType,
+  			(SELECT
+     			d.reward_type_name
+   			 FROM reward_type_define d
+   			 WHERE d.reward_type = (SELECT rd1.type 
+   			                        FROM reward_define rd1
+                                    WHERE rd1.reward_code = ur.reward_code)
+             )    rewardTypeName,
+  			ur.use_status        useStatus,
+  			ur.reward_amount     rewardAmount,
+  			ur.invalid_date      invalidDate,
+  			ur.effective_date    effectiveDate
+		FROM user_reward ur
+		WHERE ur.user_code = #{value}
+	</select>
+	<select id="getTotalAvailableRewardAmount" parameterType="java.lang.Integer" resultType="java.lang.Double">
+	    SELECT
+          SUM(ur.reward_amount)
+        FROM user_reward ur
+        WHERE ur.user_code = #{value}
+          AND ur.use_status = '1'
+          AND ur.invalid_date > NOW()
+	</select>
+	<select id="getAllRewardAmount" parameterType="java.lang.Integer" resultType="java.lang.Double">
+	    SELECT
+          SUM(ur.reward_amount)
+        FROM user_reward ur
+        WHERE ur.user_code = #{value}
+	</select>
+	
+	<select id="getRewardAmountByRewardType" parameterType="java.util.Map" resultType="java.lang.Double">	
+	   SELECT SUM(ur.reward_amount)
+       FROM user_reward ur
+       WHERE ur.user_code = #{userCode}
+           and ur.use_status='1'
+           <![CDATA[
+           and ur.effective_Date<=now()
+           and ur.invalid_date>now()
+           ]]>
+           AND EXISTS(SELECT 1 FROM reward_define d
+                     WHERE d.reward_code = ur.reward_code
+                     AND d.type IN
+           <foreach collection="rewardTypeList" item="type" open="(" close=")" separator=",">
+             #{type} 
+           </foreach>
+        )
+	</select>
+	 
+	 <select id="getRewardAmountByRewardId" parameterType="java.util.Map" resultType="java.lang.Double">	
+	   SELECT SUM(ur.reward_amount)
+       FROM user_reward ur
+       WHERE ur.user_code = #{userCode}
+           and ur.use_status='1'
+           <![CDATA[
+           and ur.effective_Date<=now()
+           and ur.invalid_date>now()
+           ]]>
+           AND EXISTS(SELECT 1 FROM reward_define d
+                     WHERE d.reward_code = ur.reward_code
+                     AND d.type IN
+           <foreach collection="rewardIdList" item="type" open="(" close=")" separator=",">
+             #{type} 
+           </foreach>
+        )
+	</select>
+	<select id="getUserRewardAmountByUserCode" parameterType="java.util.Map" resultType="java.lang.String">
+		SELECT
+			sum(a.reward_amount) rewardAmount
+		FROM
+			user_reward a
+		WHERE
+			a.user_code = #{userCode}
+			AND a. STATUS = '1'
+			AND (
+			a.reward_type = #{minType}
+			OR a.reward_type = #{maxType}
+			)
+	</select>
+	 <select id="getRewardChangeList" parameterType="java.util.Map" resultType="java.util.Map">
+        <![CDATA[
+         SELECT
+           t_change.change_date changeDate,
+           (SELECT
+               SUM(t.reward_amount)
+            FROM user_reward t
+            WHERE t.reward_code = #{rewardCode}
+                  AND t.user_code = #{userCode}
+                  AND t.use_status = '1'
+                  AND t.invalid_date > t_change.change_date)    rewardAmount
+         FROM (SELECT 
+                  DATE_FORMAT(tr.created_date,'%Y-%m-%d') change_date 
+               FROM user_reward tr
+               WHERE tr.user_code = #{userCode}
+               and tr.reward_code=#{rewardCode}
+               UNION 
+               SELECT
+                  DATE_FORMAT(tr.updated_date,'%Y-%m-%d') change_date
+               FROM user_reward tr
+               WHERE tr.user_code = #{userCode}
+               and tr.reward_code=#{rewardCode}
+                  UNION 
+               SELECT
+                  DATE_FORMAT(NOW(),'%Y-%m-%d')   change_date FROM DUAL) t_change
+                            
+           ]]>
+    </select>
+</mapper>

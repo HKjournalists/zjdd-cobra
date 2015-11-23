@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.activity.v4.dao.UserCouponDAO">
+
+	<insert id="addUserCoupon" useGeneratedKeys="true" keyColumn="user_coupon_id" keyProperty="userCouponId" parameterType="userCoupon">
+		INSERT INTO user_coupon (
+			user_code,
+			coupon_type,
+			coupon_value,
+			effective_day,
+			coupon_use_day,
+			activity_reward_id,
+			coupon_description)
+		VALUES
+			(#{userCode},
+			#{couponType},
+			#{couponValue},
+			#{effectiveDay},
+			#{couponUseDay},
+			#{activityRewardId},
+			#{couponDescription})
+	</insert>
+	
+	<select id="getUserCouponByUserCode" resultType="userCoupon">
+		SELECT
+			user_coupon_id userCouponId,
+			user_code userCode,
+			coupon_type couponType,
+			coupon_value couponValue,
+			effective_day effectiveDay,
+			coupon_use_day couponUseDay,
+			is_use isUse,
+			created_date createDate,
+			coupon_description couponDescription
+		FROM user_coupon
+		WHERE user_code = #{userCode}
+		<if test="isUse ==1">
+			<![CDATA[ AND (is_use = 1 OR (is_use = 0 AND NOW()>DATE_ADD(created_date,INTERVAL effective_day DAY))) ]]>
+		</if>
+		<if test="isUse ==0">
+			<![CDATA[ AND is_use = 0 AND NOW()<=DATE_ADD(created_date,INTERVAL effective_day DAY) ]]>
+		</if>
+		<if test = "couponType != null and couponType != '' ">
+			AND coupon_type = #{couponType}
+		</if>
+	</select>
+	<select id="getUserCouponById" resultType="userCoupon" parameterType="java.util.Map">
+	     select 
+	         user_coupon_id userCouponId,
+	         effective_day effectiveDay,
+	         coupon_value couponValue,
+	         activity_reward_id activityRewardId,
+		activity_user_detail_id activityUserDetailId,
+	         coupon_use_day couponUseDay,
+	         coupon_type couponType,
+	         created_date createDate	        
+	     from user_coupon where user_coupon_id=#{userCouponId}
+	     and user_code= #{userCode}
+
+		<if test="null == isUse">
+			<![CDATA[
+			 and is_use<>'1'
+			 ]]>
+		</if>
+
+	</select>
+	<update id="updateUserCouponUseStatus" parameterType="userCoupon">
+	    update user_coupon set is_use= #{isUse},activity_user_detail_id =#{activityUserDetailId}
+	    where user_coupon_id = #{userCouponId}
+	</update>
+</mapper>

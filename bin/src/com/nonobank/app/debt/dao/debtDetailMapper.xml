@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.debt.dao.DebtDetailDAO">
+	
+	<insert id="addDebtDetailBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="debtDetailId">	    
+		INSERT INTO debt_detail
+            (import_batch_id,
+             debt_type,
+             original_total_amount,
+             current_total_amount,             
+             lock_start_time,
+             lock_end_time,
+             debt_detail_desc,
+             debter_id,
+             created_date,
+             updated_date)
+     	VALUES   
+          <foreach collection ="list" item="debtDetail"  separator=",">
+           (#{debtDetail.importBatchId},
+            #{debtDetail.debtType},
+            #{debtDetail.originalTotalAmount},
+            #{debtDetail.currentTotalAmount},
+            str_to_date(#{debtDetail.lockStartTime},'%Y-%m-%d %H:%i:%s'),
+            str_to_date(#{debtDetail.lockEndTime},'%Y-%m-%d %H:%i:%s'),
+            #{debtDetail.debtDetailDesc},
+            #{debtDetail.debterId},
+            now(),
+            now()
+            )
+          </foreach>
+	</insert>
+
+    
+    <select id="getAllAvailableDebtDetail" resultType="debtDetail">
+       <![CDATA[
+    	SELECT
+     	 debt_detail_id debtDetailId,
+     	 current_total_amount currentTotalAmount
+  	    FROM debt_detail d
+       WHERE d.current_total_amount>0            
+       order by import_batch_id,current_total_amount desc 
+       ]]>
+    </select>
+    
+    <update id="confirmDebtDetail" parameterType="java.util.Map">
+        update debt_detail d set d.current_total_amount = d.current_total_amount-#{amount}
+        where d.debt_detail_id=#{debtDetailId} 
+        and d.current_total_amount>=#{amount}
+    </update>
+    <update id="releaseDebtDetail" parameterType="java.util.Map">
+       <![CDATA[
+        update debt_detail d set d.current_total_amount = d.current_total_amount+#{amount}
+        where d.debt_detail_id=#{id}         
+        ]]>
+    </update>
+    
+    
+    <insert id="addDebtDetail" parameterType="debtDetail" useGeneratedKeys="true" keyProperty="debtDetailId">
+	 
+		INSERT INTO debt_detail
+            (import_batch_id,
+             debt_type,
+             original_total_amount,
+             current_total_amount,             
+             lock_start_time,
+             lock_end_time,
+             debt_detail_desc,
+             debter_id,
+             created_date,
+             updated_date)
+     	VALUES             
+           (#{importBatchId},
+            #{debtType},
+            #{originalTotalAmount},
+            #{currentTotalAmount},
+            str_to_date(#{lockStartTime},'%Y-%m-%d %H:%i:%s'),
+            str_to_date(#{lockEndTime},'%Y-%m-%d %H:%i:%s'),
+            #{debtDetailDesc},
+            #{debterId},
+            now(),
+            now()
+            )
+          
+	</insert>
+    <insert id="addDebtInfo"  parameterType="com.nonobank.app.debt.entity.DebterEntity" useGeneratedKeys="true" keyProperty="debterId">
+         INSERT INTO 
+             debter(debter_name,sex,school,address,certificate_number,payment_approach,import_batch_id,debter_order_id)
+         VALUES(
+            #{name},
+            #{sex},
+            #{school},
+            #{address},
+            #{certificateNumber},
+            #{paymentApproach} ,
+            #{importBatchId},
+            #{debterOrderId}      
+       )
+    </insert>
+    <!--   获取满30天（1个月）的债权列表  -->
+    <select id="getReduceDebtList" resultType="debtDetail" parameterType="java.util.Map">
+      <![CDATA[
+        select
+          debt_detail_id debtDetailId,
+          original_total_amount originalTotalAmount,
+          lock_end_time lockEndTime,
+          lock_start_time lockStartTime,
+          debt_rate debtRate         
+        from debt_detail t
+        where t.current_original_amount > 0
+          and mod(to_days(#{currentDate}) - to_days(t.lock_start_time),30) = 0
+          ]]>
+    </select>
+    
+    <select id="getReallocateDebtList" resultType="debtDetail" parameterType="java.util.Map">
+     <![CDATA[
+        select
+          debt_detail_id debtDetailId,
+          current_total_amount currentTotalAmount        
+        from debt_detail t
+        where t.current_total_amount< 0
+          ]]>
+    </select>
+    <update id="reduceDebtDetail" parameterType="java.util.Map">
+        update debt_detail set current_total_amount = current_total_amount - #{principalAmount},
+        current_original_amount = current_original_amount-#{principalAmount}
+        where debt_detail_id = #{debtDetailId}
+    </update>
+    <select id="getDebteridByOrderid" parameterType="java.lang.String" resultType="java.lang.Integer">
+    	SELECT
+			debter_id
+		FROM
+			debter
+		WHERE
+			debter_order_id = #{boid}
+    </select>
+    <update id="reductDebtDetailNew" parameterType="java.util.Map">
+    	update debt_detail set current_total_amount = current_total_amount - #{reduceAmount},
+    	original_total_amount = original_total_amount - #{reduceAmount}
+    	where debt_detail_id = #{debtDetailId}
+    </update>
+    <select id="getDebtInfoByBuild" parameterType="java.math.BigDecimal" resultType="debtDetail">
+    	<![CDATA[
+    	SELECT
+			debt_detail_id debtDetailId,
+			current_total_amount currentTotalAmount
+		FROM
+			debt_detail
+		WHERE
+			current_total_amount >= #{amount}
+		ORDER BY
+			current_total_amount
+		limit 1
+		]]>
+    </select>
+    <select id="getDebtInfoByBuildNew" parameterType="java.math.BigDecimal" resultType="debtDetail">
+    	<![CDATA[
+    	SELECT
+			debt_detail_id debtDetailId,
+			current_total_amount currentTotalAmount
+		FROM
+			debt_detail
+		WHERE
+			current_total_amount < #{amount}
+		AND
+			current_total_amount > 0
+		ORDER BY
+			current_total_amount
+		DESC
+		limit 1
+		]]>
+    </select>
+    <update id="reduceDebtDetailInfo" parameterType="java.util.Map">
+    	update debt_detail set current_total_amount = current_total_amount - #{remainReduceAmount}
+    	where debt_detail_id = #{debtDetailId}
+    </update>
+    
+    
+    
+    <select id="getAvailableFundInfo" resultType="debtDetail" >
+       <![CDATA[
+    	SELECT
+     	 debt_detail_id debtDetailId,
+     	 current_total_amount currentTotalAmount
+  	    FROM debt_detail d
+       WHERE d.current_total_amount>0   
+       and   debt_type = 'NNDT_04'        
+       order by import_batch_id,current_total_amount desc 
+       ]]>
+    </select>
+    
+     <select id="getAvailableDebtInfo" resultType="debtDetail" >
+       <![CDATA[
+    	SELECT
+     	 debt_detail_id debtDetailId,
+     	 current_total_amount currentTotalAmount
+  	    FROM debt_detail d
+       WHERE d.current_total_amount>0   
+       and   debt_type <> 'NNDT_04'        
+       order by import_batch_id,current_total_amount desc 
+       ]]>
+    </select>
+     
+    <select id="getAvailableFundInfoForDebtExchange" resultType="debtDetail" >
+       <![CDATA[
+    	SELECT
+     	 debt_detail_id debtDetailId,
+     	 current_total_amount currentTotalAmount
+  	    FROM debt_detail d
+       WHERE d.current_total_amount>0   
+       and   debt_type = 'NNDT_04'        
+       order by import_batch_id desc,current_total_amount desc 
+       ]]>
+    </select>
+    
+    
+    
+</mapper>

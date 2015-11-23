@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.system.v4.dao.SystemAdminUserDAO">
+	
+	<select id="queryAdminUser" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		SELECT
+			count(1)
+		FROM
+			system_admin_user
+		WHERE
+			admin_user_code = #{userCode}
+		AND status = 1
+	</select>
+
+</mapper>

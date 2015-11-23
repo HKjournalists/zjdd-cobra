@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.activity.v4.dao.InterestRewardDAO">
+
+    <!--  根据邀请人编码计算收益   -->
+	<select id="getInvitedUserPrincipal" parameterType="java.util.Map" resultType="java.math.BigDecimal">	    
+     select ifnull(sum(ifnull(remaining_principal,0)),0) 
+     from user_product 
+     where user_code in (
+         select distinct user_code from (
+                select *from (
+                       select 
+                           user_code,interest_begin_date 
+                       from user_product where user_code in 
+                       <foreach collection="invitedUserList" item="type" open="(" close=")" separator=",">
+                           #{type} 
+                       </foreach>
+                       and product_code ='NN0005'  
+                       and trans_code = '1'
+                       order by interest_begin_date asc) a 
+                       group by user_code 
+         ) b 
+         <![CDATA[
+         where b.interest_begin_date<=now()
+         and  date_add(b.interest_begin_date,interval 180 day)>now()
+         ]]>
+       ) 
+           
+         
+	</select>
+	
+</mapper>

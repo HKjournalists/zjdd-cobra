@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.system.dao.SystemMonthRateDAO">
+	
+	<select id="getSystemMonthRate" resultType="systemMonthRateDto" parameterType="java.util.Map">
+		SELECT
+			t.month_name monthName,
+			format(t.month_rate, 2) monthRate,
+			t.is_display isDisplay,
+			t.system_month_rate_id systemMonthRateId,
+			t.description description,
+			t.invest_amount_max investAmountMax,
+			t.count_days countDays
+		FROM
+			system_month_rate t
+		WHERE
+			t.status = 1
+		<if test="newUserFlag != null and newUserFlag != ''">
+			AND t.new_user_flag = #{newUserFlag}
+		</if>
+		<if test="oldUserFlag != null and newUserFlag != ''">
+			AND t.old_user_flag = #{oldUserFlag}
+		</if>
+		ORDER BY
+			t.order_b
+	</select>
+	<select id="getSystemMonthRateById" resultType="systemMonthRateDto" parameterType="java.lang.Integer">
+		SELECT
+			t.month_rate monthRate,
+			t.description description,
+			t.count_days countDays
+		FROM
+			system_month_rate t
+		WHERE
+			t.system_month_rate_id = #{systemMonthRateId}
+	</select>
+	<select id="getMonthRateWithTerm" resultType="systemMonthRateDto">
+		SELECT
+			t.month_rate monthRate,			
+			t.count_days countDays
+		FROM
+			system_month_rate t		
+	</select>
+</mapper>

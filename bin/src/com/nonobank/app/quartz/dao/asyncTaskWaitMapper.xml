@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.quartz.dao.AsyncTaskWaitDAO">
+	
+	
+	
+	<insert id="initAutoTransInvestPerDay" parameterType = "java.util.Map">
+	    INSERT INTO async_task_wait
+            (bussiness_key,
+             job_code,
+             retry_time,
+             remark,
+             created_date,
+             updated_date)
+		SELECT
+  			user_product_id,
+  			'NN_APP_0002',
+  			0,
+  			#{remark}, 
+  			NOW(),
+  			NOW()
+		FROM user_product p
+		WHERE p.invest_begin_date = FROM_DAYS(TO_DAYS(#{currentDay}) - #{periodDay})
+    		AND p.product_code = #{productCode}
+    		<![CDATA[
+    		and withdraw_status<>'5'
+    		]]>
+    		and not exists(
+    		    select 1 from async_task_wait tt where tt.bussiness_key = p.user_product_id
+    		    and job_code = 'NN_APP_0002'
+    		)
+	</insert>
+	<select id="getJobTaskList" parameterType="java.util.Map" resultType="asyncTask">
+	    SELECT a.bussiness_key bussinessKey,async_task_wait_id id,IFNULL(retry_time,0) retryTime,remark
+	    FROM 
+          (SELECT tt.* FROM async_task_wait tt 
+           WHERE tt.job_code =#{jobCode} 
+           ORDER BY tt.updated_date) a 
+         LIMIT #{limitCount}
+	</select>
+	<update id="updateRetryTime" parameterType="asyncTask">
+	    update async_task_wait set retry_time = #retryTime#,updated_date=now() where async_task_wait_id = #{id}
+	</update>
+	<delete id="deleteAsyncTaskList" parameterType="java.util.List">
+	    delete from async_task_wait where 
+	    <foreach collection="list" separator="or" item="asyncTask" index="index">
+              async_task_wait_id=#{asyncTask.id}
+        </foreach>
+	</delete>
+	<insert id="addAsyncWaitTask" parameterType="asyncTask">
+	    INSERT INTO async_task_wait
+            (bussiness_key,
+             job_code,
+             retry_time,
+             priority,
+             remark,
+             created_date,
+             updated_date)
+        values(
+            #{bussinessKey},
+            #{jobCode},
+            #{retryTime},
+            #{priority},
+            #{remark},
+            now(),
+            now()
+        )
+	</insert>
+</mapper>

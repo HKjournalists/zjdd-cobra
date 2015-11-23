@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.point.dao.PointMartProductDao">
+    <select id="get" parameterType="pointMartProduct" resultType="pointMartProduct">
+        SELECT mp.point_mart_product_id pointMartProductId, mp.product_name productName,mp.product_type productType, mp.user_type userType , mp.product_owner productOwner,mp.display_url displayUrl,
+            ifnull(mp.display_amount,0) displayAmount,ifnull(mp.acutal_amount,0) acutalAmount ,ifnull(mp.remaining_amount,0) remainingAmount , mp.consume_amount consumeAmount
+        FROM point_mart_product mp
+        <where>
+            mp.status='1'
+            <if test="pointMartProductId != null"> AND mp.point_mart_product_id=#{pointMartProductId}</if>
+            <if test="productType != null">AND mp.product_type=#{productType}</if>
+            <if test="userType != null"> AND mp.user_type=#{userType}</if>
+        </where>
+        ORDER BY mp.display_order ASC
+    </select>
+    <update id="update" parameterType="pointMartProduct">
+        UPDATE point_mart_product mp
+        <set>
+            <if test="null!=remainingAmount"> mp.remaining_amount=mp.remaining_amount+#{remainingAmount}</if>
+            <if test="null!=displayAmount">,mp.display_amount=mp.display_amount+#{displayAmount}</if>
+        </set>
+        WHERE mp.point_mart_product_id=#{pointMartProductId} AND mp.remaining_amount>0
+    </update>
+
+    <select id="productConsumed" parameterType="pointMartProduct" resultType="com.nonobank.app.point.entity.productConsumed">
+        SELECT mp.product_name productName,u.user_name userName,u.mobile_number mobileNumber
+        FROM point_consume c ,point_mart_product mp ,user u
+        WHERE  c.result=1 AND c.point_mart_product_id=mp.point_mart_product_id AND c.user_code=u.user_code <if test="null != pointMartProductId">AND c.point_mart_product_id=#{pointMartProductId} </if>  ORDER BY c.created_date DESC LIMIT 10;
+    </select>
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.common.dao.MarketMessageDAO">
+	
+	<select id="marketMessageRegisterUserList" resultType="java.lang.String">
+		SELECT
+			mobile_number
+		FROM
+			user
+		WHERE
+			user_style = 1
+			<![CDATA[
+		AND DATE_FORMAT(created_date, '%Y%m%d') < '20150520'
+			]]>
+		AND mobile_number IS NOT NULL
+		AND mobile_number not in( select dest_mobile from message_log where user_code = -99 )
+		ORDER BY
+			created_date desc
+		limit 3000
+	</select>
+	<select id="marketMessageFinanceUserList" resultType="java.lang.String">
+		SELECT
+			mobile_number
+		FROM
+			user t
+		WHERE
+			t.mobile_number IS NOT NULL
+		AND t.mobile_number NOT IN (
+			SELECT
+				mobile_number
+			FROM
+				address_book
+		)
+		AND user_style = 2
+		<![CDATA[
+		AND date_format(created_date, '%Y%m%d') < '20150525'
+		]]>
+	</select>
+</mapper>

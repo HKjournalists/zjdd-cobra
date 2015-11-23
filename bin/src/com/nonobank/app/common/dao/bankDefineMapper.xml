@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.common.dao.BankDefineDAO">
+	
+	<select id="queryBankDefine" resultType="bankDefine">
+		select 	bank_code 		bankCode, 
+				bank_name		bankName, 
+				is_avaliable 	isAvaliable,
+				avaliable_bind	avaliableBind
+          from bank_define t where t.is_avaliable = '1'
+          ORDER BY
+		order_b
+	</select>
+	<select id="getBankDefineDetail" resultType="bankDefine">
+		SELECT
+			t.bank_code bankCode,
+			t.bank_name bankName,
+			t.is_avaliable isAvaliable,
+			t.avaliable_bind avaliableBind,
+			t.firstRecharge_single_limit firstRechargeSingleLimit,
+			t.firstRecharge_daily_limit firstRechargeDailyLimit,
+			t.firstRecharge_monthly_limit firstRechargeMonthlyLimit,
+			t.quickRecharge_single_limit quickRechargeSingleLimit,
+			t.quickRecharge_daily_limit quickRechargeDailyLimit,
+			t.quickRecharge_monthly_limit quickRechargeMonthlyLimit
+		FROM
+			bank_define t
+		WHERE
+			t.is_avaliable = '1'
+		ORDER BY
+	order_b
+	</select>
+	<select id="getBankDefineDetailByBinding" resultType="bankDefine">
+		SELECT
+			t.bank_code bankCode,
+			t.bank_name bankName,
+			t.is_avaliable isAvaliable,
+			t.avaliable_bind avaliableBind,
+			t.firstRecharge_single_limit firstRechargeSingleLimit,
+			t.firstRecharge_daily_limit firstRechargeDailyLimit,
+			t.firstRecharge_monthly_limit firstRechargeMonthlyLimit,
+			t.quickRecharge_single_limit quickRechargeSingleLimit,
+			t.quickRecharge_daily_limit quickRechargeDailyLimit,
+			t.quickRecharge_monthly_limit quickRechargeMonthlyLimit
+		FROM
+			bank_define t
+		WHERE
+			t.is_avaliable = '1'
+		AND bank_code NOT IN (
+			SELECT
+				bank_code
+			FROM
+				user_bind_card
+			WHERE
+				user_code = #{userCode}
+			AND is_used = 1
+		)
+				ORDER BY
+			order_b
+	</select>
+	<select id="getBankListDto" resultType="bankListDto">
+		SELECT
+			t.bank_code bankCode,
+			t.bank_name bankName,
+			t.is_avaliable isAvaliable,
+			t.avaliable_bind avaliableBind,
+			t.firstRecharge_single_limit firstRechargeSingleLimit,
+			t.firstRecharge_daily_limit firstRechargeDailyLimit,
+			t.firstRecharge_monthly_limit firstRechargeMonthlyLimit
+		FROM
+			bank_define t
+		WHERE
+			t.is_avaliable = '1'
+		ORDER BY
+	order_b
+	</select>
+	<select id="getBankDefineById" parameterType="java.lang.String" resultType="bankDefine">
+		SELECT
+			t.bank_code bankCode,
+			t.bank_name bankName,
+			t.is_avaliable isAvaliable,
+			t.avaliable_bind avaliableBind,
+			t.quickRecharge_single_limit quickRechargeSingleLimit,
+			t.quickRecharge_daily_limit quickRechargeDailyLimit,
+			t.quickRecharge_monthly_limit quickRechargeMonthlyLimit
+		FROM
+			bank_define t
+		WHERE
+			t.is_avaliable = '1'
+		AND	
+			t.bank_code = #{bankCode}
+		ORDER BY
+	order_b
+	</select>
+	<select id="getBankCodeByBankId" resultType="java.lang.String" parameterType="java.lang.String">
+		SELECT
+			bank_code
+		FROM
+			bank_define
+		WHERE
+			quickBill_code = #{bankId}
+	</select>
+	
+</mapper>

@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+            http://www.springframework.org/schema/beans 
+            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+            http://www.springframework.org/schema/context 
+            http://www.springframework.org/schema/context/spring-context-2.5.xsd
+            http://www.springframework.org/schema/jee 
+            http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+            http://www.springframework.org/schema/tx 
+            http://www.springframework.org/schema/tx/spring-tx.xsd"
+            >
+  
+   
+   <bean name="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">     
+          <property name="dataSource" ref="dataSource"></property> 
+   </bean> 
+   
+   <tx:annotation-driven transaction-manager="txManager"/>
+   
+   <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"> 
+	    <property name="configLocation" value="classpath:orm/sqlMapConfig.xml"></property>        
+	    <property name="dataSource" ref="dataSource" />    
+	</bean>    
+	
+	<bean id="userDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.user.dao.UserDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>  
+    <bean id="orderDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="com.nonobank.app.order.dao.OrderDAO"/>
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>
+	<bean id="userDetailDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.user.dao.UserDetailDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	
+	<bean id="bindCardDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.user.dao.BindCardDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="bankDefine" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="com.nonobank.app.common.dao.BankDefineDAO"/>
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>
+    <bean id="productDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.product.dao.ProductDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="productRuleDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.product.dao.ProductRuleDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="userAccountDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.account.dao.UserAccountDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	
+	<bean id="userProductDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.user.dao.UserProductDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	
+	<bean id="userProductDetailDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.user.dao.UserProductDetailDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+
+	<bean id="userRewardDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.user.dao.UserRewardDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+
+    <bean id="systemParamDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.common.dao.SystemParamDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	
+	<bean id="thirdTradeLogDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.order.dao.ThirdTradeLogDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	
+	<bean id="systemAccountDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.account.dao.SystemAccountDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	
+	<bean id="commonDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.common.dao.CommonDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="userInterestDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.interest.dao.UserInterestDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	
+	<bean id="shortMessageDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.common.dao.ShortMessageDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	
+	<bean id="debtDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.debt.dao.DebtDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	
+	<bean id="debtDetailDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.debt.dao.DebtDetailDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="feedbackDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.user.dao.FeedbackDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="activityDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.activity.dao.ActivityDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="userRelationDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.user.dao.UserRelationDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="asyncJobDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.quartz.dao.AsyncJobDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="productRateDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.product.dao.ProductRateDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	
+	<bean id="withdrawRechargeRelDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.user.dao.WithdrawRechargeRelDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	
+	<bean id="withdrawLogDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.user.dao.WithdrawLogDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="systemAccHandleDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.system.dao.SystemAccountingHandleDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="authenticationLogDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.autentication.dao.AuthenticationLogDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="bountyHunterActivityDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.activity.dao.BountyHunterActivityDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="activityInviteCodeDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.activity.dao.ActivityInviteCodeDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="wechatDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.activity.dao.WechatDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="thirdPlatformDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.account.dao.ThirdPlatformDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="systemReportDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.system.dao.SystemReportDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="systemOperatorDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.system.dao.SystemOperatorDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="userTypeDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.user.dao.UserTypeDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="bannerInfoDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.system.dao.BannerInfoDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="asyncTaskFailDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.quartz.dao.AsyncTaskFailDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="asyncTaskHandlingDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.quartz.dao.AsyncTaskHandlingDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="asyncTaskSuccessDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.quartz.dao.AsyncTaskSuccessDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="asyncTaskWaitDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.quartz.dao.AsyncTaskWaitDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="autoTransLogDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.user.dao.AutoTransLogDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	
+	<bean id="debtRefundHandleLogDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.debt.dao.DebtRefundHandleLogDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="debtDecreaseLogDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.debt.dao.DebtDecreaseLogDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	
+	<bean id="approachDefineDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.user.dao.ApproachDefineDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="userApproachDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.user.dao.UserApproachDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	<bean id="wechatActivityMessageDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.activity.dao.WechatActivityMessageDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	
+
+	<bean id="saleLimitDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.product.dao.SaleLimitDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+	<bean id="userExtendDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.user.dao.UserExtendDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+	<bean id="userDataChangeLogDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.user.dao.UserDataChangeLogDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+
+	<bean id="dfdTempDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.activity.dao.DFDTempDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean> 
+	
+	<bean id="tmpRecalculateDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.quartz.dao.TmpReCalculteDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+	
+	<bean id="systemMontoRateDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.system.dao.SystemMonthRateDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+	
+	<bean id="indexInfoDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.user.dao.IndexInfoDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+	
+	<bean id="authenIdentityDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.system.dao.AuthenIdentityDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+	
+	<bean id="systemVersionDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.system.dao.SystemVersionDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+	
+	<bean id="marketMessageDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.common.dao.MarketMessageDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+	
+	<bean id="transDetailDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.system.dao.TransDetailDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+
+	<bean id="activityRewardDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.activity.dao.WechatActivityRewardDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+
+    <bean id="userIdfaDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.user.dao.UserIdfaDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+
+	
+	<bean id="activityLotteryDetailDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.activity.dao.ActivityLotteryDetailDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+	
+	<bean id="systemLotteryRewardDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.system.dao.SystemLotteryRewardDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+	
+	<bean id="channelDataStatisticsDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.external.dao.ChannelDataStatisticsDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+
+	<bean id="activityAdminDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.activity.dao.ActivityAdminDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+
+    <bean id="accountDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.account.v4.dao.AccountDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+
+	
+	<bean id="productInfoDetailDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.product.v4.dao.ProductInfoDetailDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+	
+	<bean id="withdrawInfoDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.order.v4.dao.WithdrawInfoDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+
+    <bean id="systemNoticeDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.system.dao.SystemNoticeDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+
+	<bean id="systemAdminUserDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.system.v4.dao.SystemAdminUserDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+	
+	<bean id="systemPrivilegeCodeDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.system.v4.dao.SystemPrivilegeCodeDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+    <bean id="systemStatisticsDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.system.dao.SystemStatisticsDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+	  
+	<bean id="inviteActivityDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.activity.v4.dao.InviteActivityDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+	<bean id="blackListDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.common.dao.BlackListDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+	<bean id="outSystemConfigDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.external.dao.OutSystemConfigDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+	<bean id="outSystemTradeLogDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.external.dao.OutSystemTradeLogDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+	<bean id="userRouletteDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.activity.v4.dao.UserRouletteDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+	<bean id="userCouponDao" class="org.mybatis.spring.mapper.MapperFactoryBean">    
+	    <property name="mapperInterface" value="com.nonobank.app.activity.v4.dao.UserCouponDAO" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+
+    <bean id="shareUserBalanceDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="com.nonobank.app.activity.dao.ShareUserBalanceDAO" />
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+    </bean>
+    <bean id="shareUserFinanceLogDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="com.nonobank.app.activity.dao.ShareUserFinanceLogDAO" />
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+    </bean>
+	<bean id="userPointDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.nonobank.app.point.dao.UserPointDao" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+    <bean id="studentAuthDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	    <property name="mapperInterface" value="com.nonobank.app.user.dao.StudentAuthDao" />     
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>    
+	</bean>
+	<bean id="userPointDetailDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.nonobank.app.point.dao.UserPointDetailDao" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	<bean id="pointApproachDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.nonobank.app.point.dao.PointApproachDao" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	<bean id="pointMartProductDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.nonobank.app.point.dao.PointMartProductDao" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	<bean id="pointConsumeDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.nonobank.app.point.dao.PointConsumeDao" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	<bean id="pointExchangeReceiverDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.nonobank.app.point.dao.PointExchangeReceiverDao" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+
+	<bean id="systemCodeDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.nonobank.app.common.dao.SystemCodeDao" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	
+	<bean id="csmUserDeductDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.nonobank.app.activity.v4.dao.UserDeductDAO" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	<bean id="companyAccountDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.nonobank.app.account.v4.dao.CompanyAccountDao" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	<bean id="orderCheckDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.nonobank.app.quartz.dao.OrderCheckDAO" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	<bean id="syncDataDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.nonobank.app.sync.dao.SyncDataDAO" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	
+	<bean id="initDataDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.nonobank.app.sync.dao.InitDataDAO" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	
+</beans>

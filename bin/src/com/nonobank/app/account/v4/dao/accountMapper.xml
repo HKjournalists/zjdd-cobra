@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.account.v4.dao.AccountDAO">
+	<select id="getDebtList" parameterType="java.lang.Integer" resultType="debtInfoDto">	    
+      select
+  		t1.invest_amount debtAmount,
+  		t1.created_date debtDate,
+  		t2.debter_name debterName,
+  		t2.school school,
+  dd.debt_type        debtType,
+  dc.template_url templateUrl
+	  from user_product_detail t1,
+  		   debter t2,
+  debt_detail dd
+        LEFT JOIN
+        debt_contract dc ON dd.debt_type=dc.debt_type  <![CDATA[ AND dc.flag<>'0' AND dc.has_contract<>'0']]>
+      where t1.user_product_id in(select
+                              user_product_id
+                            from user_product
+                            where user_code =#{value}
+                            and trans_code='1'
+                            <![CDATA[
+                            and invest_end_date<=now()
+                            ]]>
+                            )
+          and t2.debter_id = (select
+                          debter_id
+                        from debt_detail
+                        where debt_detail_id = t1.debt_detail_id)
+
+    AND t2.debter_id = dd.debter_id
+          and t1.invest_amount>0
+           order by t1.created_date desc
+	</select>
+	<select id="getDemandDepositAmount" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">	    
+		select sum(remaining_principal+remaining_interest) 
+		from user_product t 
+		where t.user_code =#{value}
+		    and trans_code = '1'
+		    <![CDATA[
+			and  withdraw_status<>'5'			
+			and invest_end_date<=now()
+			and ifnull(to_term,0)<>1
+			]]>
+    </select>
+    <select id="getTermDepositAmount" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">    	
+    	select sum(invest_amount+ifnull(total_interest,0)) 
+    	from user_product t
+		where t.user_code=#{value}
+          and invest_end_date >now()          
+    </select>
+    <select id="getTermDepositList" parameterType="java.lang.Integer" resultType="investDetail">
+        SELECT
+            DATE_FORMAT(t.created_date,'%Y-%m-%d') investDate,
+            DATE_FORMAT(t.invest_end_date,'%Y-%m-%d') investEndDate,
+            DATE_FORMAT(t.interest_begin_date,'%Y-%m-%d') interestBeginDate,            
+            t.invest_amount+ifnull(t.total_interest,0) investAmount,
+            t.trans_code transType,
+            t.to_term toTerm,
+            t.status status,
+            t.product_code productCode            
+        FROM user_product t
+        WHERE t.user_code = #{userCode}
+        and invest_end_date  >now()
+        and product_code in ('NN0001','NN0002','NN0003','NN0004')
+        and trans_code = '1'
+        <![CDATA[
+        and ifnull(status,0)<>'A'
+        ]]>
+    </select>
+    <select id="getInterestList" parameterType="java.lang.Integer" resultType="interestDto">
+        select interestDate,
+          sum(totalInterest) totalInterest,
+          sum(demandInterest) demandInterest,
+          sum(demandInterestRate)/(select count(1) from user_interest tt 
+                                  where tt.user_code =#{value} 
+                                  and tt.demand_interest_rate>0 
+                                  and tt.interest_date = a.interestDate) demandInterestRate,
+          sum(rewardInterest) rewardInterest,
+          sum(rewardInterestRate)/(select count(1) from user_interest tt 
+                                  where tt.user_code =#{value} 
+                                  and tt.reward_interest_rate>0 
+                                  and tt.interest_date = a.interestDate) rewardInterestRate,
+          sum(termInterest) termInterest,
+          sum(demandRewardInterest) demandRewardInterest,
+          sum(demandRewardInterestRate)/(select count(1) from user_interest tt 
+                                  where tt.user_code =#{value} 
+                                  and tt.demand_reward_interest_rate>0 
+                                  and tt.interest_date = a.interestDate) demandRewardInterestRate,
+          sum(demandAmount) demandAmount,
+          sum(termAmount) termAmount,
+          sum(rewardAmount) rewardAmount,
+          sum(oldRewardAmount) oldRewardAmount,
+          sum(oldRewardInterest) oldRewardInterest
+          from (select
+        		ifnull(actual_interest,0)         totalInterest,
+        		ifnull(demand_interest,0)    demandInterest,
+        		ifnull(demand_interest_rate,0)    demandInterestRate,
+        		ifnull(reward_interest,0) rewardInterest,
+        		ifnull(reward_interest_rate,0) rewardInterestRate,
+        		ifnull(term_interest,0) termInterest,
+                ifnull(term_interest_rate,0) termInterestRate,
+                ifnull(demand_reward_interest,0) demandRewardInterest,
+                ifnull(demand_reward_interest_rate,0) demandRewardInterestRate,
+                ifnull(demand_amount,0) demandAmount,
+                ifnull(term_amount,0) termAmount,
+                ifnull(reward_amount,0) rewardAmount,
+                ifnull(old_reward_amount,0) oldRewardAmount,
+                ifnull(old_reward_interest,0) oldRewardInterest,
+        		interest_date interestDate
+      	from user_interest t
+      	 where t.user_code = #{value}
+      	    and interest_date>=date_format('20150721','%Y%m%d')
+      	    and interest_date >=date_add(now(), interval -30 day)
+      		) a 
+      		group by interestDate
+            order by interestDate desc   
+        
+    </select>
+    
+    
+    
+    <select id="getSpericalRewardInterestList" parameterType="java.lang.Integer" resultType="interestDto">
+        select interestDate,          
+          sum(rewardInterest) rewardInterest,         
+          from (select        		
+        		ifnull(reward_interest,0) rewardInterest,        		
+        		interest_date interestDate
+      	from user_interest t
+      	 where t.user_code = #{value}
+      	    and interest_date>=date_format('20150721','%Y%m%d')
+      	    and interest_date >=date_add(now(), interval -30 day)
+      		) a 
+      		group by interestDate
+            order by interestDate desc 
+    </select>
+   
+    <select id="getTotalRewardInterest" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+        select ifnull(sum(ifnull(total_special_reward_interest,0)),0) from user_account where user_code = #{userCode}
+        and product_code in
+        <foreach collection="productCodeList" item="type" open="(" close=")" separator=",">
+             #{type} 
+        </foreach>
+    </select>
+    <select id="getTotalDemandInterest" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
+        select sum(total_demand_interest) from user_account where user_code = #{value}       
+    </select>
+     <select id="getTotalTermInterest" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
+        select sum(total_term_interest) from user_account where user_code = #{value}        
+    </select>
+    <select id="getAvailablePrincipalInterestAmount" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
+        select sum(ifnull(remaining_principal,0)+ifnull(remaining_interest,0)) 
+        from user_product t
+        where t.user_code =#{value}
+        and trans_code = '1'        
+        <![CDATA[
+        and withdraw_status<>'5'
+        and t.invest_end_date<=now()
+        ]]>
+    </select>
+    <select id="getAvailableRewardAmount" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
+        select sum(ifnull(total_reward_interest,0)) 
+        from user_account t
+        where t.user_code =#{value}       
+    </select>
+    <select id="getAvailableAsset" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
+        select sum(ifnull(investing_amount,0)) 
+        from user_account t
+        where t.user_code =#{value}       
+    </select>
+    <!-- 活期活期本金 -->
+    <select id="getDemandDepositPrincipal" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+        select sum(ifnull(remaining_principal,0)) 
+        from user_product t
+        where t.user_code =#{userCode}  
+        and product_code = #{productCode} 
+        <![CDATA[
+        and interest_begin_date<=#{currentDate}  
+        and ifnull(status,'1')<>'A'
+        ]]>  
+        and trans_code = '1'
+        
+    </select>
+    <select id="updateDemandDepositInterest" parameterType="java.util.Map">     
+       update user_product up
+       set up.total_interest = ifnull(up.total_interest,0) +#{interestAmount},
+           remaining_interest = ifnull(remaining_interest,0) +#{interestAmount}
+       where up.user_product_id = #{userProductId}
+    </select>
+    
+    <select id="getEarliestAvailableInvestId" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select
+                              user_product_id
+                              from (select
+                                      user_product_id,
+                                      created_date
+                                    from user_product
+                                    where user_code = #{userCode}
+                                     <![CDATA[
+                                      and interest_begin_date <= #{currentDate}
+                                      ]]>
+                                      and product_code = 'NN0005'
+                                      and trans_code = '1'
+                                      and ifnull(remaining_principal,0) > 0
+                                      order by created_date asc
+                                     ) a
+                                limit 1
+    </select>
+    
+    <!-- 查询账户信息  -->
+    <select id="getUserAccount" parameterType="java.lang.Integer" resultType="userAccount">            
+		select
+  			user_account_id userAccountId,
+  			user_code userCode,
+  			ifnull(investing_amount,0) investingAmount,
+  			ifnull(total_reward_interest,0) totalRewardInterest,
+  			product_code productCode
+		from user_account
+		where user_code =#{value} 
+ 			and investing_amount > 0
+ 			order by product_code
+    </select>
+    <update id="updateUserAccountForWithdraw" parameterType="java.util.Map">
+        update user_account 
+        set investing_amount=investing_amount-#{withdrawAmount},
+            total_reward_interest= total_reward_interest-#{withdrawReward}
+        where user_account_id=#{userAccountId}
+    </update>
+    <select id="getTermDepositAmountByProductCode" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+        select sum(invest_amount+ifnull(total_interest,0)) 
+    	from user_product t
+		where t.user_code=#{userCode}
+		  and product_code = #{productCode}
+          and invest_end_date >now()   
+    </select>
+    <select id="getRemainingAmount" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
+        select ifnull(sum(ifnull(investing_amount,0)),0) 
+        from user_account t
+        where user_code =#{value}
+        and product_code= 'NN0005'
+    </select>
+    
+    <select id="getTotalInterest" resultType="java.math.BigDecimal">       
+       select ifnull(sum(user_total_interest),865793.34)from system_summary_info
+    </select>
+    <update id="updateSummaryInfo" parameterType="java.util.Date">
+        update system_summary_info s 
+        set s.user_total_interest =s.user_total_interest+ (
+        select ifnull(sum(actual_interest),0) from user_interest where interest_date = #{currentDate})
+    </update>
+    
+    
+    <select id="testOderInfo" resultType="java.util.Map">        
+select  o.order_id orderid,o.amount amount ,o.create_date,o.product_code,o.user_code userCode,t2.mobile_number mobileNumber from order_info o,third_trade_log t,user t2 where o.create_date>from_days(to_days(now())) and status='2'
+and o.order_id = t.order_id  and t.trans_status  ='TR2'
+and t.response_code='00'
+and not exists(
+select 1 from user_product where order_id = o.order_id
+)
+and t2.user_code = o.user_code
+    </select>
+    
+    <select id="isWithdrawOrderExists" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(1) from withdraw_reward where orderid=#{value}
+    </select>
+</mapper>

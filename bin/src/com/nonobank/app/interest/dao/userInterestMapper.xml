@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.interest.dao.UserInterestDAO">
+	
+    <select id="getYesterdayInterest" parameterType="java.lang.Integer" resultType="java.lang.Double">
+    	SELECT
+  			sum(IFNULL(t.actual_interest,0.0))
+		FROM user_interest t
+		WHERE t.user_code =#{value}
+ 		  AND t.interest_date = DATE_ADD(DATE_FORMAT(NOW(), '%Y-%m-%d'),INTERVAL -1 DAY)
+    </select>
+    <insert id="addYesterdayInterest" parameterType="userInterest">
+        INSERT INTO user_interest
+            (user_code,
+             actual_interest,
+             actual_interest_rate,
+             salary_interest,
+             term_interest,  
+             product_code,
+             interest_date,                        
+             created_date,
+             updated_date)
+        VALUES (#{userCode},
+               #{actualInterest},
+			   #{actualInterestRate},
+			   #{salaryInterest},
+			   #{termInterest},
+			   #{productCode},
+			   #{interestDate},
+			   NOW(),
+        	   NOW()
+        	   )
+    </insert>   
+    <insert id="addYesterdayInterestForNew" parameterType="interestResultDto">
+         INSERT INTO user_interest
+            (user_code,
+             demand_amount,
+             term_amount,
+             reward_amount,
+             old_reward_amount,             
+             actual_interest,             
+             demand_interest,
+             demand_interest_rate,
+             demand_reward_interest,
+             demand_reward_interest_rate,
+             reward_interest,
+             reward_interest_rate,
+             old_reward_interest,             
+             salary_interest,
+             term_interest,  
+             product_code,
+             interest_date,                        
+             created_date,
+             updated_date)
+        VALUES (#{userCode},
+               #{demandAmount},
+               #{termAmount},
+               #{rewardAmount},
+               #{oldRewardAmount},               
+               #{totalInterest},			   
+			   #{demandInterest},
+			   #{demandInterestRate},
+			   #{demandRewardInterest},
+			   #{demandRewardInterestRate},
+			   #{rewardInterest},
+			   #{rewardInterestRate},
+			   #{oldRewardInterest},
+			   #{salaryInterest},
+			   #{termInterest},
+			   #{productCode},
+			   #{interestDate},
+			   NOW(),
+        	   NOW()
+        	   )
+    </insert>
+    <!-- 判定当前的投资是否时间段内首笔   -->
+    <select id="isFirstInvestByCondition" parameterType="java.util.Map" resultType="java.lang.Integer">        
+        <![CDATA[
+        select count(1) 
+        from (
+           select user_product_id from (
+                select user_product_id 
+                from user_product t 
+                where t.user_code =#{userCode}
+                      and t.invest_begin_date>=#{startDate}
+                      and t.invest_begin_date<=#{endDate}
+                      order by created_date
+                ) a limit 1
+         ) b 
+         where b.user_product_id= #{userProductId}
+         ]]>
+    </select>
+    <select id="getLatestMonthInterest" parameterType="java.lang.Integer" resultType="userInterest">        
+        select 
+            interest_date interestDate,sum(actual_interest) actualInterest 
+        from (
+            select 
+                actual_interest,interest_date 
+            from user_interest 
+            where user_code =#{value} 
+               and interest_date >=date_add(now(), interval -30 day)
+         ) a group by interest_date
+             order by interest_date desc
+    </select>
+    
+</mapper>

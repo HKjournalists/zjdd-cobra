@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.common.dao.ShortMessageDAO">
+	<insert id="insertMessageLog" parameterType="messageLog" useGeneratedKeys="true" keyProperty="messageid" keyColumn="message_id">
+		INSERT INTO message_log( platform_id, user_code, dest_mobile, resource,message_content,result )
+		VALUES( #{platformid}, #{userCode}, #{destMobile}, #{resource},#{messageContent},#{result} )
+	</insert>
+	
+	<select id="countSendMessageByCondition" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			message_log t
+		WHERE
+			date_format(t.created_date, '%Y%m%d') = #{accdate}
+		AND platform_id = #{platformId}
+	</select>
+	<!--   查询同一个手机号最近4分钟最后一次是使用哪个渠道发送的    -->
+	<select id="selectLastestMsgPlatform" parameterType="java.util.Map" resultType="java.lang.String">		
+      select platform_id platformid
+		  from message_log
+	  where message_id = (select
+                      max(message_id)
+                    from message_log
+                    where dest_mobile = #{mobileNumber}
+                        and resource = #{approach}
+                        and result='1'
+                        and created_date >= date_sub(now(),interval 240 second))
+	</select>
+	
+	<select id="selectMsgCountPerday" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			message_log t
+		WHERE
+			date_format(t.created_date, '%Y%m%d') = date(now())
+		AND resource = #{approach}
+		and dest_mobile= #{mobileNumber}
+		and result='1'
+	</select>
+
+	<update id="updateByMessageId" parameterType="messageLog">
+		UPDATE message_log l SET l.result=#{result} WHERE l.message_id=#{messageid}
+	</update>
+</mapper>

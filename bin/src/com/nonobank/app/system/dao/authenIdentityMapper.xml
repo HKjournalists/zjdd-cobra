@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.system.dao.AuthenIdentityDAO">
+	
+	<select id="authenticationIdentity" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			user_detail t
+		WHERE
+			t.real_name = #{realname}
+		AND t.certificate_number = #{idno}
+		AND t.user_code != #{userCode}
+	</select>
+
+</mapper>

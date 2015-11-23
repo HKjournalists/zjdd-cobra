@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.product.dao.ProductRateDAO">
+	
+	<select id="getProductInterestRateList" parameterType="java.util.Date" resultType="productRate">
+	    <![CDATA[
+		select product_code productCode,
+			rate rate
+		from product_rate p 
+		where p.rate_effective_date<=#{value}
+		     and p.rate_invalid_date>#{value}
+		    
+		]]>
+	</select>
+	<select id="getProductRateByProductCode" parameterType="java.lang.String" resultType="productRate">
+		SELECT
+			t.product_code productCode,
+			t.rate rate
+		FROM
+			product_rate t
+		WHERE
+			t.product_code = #{productCode}
+	</select>
+</mapper>

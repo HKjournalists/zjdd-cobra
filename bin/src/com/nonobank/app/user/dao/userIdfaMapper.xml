@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.user.dao.UserIdfaDAO">
+	
+    <insert id="addUserIdfa" parameterType="userIdfa">
+        insert into user_idfa(
+           user_code,
+           idfa,
+           platform_id,
+           callback_url,
+           created_date,
+           updated_date
+        )values(
+            #{userCode},
+            #{idfa},
+            #{platformId},
+            #{callbackUrl},
+            now(),
+            now()
+        )
+    </insert>
+	
+	
+	
+	<update id="updateUserCodeByIdfa" parameterType="userIdfa">
+	   update user_idfa
+	   set user_code =#{userCode},	   
+	   updated_date = now()
+	   where user_idfa_id= #{userIdfaId}
+	</update>
+	
+	<select id="getUserIdfaInfo" parameterType="userIdfa" resultType="userIdfa">
+	    select user_idfa_id userIdfaId,
+	           user_code userCode,
+	           platform_id platformId,
+	           idfa idfa 
+	    from user_idfa 
+	    where 1=1
+	     <if test="userCode!=null">
+	         and user_code = #{userCode}
+	     </if>
+	     <if test="idfa!=null and idfa!=''">
+	        and  idfa=#{idfa} 
+	     </if> 
+	     <if test="platformId!=null and platformId!=''">
+	         and platform_id=#{platformId}
+	     </if>
+	</select>
+	<select id="getUserIdfaByUserCode" parameterType="java.lang.Integer" resultType="userIdfa">
+	     select user_idfa_id userIdfaId,
+	           user_code userCode,
+	           platform_id platformId,
+	           idfa idfa,
+	           callback_url callbackUrl,
+	           is_active isActive
+	    from user_idfa 
+	    where user_code = #{value}
+	    and platform_id in (1,2)
+	</select>
+	<!--  设置激活标示  -->
+	<update id="activeIdfa" parameterType="java.lang.Integer">
+	    update user_idfa set is_active= '1'
+	    where user_idfa_id = #{value}
+	</update>
+</mapper>

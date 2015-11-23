@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.system.dao.SystemNoticeDAO">
+    <!--    分页查询   -->
+	<select id="getNoticeList" parameterType="pageDto" resultType="noticeDto">
+		select c.noticeId,c.title,c.contentBrief,c.createdDate ,c.imgUrl
+        from (select
+                b.*,
+                @rownum:=@rownum+1 as rownum
+              from (select *
+                    from (select
+                            notice_id noticeId,
+                            title title,
+                            content_brief contentBrief,
+                            created_date createdDate,
+                            img_url imgUrl
+                          from system_notice
+                          order by created_date desc) a
+                     limit 30) b,
+                (select
+                  @rownum:=0) r) c
+        where rownum > (#{pageNumber} - 1) * #{perPageSize}
+        <![CDATA[
+              and rownum <= #{pageNumber} * #{perPageSize}
+         ]]>;
+	</select>	
+	<select id="getContentDetail" parameterType="java.lang.Integer" resultType="noticeDto">
+		select  notice_id noticeId,
+                            title title,
+                            content_brief contentBrief,
+                            content content,
+                            created_date createdDate,
+                            img_url imgUrl from system_notice where notice_id= #{value} LIMIT 1
+	</select>
+	<select id="getLatestNotice" resultType="noticeDto">
+		select * 
+		from (select  
+                            notice_id  noticeId,                   
+                            title title,
+                            content_brief contentBrief,
+                            content content,
+                            created_date createdDate,
+                            img_url imgUrl
+                          from system_notice
+                          order by created_date desc) a
+        limit 1
+	</select>
+
+    <select id="getCustomerServicesInfo" resultType="com.nonobank.app.system.entity.CustomerService">
+        <![CDATA[
+            SELECT s.id id,s.service_tel serviceTel,s.service_email serviceEmail,s.service_time_workday serviceTimeWorkday,s.service_time_holiday serviceTimeHoliday,s.flag flag
+            FROM customer_service s
+            WHERE flag<>'0'
+            ORDER BY s.id DESC
+        ]]>
+    </select>
+</mapper>

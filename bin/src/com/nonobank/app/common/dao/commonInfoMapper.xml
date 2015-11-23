@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.common.dao.CommonDAO">
+
+	<select id="findTransCode" parameterType="String" resultType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			trans_code t
+		WHERE
+			t.trans_code = #{transCode};
+	</select>
+
+</mapper>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.activity.v4.dao.UserRouletteDAO">
+
+	<!-- 插入抽奖记录 -->
+	<insert id="addUserRouletteLog" parameterType="userRouletteLog">
+		INSERT INTO
+		user_roulette_log(user_code,roulette_type,user_roulette_id,user_coupon_id,roulette_value,roulette_status,activity_id)
+		VALUES(#{userCode},#{rouletteType},#{userRouletteId},#{userCouponId},#{rouletteValue},#{rouletteStatus},#{activityId})
+	</insert>
+	<update id="updateRouletteCount">
+		UPDATE user_roulette SET roulette_count = #{rouletteCount} 
+		<if test="type == 'isShare'">
+			,is_share = 1
+		</if>
+		<if test="type == 'isAppLogin'">
+			,is_app_login = 1
+		</if>
+		WHERE user_code = #{userCode} AND roulette_date = DATE(NOW())
+	</update>
+	<!-- 获取中奖的记录 -->
+	<select id="getUserRouletteLog" parameterType="java.lang.Integer" resultType="userRouletteLog">
+		SELECT
+			roulette_type rouletteType,
+			user_coupon_id userCouponId,
+			roulette_value rouletteValue,
+			created_date createDate
+		FROM user_roulette_log
+		WHERE user_code = #{userCode} AND roulette_status = 1
+		ORDER BY created_date DESC
+	</select>
+	<select id="getUserRouletteLogs" parameterType="com.nonobank.app.activity.entity.UserRouletteLogEntity" resultType="com.nonobank.app.activity.entity.UserRouletteLogEntity">
+		SELECT
+			user_code userCode,
+			activity_id activityId,
+			roulette_type rouletteType,
+			user_coupon_id userCouponId,
+			roulette_value rouletteValue,
+			created_date createDate
+		FROM user_roulette_log
+		WHERE user_code=#{userCode} AND DATE(created_date)=DATE(#{createDate}) AND  roulette_type=#{rouletteType} AND activity_id=#{activityId} AND roulette_status=1
+	</select>
+	<select id="getDoRouletteLog" resultType="java.lang.Integer">
+		SELECT roulette_status FROM user_roulette_log WHERE user_code = #{userCode} AND DATE(created_date) = DATE(NOW()) AND activity_id = #{activityId} 
+	</select>
+	
+	<select id="getUserRouletteByUserCode" parameterType="java.lang.Integer" resultType="userRoulette">
+		SELECT
+			user_roulette_id userRouletteId,
+			user_code userCode,
+			expect expect,
+			roulette_date rouletteDate,
+			activity_reward_id activityRewardId,
+			user_type userType,
+			roulette_count rouletteCount,
+			is_share isShare,
+			is_app_login isAppLogin
+		FROM user_roulette
+		WHERE user_code = #{userCode} AND DATE(NOW()) = DATE(roulette_date)
+	</select>
+	<select id="getUserRoulettes" parameterType="java.lang.Integer" resultType="userRoulette">
+		SELECT
+		user_roulette_id userRouletteId,
+		user_code userCode,
+		expect expect,
+		roulette_date rouletteDate,
+		activity_reward_id activityRewardId,
+		user_type userType,
+		roulette_count rouletteCount,
+		is_share isShare,
+		is_app_login isAppLogin
+		FROM user_roulette
+		WHERE user_code = #{userCode} AND DATE(NOW()) = DATE(roulette_date) AND expect = 0
+	</select>
+	<select id="getUserRouletteCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		SELECT COUNT(0) FROM user_roulette WHERE user_code = #{userCode}
+	</select>
+	<insert id="addUserRoulette" parameterType="userRoulette" keyProperty="userRouletteId">
+		INSERT INTO user_roulette (
+			user_code,
+			expect,
+			roulette_date,
+			activity_reward_id,
+			user_type
+		)VALUES(#{userCode},#{expect},#{rouletteDate},#{activityRewardId},#{userType})
+	</insert>
+	
+	<select id="getUnGenerateRouletteList" resultType="userRoulette">
+		SELECT
+			user_code userCode,
+			expect expect,
+			roulette_date rouletteDate,
+			user_type userType
+		FROM user_roulette u
+		WHERE expect = 1
+		AND NOT EXISTS (SELECT 1 FROM user_roulette ur WHERE u.user_code = ur.user_code AND expect = 15 AND ur.roulette_date = DATE_ADD(u.roulette_date,INTERVAL 14 DAY))
+	</select>
+
+	<insert id="insertUserRouletteHelp"  useGeneratedKeys="true"  keyProperty="helpId" parameterType="com.nonobank.app.activity.entity.UserRouletteHelp" >
+		INSERT INTO user_roulette_help(user_code,roulette_date,help_count,flag,create_date,openid)
+		VALUES(#{userCode},#{rouletteDate},#{helpCount},#{flag},NOW(),#{openid})
+	</insert>
+	<select id="getUserRouletteHelps" parameterType="com.nonobank.app.activity.entity.UserRouletteHelp" resultType="com.nonobank.app.activity.entity.UserRouletteHelp">
+		SELECT id helpId ,user_code userCode,roulette_date rouletteDate,IFNULL(help_count,0) helpCount,IFNULL(flag,0) flag,openid openid
+		FROM user_roulette_help
+		<where>
+			DATE(roulette_date)=DATE(NOW())
+			<if test="null != helpId"> AND id=#{helpId}</if>
+			<if test="null != userCode">AND user_code=#{userCode}</if>
+		</where>
+	</select>
+
+	<update id="updateUserRouletteHelpCount" parameterType="com.nonobank.app.activity.entity.UserRouletteHelp">
+		UPDATE user_roulette_help
+		SET update_date=NOW()
+			<if test="null != helpCount"> ,help_count=help_count+#{helpCount}</if>
+			<if test="null != flag">,flag=#{flag}</if>
+		<where>
+			DATE(roulette_date)=DATE(NOW())
+			<if test="null != helpId"> AND id=#{helpId}</if>
+			<if test="null != userCode">AND user_code=#{userCode}</if>
+		</where>
+	</update>
+
+	<update id="updateOpenidOfRouletteHelp" parameterType="com.nonobank.app.activity.entity.UserRouletteHelp">
+		UPDATE user_roulette_help h SET h.openid=#{openid} WHERE h.id=#{helpId}
+	</update>
+
+	<insert id="insertRouletteHelpLog" parameterType="com.nonobank.app.activity.entity.UserRouletteHelpLog">
+		INSERT INTO user_roulette_help_log (openid,help_id,create_date)
+		VALUES(#{openid},#{helpId},NOW())
+	</insert>
+	<select id="getRouletteHelpLog" parameterType="com.nonobank.app.activity.entity.UserRouletteHelpLog" resultType="com.nonobank.app.activity.entity.UserRouletteHelpLog">
+		SELECT help_id helpId,openid  FROM user_roulette_help_log WHERE help_id=#{helpId} AND openid=#{openid}
+	</select>
+</mapper>

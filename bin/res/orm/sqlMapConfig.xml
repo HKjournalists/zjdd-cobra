@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <!-- 这个配置使全局的映射器启用或禁用缓存 -->
+        <setting name="cacheEnabled" value="true"/>
+        <!-- 允许 JDBC 支持生成的键。需要适合的驱动。如果设置为 true 则这个设置强制生成的键被使用，尽管一些驱动拒绝兼容但仍然有效（比如
+            Derby） -->
+        <setting name="useGeneratedKeys" value="true"/>
+        <!-- 配置默认的执行器。SIMPLE 执行器没有什么特别之处。REUSE 执行器重用预处理语句。BATCH 执行器重用语句和批量更新 -->
+        <setting name="defaultExecutorType" value="REUSE"/>
+        <!-- 全局启用或禁用延迟加载。当禁用时，所有关联对象都会即时加载。 -->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <!-- 设置超时时间，它决定驱动等待一个数据库响应的时间。 -->
+        <setting name="defaultStatementTimeout" value="25000"/>
+        <setting name="logImpl" value="LOG4J"/>
+    </settings>
+
+    <typeAliases>
+        <typeAlias type="com.nonobank.app.user.entity.UserEntity"
+                   alias="UserInfo"/>
+        <typeAlias type="com.nonobank.app.order.entity.OrderInfoEntity"
+                   alias="OrderInfo"/>
+        <typeAlias type="com.nonobank.app.user.entity.UserDetailEntity"
+                   alias="userDetail"/>
+        <typeAlias type="com.nonobank.app.user.entity.UserBindCardEntity"
+                   alias="bindCard"/>
+        <typeAlias type="com.nonobank.app.product.entity.ProductRuleEntity"
+                   alias="productRule"/>
+        <typeAlias type="com.nonobank.app.product.entity.ProductInfoEntity"
+                   alias="productInfo"/>
+        <typeAlias type="com.nonobank.app.account.entity.UserAccountEntity"
+                   alias="userAccount"/>
+        <typeAlias type="com.nonobank.app.user.dto.UserBindCardDetail"
+                   alias="bindCardDetail"/>
+        <typeAlias type="com.nonobank.app.user.entity.UserProductEntity"
+                   alias="userProduct"/>
+        <typeAlias type="com.nonobank.app.user.entity.UserProductDetailEntity"
+                   alias="userProductDetail"/>
+        <typeAlias type="com.nonobank.app.debt.dto.DebtAllocationDTO"
+                   alias="debtAllocationDTO"/>
+        <typeAlias type="com.nonobank.app.common.entity.BankDefineEntity"
+                   alias="bankDefine"/>
+        <typeAlias type="com.nonobank.app.system.dto.UserInvestDTO"
+                   alias="userInvest"/>
+        <typeAlias type="com.nonobank.app.user.dto.UserDataDTO"
+                   alias="userData"/>
+        <typeAlias type="com.nonobank.app.order.entity.ThirdTradeLogEntity"
+                   alias="tradeLog"/>
+        <typeAlias type="com.nonobank.app.account.entity.SystemAccountEntity"
+                   alias="systemAccount"/>
+        <typeAlias type="com.nonobank.app.user.dto.UserRewardDTO"
+                   alias="userRewardDto"/>
+        <typeAlias type="com.nonobank.app.common.entity.JianZhouSMSEntity"
+                   alias="jianzhouSMS"/>
+        <typeAlias type="com.nonobank.app.common.entity.MessageLogEntity"
+                   alias="messageLog"/>
+        <typeAlias type="com.nonobank.app.debt.entity.DebtDetailEntity"
+                   alias="debtDetail"/>
+        <typeAlias type="com.nonobank.app.user.entity.FeedBackEntity"
+                   alias="feedback"/>
+        <typeAlias type="com.nonobank.app.activity.entity.ActivityInfoEntity"
+                   alias="activityInfo"/>
+        <typeAlias
+                type="com.nonobank.app.activity.entity.ActivityRewardDetailEntity"
+                alias="activityRewardDetail"/>
+        <typeAlias type="com.nonobank.app.activity.entity.ActivityUserEntity"
+                   alias="activityUser"/>
+        <typeAlias type="com.nonobank.app.activity.entity.ActivityUserDetailEntity"
+                   alias="activityUserDetail"/>
+        <typeAlias type="com.nonobank.app.user.entity.UserRelationEntity"
+                   alias="userRelation"/>
+        <typeAlias type="com.nonobank.app.user.entity.FeedBackEntity"
+                   alias="feedback"/>
+        <typeAlias type="com.nonobank.app.quartz.entity.AsyncJobEntity"
+                   alias="asyncJob"/>
+        <typeAlias type="com.nonobank.app.interest.entity.UserInterestEntity"
+                   alias="userInterest"/>
+        <typeAlias type="com.nonobank.app.product.entity.ProductRateEntity"
+                   alias="productRate"/>
+        <typeAlias type="com.nonobank.app.user.entity.WithdrawLogEntity"
+                   alias="withdrawLog"/>
+        <typeAlias type="com.nonobank.app.user.entity.WithdrawRechargeRelEntity"
+                   alias="withdrawRechargeRel"/>
+        <typeAlias type="com.nonobank.app.system.entity.TransDtlInfoEntity"
+                   alias="transdtlInfo"/>
+        <typeAlias type="com.nonobank.app.activity.entity.ActivityUrlEntity"
+                   alias="activityUrl"/>
+        <typeAlias type="com.nonobank.app.autentication.entity.AuthenLogEntity"
+                   alias="authenLog"/>
+        <typeAlias type="com.nonobank.app.order.entity.WithdrawRewardEntity"
+                   alias="withdrawReward"/>
+        <typeAlias type="com.nonobank.app.activity.entity.ActivityInviteCodeEntity"
+                   alias="activityInviteCode"/>
+        <typeAlias type="com.nonobank.app.activity.dto.BountyHunterRankDTO"
+                   alias="bountyHunterRankDto"/>
+        <typeAlias type="com.nonobank.app.debt.dao.DebtAllocateErrEntity"
+                   alias="debtAllocateErr"/>
+        <typeAlias type="com.nonobank.app.activity.entity.FriendShipEntity"
+                   alias="friendShip"/>
+        <typeAlias type="com.nonobank.app.activity.entity.AttentionWechatEntity"
+                   alias="attentionWechat"/>
+        <typeAlias type="com.nonobank.app.activity.entity.UserWechatDTO"
+                   alias="userWechatDto"/>
+        <typeAlias type="com.nonobank.app.system.entity.ReportSystemDayLedger"
+                   alias="rptSystemDayLedger"/>
+        <typeAlias type="com.nonobank.app.account.entity.ThirdPlatformEntity"
+                   alias="thirdPlatform"/>
+        <typeAlias type="com.nonobank.app.user.entity.UserTypeEntity"
+                   alias="userType"/>
+        <typeAlias type="com.nonobank.app.debt.dao.DebtAllocateErrEntity"
+                   alias="debtAllocateErr"/>
+        <typeAlias type="com.nonobank.app.activity.entity.FriendShipEntity"
+                   alias="friendShip"/>
+        <typeAlias type="com.nonobank.app.activity.entity.AttentionWechatEntity"
+                   alias="attentionWechat"/>
+        <typeAlias type="com.nonobank.app.activity.entity.UserWechatDTO"
+                   alias="userWechatDto"/>
+
+        <typeAlias type="com.nonobank.app.activity.entity.ShareUserBalanceEntity"
+                   alias="ShareUserBalance"/>
+        <typeAlias type="com.nonobank.app.activity.entity.ShareUserFinanceLogEntity"
+                   alias="ShareUserFinanceLog"/>
+
+        <typeAlias type="com.nonobank.app.quartz.entity.AsyncTaskEntity"
+                   alias="asyncTask"/>
+        <typeAlias type="com.nonobank.app.debt.entity.DebtRefundHandleLogEntity"
+                   alias="debtRefundHandLog"/>
+        <typeAlias type="com.nonobank.app.debt.entity.DebtDecreaseLogEntity"
+                   alias="debtDecreaseLog"/>
+        <typeAlias type="com.nonobank.app.user.entity.UserApproachEntity"
+                   alias="userApproach"/>
+        <typeAlias type="com.nonobank.app.user.entity.ApproachDefineEntity"
+                   alias="approachDefine"/>
+        <typeAlias type="com.nonobank.app.product.entity.SaleLimitEntity"
+                   alias="saleLimit"/>
+        <typeAlias type="com.nonobank.app.user.entity.UserExtendEntity"
+                   alias="userExtend"/>
+        <typeAlias type="com.nonobank.app.user.entity.UserDataChangeLogEntity"
+                   alias="userDataChangeLog"/>
+        <typeAlias type="com.nonobank.app.system.dto.SystemMonthRateDTO"
+                   alias="systemMonthRateDto"/>
+        <typeAlias type="com.nonobank.app.user.entity.NewsNavigationInfoEntity"
+                   alias="navigationInfo"/>
+        <typeAlias type="com.nonobank.app.account.dto.InvestDetailDTO"
+                   alias="investDetail"/>
+        <typeAlias type="com.nonobank.app.system.dto.SystemBankBranchDataDTO"
+                   alias="bankBranchDto"/>
+        <typeAlias type="com.nonobank.app.system.dto.SystemCityDataDTO"
+                   alias="cityDataDto"/>
+        <typeAlias type="com.nonobank.app.system.dto.SystemProvinceDataDTO"
+                   alias="provinceDataDto"/>
+        <typeAlias type="com.nonobank.app.system.dto.InviteCodeDTO"
+                   alias="inviteCodeDto"/>
+        <typeAlias type="com.nonobank.app.common.dto.BankListDTO"
+                   alias="bankListDto"/>
+        <typeAlias type="com.nonobank.app.user.dto.UserBindCardDTO"
+                   alias="userBindCardDto"/>
+        <typeAlias type="com.nonobank.app.activity.dto.WechatActivityMessageDTO"
+                   alias="wechatActivityMessageDto"/>
+        <typeAlias type="com.nonobank.app.activity.dto.MessageListDTO"
+                   alias="messageListDto"/>
+        <typeAlias type="com.nonobank.app.activity.dto.MessageRankDTO"
+                   alias="messageRankDto"/>
+        <typeAlias type="com.nonobank.app.activity.dto.WechatUserInfoDTO"
+                   alias="wechatUserInfoDto"/>
+        <typeAlias type="com.nonobank.app.activity.dto.FriendListDTO"
+                   alias="friendListDto"/>
+        <typeAlias type="com.nonobank.app.activity.dto.ChildsDayRankDTO"
+                   alias="childsDayRankDto"/>
+        <typeAlias type="com.nonobank.app.user.entity.UserIdfaEntity"
+                   alias="userIdfa"/>
+        <typeAlias type="com.nonobank.app.system.dto.SystemLotteryRewardDTO"
+                   alias="systemLotteryRewardDto"/>
+        <typeAlias type="com.nonobank.app.system.dto.SystemLotteryDetailDTO"
+                   alias="systemLotteryDetailDto"/>
+
+        <typeAlias type="com.nonobank.app.account.v4.dto.InterestDTO"
+                   alias="interestDto"/>
+        <typeAlias type="com.nonobank.app.account.v4.dto.DebtInfoDTO"
+                   alias="debtInfoDto"/>
+        <typeAlias type="com.nonobank.app.user.dto.InterestResultDTO"
+                   alias="interestResultDto"/>
+
+        <typeAlias type="com.nonobank.app.product.v4.entity.ProductInfoDetailEntity"
+                   alias="productInfoDetail"/>
+        <typeAlias type="com.nonobank.app.common.v4.dto.BannerInfoDTO"
+                   alias="bannerInfoDto"/>
+        <typeAlias type="com.nonobank.app.user.v4.dto.FinanceUserInfoDTO"
+                   alias="financeUserInfoDto"/>
+        <typeAlias type="com.nonobank.app.system.v4.dto.FinanceListDTO"
+                   alias="financeListDto"/>
+        <typeAlias type="com.nonobank.app.system.v4.dto.WithdrawListDTO"
+                   alias="withdrawListDto"/>
+        <typeAlias type="com.nonobank.app.system.dto.PageDTO"
+                   alias="pageDto"/>
+        <typeAlias type="com.nonobank.app.system.dto.NoticeDTO"
+                   alias="noticeDto"/>
+        <typeAlias type="com.nonobank.app.order.v4.dto.AutoWithdrawDTO"
+                   alias="autoWithdrawDto"/>
+        <typeAlias type="com.nonobank.app.system.v4.dto.SystemPrivilegeCodeDTO"
+                   alias="systemPrivilegeCodeDto"/>
+        <typeAlias type="com.nonobank.app.system.dto.SystemStatisticsDTO"
+                   alias="systemStatisticsDto"/>
+
+        <typeAlias type="com.nonobank.app.activity.v4.dto.RewardInfoDTO"
+                   alias="rewardInfoDto"/>
+        <typeAlias type="com.nonobank.app.activity.v4.dto.InviteInfoDTO"
+                   alias="inviteInfoDto"/>
+
+
+        <typeAlias type="com.nonobank.app.user.v4.dto.UserBindCardListDTO"
+                   alias="userBindCardListDto"/>
+        <typeAlias type="com.nonobank.app.order.v4.dto.RemoveBindDTO"
+                   alias="removeBindDto"/>
+        <typeAlias type="com.nonobank.app.debt.dto.AddDebtDetailDTO"
+                   alias="addDebtDetailDto"/>
+        <typeAlias type="com.nonobank.app.user.dto.UserProductDetailDTO"
+                   alias="userProductDetailDto"/>
+        <typeAlias type="com.nonobank.app.common.dto.BlackListDTO"
+                   alias="blackListDto"/>
+
+        <typeAlias type="com.nonobank.app.external.dao.OutSystemConfigEntity"
+                   alias="outSystemConfig"/>
+        <typeAlias type="com.nonobank.app.external.entity.OutSystemTradeLogEntity"
+                   alias="outSystemTradeLog"/>
+        <typeAlias type="com.nonobank.app.activity.entity.UserCouponEntity"
+                   alias="userCoupon"/>
+        <typeAlias type="com.nonobank.app.activity.entity.UserRouletteEntity"
+                   alias="userRoulette"/>
+        <typeAlias type="com.nonobank.app.activity.entity.UserRouletteLogEntity"
+                   alias="userRouletteLog"/>
+        <typeAlias type="com.nonobank.app.point.entity.UserPointDetail" alias="userPointDetail"/>
+        <typeAlias type="com.nonobank.app.point.entity.UserPoint" alias="userPoint"/>
+        <typeAlias type="com.nonobank.app.point.entity.PointApproach" alias="pointApproach"/>
+        <typeAlias type="com.nonobank.app.point.entity.PointMartProduct" alias="pointMartProduct"/>
+        <typeAlias type="com.nonobank.app.point.entity.PointExchangeReceiver" alias="pointExchangeReceiver"/>
+        <typeAlias type="com.nonobank.app.point.entity.PointConsume" alias="pointConsume"/>
+        <typeAlias type="com.nonobank.app.user.entity.StudentAuthEntity"
+                   alias="studentAuthEntity"/>
+        <typeAlias type="com.nonobank.app.user.entity.UserCreditEntity"
+                   alias="userCreditEntity"/>
+        <typeAlias type="com.nonobank.app.user.entity.UserAuthEntity"
+                   alias="UserAuthEntity"/>
+        <typeAlias type="com.nonobank.app.user.entity.CsyySmsEntity"
+                   alias="csyySmsEntity"/>
+        <typeAlias type="com.nonobank.app.activity.v4.dao.UserDeductEntity"
+                   alias="userDeductEntity"/>
+        <typeAlias type="com.nonobank.app.quartz.entity.TradeOrderEntity"
+                   alias="tradeOrderEntity"/>
+    </typeAliases>
+
+    <mappers>
+        <mapper resource="com/nonobank/app/account/dao/thirdPlatformMapper.xml"/>
+        <mapper resource="com/nonobank/app/account/dao/userAccountMapper.xml"/>
+        <mapper resource="com/nonobank/app/account/dao/systemAccountMapper.xml"/>
+
+        <mapper resource="com/nonobank/app/activity/dao/bountyHunterActivityMapper.xml"/>
+        <mapper resource="com/nonobank/app/activity/dao/activityInviteCodeMapper.xml"/>
+        <mapper resource="com/nonobank/app/activity/dao/wechatInfoMapper.xml"/>
+        <mapper resource="com/nonobank/app/activity/dao/activityInfoMapper.xml"/>
+        <mapper resource="com/nonobank/app/activity/dao/wechatActivityRewardMapper.xml"/>
+        <mapper resource="com/nonobank/app/activity/dao/wechatActivityMessageMapper.xml"/>
+        <mapper resource="com/nonobank/app/activity/dao/shareUserBalanceMapper.xml"/>
+        <mapper resource="com/nonobank/app/activity/dao/shareUserFinanceLogMapper.xml"/>
+
+        <mapper resource="com/nonobank/app/common/dao/systemParamMapper.xml"/>
+        <mapper resource="com/nonobank/app/common/dao/bankDefineMapper.xml"/>
+        <mapper resource="com/nonobank/app/common/dao/shortMessageMapper.xml"/>
+        <mapper resource="com/nonobank/app/common/dao/commonInfoMapper.xml"/>
+
+        <mapper resource="com/nonobank/app/debt/dao/debtDetailMapper.xml"/>
+        <mapper resource="com/nonobank/app/debt/dao/debtInfoMapper.xml"/>
+        <mapper resource="com/nonobank/app/debt/dao/debtInfoMapper.xml"/>
+        <mapper resource="com/nonobank/app/debt/dao/debtRefundHandleLogMapper.xml"/>
+        <mapper resource="com/nonobank/app/debt/dao/debtRefundHandleLogMapper.xml"/>
+        <mapper resource="com/nonobank/app/debt/dao/debtDecreaseLogMapper.xml"/>
+
+        <mapper resource="com/nonobank/app/order/dao/thirdTradeLogMapper.xml"/>
+        <mapper resource="com/nonobank/app/order/dao/orderInfoMapper.xml"/>
+
+        <mapper resource="com/nonobank/app/product/dao/productRuleMapper.xml"/>
+        <mapper resource="com/nonobank/app/product/dao/productInfoMapper.xml"/>
+
+        <mapper resource="com/nonobank/app/quartz/dao/asyncTaskFailMapper.xml"/>
+        <mapper resource="com/nonobank/app/quartz/dao/asyncTaskHandlingMapper.xml"/>
+        <mapper resource="com/nonobank/app/quartz/dao/asyncTaskSuccessMapper.xml"/>
+        <mapper resource="com/nonobank/app/quartz/dao/asyncTaskWaitMapper.xml"/>
+        <mapper resource="com/nonobank/app/quartz/dao/asyncJobMapper.xml"/>
+
+        <mapper resource="com/nonobank/app/system/dao/systemAccHandleMapper.xml"/>
+        <mapper resource="com/nonobank/app/system/dao/systemOperatorDaoMapper.xml"/>
+        <mapper resource="com/nonobank/app/system/dao/systemReportDaoMapper.xml"/>
+
+        <mapper resource="com/nonobank/app/user/dao/userTypeMapper.xml"/>
+        <mapper resource="com/nonobank/app/user/dao/userInfoMapper.xml"/>
+        <mapper resource="com/nonobank/app/user/dao/userDetailMapper.xml"/>
+        <mapper resource="com/nonobank/app/user/dao/userBindCardMapper.xml"/>
+        <mapper resource="com/nonobank/app/user/dao/userRewardInfoMapper.xml"/>
+        <mapper resource="com/nonobank/app/user/dao/userProductMapper.xml"/>
+        <mapper resource="com/nonobank/app/user/dao/userProductDetailMapper.xml"/>
+        <mapper resource="com/nonobank/app/user/dao/feedbackMapper.xml"/>
+        <mapper resource="com/nonobank/app/user/dao/userRelationInfoMapper.xml"/>
+        <mapper resource="com/nonobank/app/user/dao/withdrawLogMapper.xml"/>
+        <mapper resource="com/nonobank/app/user/dao/withdrawRechargeRelMapper.xml"/>
+        <mapper resource="com/nonobank/app/user/dao/feedbackMapper.xml"/>
+
+        <mapper resource="com/nonobank/app/interest/dao/userInterestMapper.xml"/>
+        <mapper resource="com/nonobank/app/product/dao/productRateMapper.xml"/>
+        <mapper resource="com/nonobank/app/autentication/dao/authenLogMapper.xml"/>
+        <mapper resource="com/nonobank/app/system/dao/bannerInfoMapper.xml"/>
+        <mapper resource="com/nonobank/app/user/dao/autoTransLogMapper.xml"/>
+
+        <mapper resource="com/nonobank/app/user/dao/userApproachMapper.xml"/>
+        <mapper resource="com/nonobank/app/user/dao/approachDefineMapper.xml"/>
+        <mapper resource="com/nonobank/app/product/dao/saleLimitMapper.xml"/>
+        <mapper resource="com/nonobank/app/user/dao/userDataChangeLogMapper.xml"/>
+        <mapper resource="com/nonobank/app/user/dao/userExtendMapper.xml"/>
+        <mapper resource="com/nonobank/app/quartz/dao/tmpRecalculateMapper.xml"/>
+        <mapper resource="com/nonobank/app/system/dao/systemMonthRateMapper.xml"/>
+        <mapper resource="com/nonobank/app/user/dao/indexInfoMapper.xml"/>
+        <mapper resource="com/nonobank/app/system/dao/authenIdentityMapper.xml"/>
+        <mapper resource="com/nonobank/app/system/dao/systemVersionMapper.xml"/>
+        <mapper resource="com/nonobank/app/common/dao/marketMessageMapper.xml"/>
+        <mapper resource="com/nonobank/app/system/dao/transDetailMapper.xml"/>
+        <mapper resource="com/nonobank/app/system/dao/systemLotteryRewardMapper.xml"/>
+        <mapper resource="com/nonobank/app/external/dao/channelDataStatisticsMapper.xml"/>
+
+        <mapper resource="com/nonobank/app/user/dao/userIdfaMapper.xml"/>
+        <mapper resource="com/nonobank/app/activity/dao/activityAdminMapper.xml"/>
+
+        <mapper resource="com/nonobank/app/account/v4/dao/accountMapper.xml"/>
+
+        <mapper resource="com/nonobank/app/product/v4/dao/productInfoDetailMapper.xml"/>
+        <mapper resource="com/nonobank/app/order/v4/dao/withdrawInfoMapper.xml"/>
+
+        <mapper resource="com/nonobank/app/system/dao/systemNoticeMapper.xml"/>
+        <mapper resource="com/nonobank/app/system/v4/dao/systemAdminUserMapper.xml"/>
+        <mapper resource="com/nonobank/app/system/v4/dao/systemPrivilegeCodeMapper.xml"/>
+        <mapper resource="com/nonobank/app/system/dao/systemStatisticsMapper.xml"/>
+
+        <mapper resource="com/nonobank/app/activity/v4/dao/inviteActivityMapper.xml"/>
+        <mapper resource="com/nonobank/app/common/dao/blackListMapper.xml"/>
+
+        <mapper resource="com/nonobank/app/external/dao/outSystemConfigMapper.xml"/>
+        <mapper resource="com/nonobank/app/external/dao/outSystemTradeLogMapper.xml"/>
+
+
+        <mapper resource="com/nonobank/app/activity/v4/dao/userRouletteMapper.xml"/>
+        <mapper resource="com/nonobank/app/activity/v4/dao/userCouponMapper.xml"/>
+
+        <mapper resource="com/nonobank/app/point/dao/userPointMapper.xml"/>
+        <mapper resource="com/nonobank/app/point/dao/userPointDetailMapper.xml"/>
+        <mapper resource="com/nonobank/app/point/dao/pointApproachMapper.xml"/>
+        <mapper resource="com/nonobank/app/point/dao/PointMartProductMapper.xml"/>
+        <mapper resource="com/nonobank/app/point/dao/PointConsumeMapper.xml"/>
+        <mapper resource="com/nonobank/app/point/dao/pointExchangeReceiverMapper.xml"/>
+
+        <mapper resource="com/nonobank/app/user/dao/studentAuthMapper.xml"/>
+
+        <mapper resource="com/nonobank/app/common/dao/SystemCodeMapper.xml"/>
+
+        <mapper resource="com/nonobank/app/activity/v4/dao/csmUserDeductMapper.xml"/>
+        <mapper resource="com/nonobank/app/account/v4/dao/companyAccountMapper.xml"/>
+        <mapper resource="com/nonobank/app/quartz/dao/orderChcekMapper.xml"/>
+    </mappers>
+
+</configuration> 

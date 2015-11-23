@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.user.dao.UserDAO">
+    <insert id="addUser" parameterType="UserInfo" useGeneratedKeys="true" keyProperty="userCode">
+        INSERT user(user_type,user_name,mobile_number,device_id,login_password,has_login_password,has_hand_password) 
+        VALUES (#{userType},#{userName},#{mobileNumber},#{deviceId},#{loginPassword},#{hasLoginPassword},#{hasHandPassword})
+    </insert>
+
+    <update id="updateUserInfo" parameterType="UserInfo">
+        update user u
+	    <trim prefix="set" suffixOverrides=",">
+	       <if test="userName!=null and userName!=''">
+	         u.user_name=#{userName},
+	       </if>
+	       <if test="handPassword!=null and handPassword!=''">
+	         u.hand_password=#{handPassword}, u.has_hand_password='1',
+	       </if>
+	       <if test="password!=null and password!=''">
+	         u.login_password=#{password},u.has_login_password='1',
+	       </if>
+	       <if test="mobileNumber!=null and mobileNumber!=''">
+	         u.mobile_number=#{mobileNumber}
+	       </if>
+	    </trim>
+	    where u.user_code=#{userCode}
+    </update>
+    <select id="checkUser" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM user u WHERE (u.user_name=#{userName} OR u.mobile_number=#{userName}) AND u.login_password=#{md5Password}
+	</select>
+	
+	<select id="getUserByNameOrMobile" parameterType="String" resultType="UserInfo">
+		SELECT user_code userCode,
+		       user_name userName, 
+		       login_password loginPassword,
+		       hand_password handPassword,
+		       created_date createdDate
+		FROM user u WHERE u.mobile_number=#{value} 
+	</select>
+	<select id="isMobileExist" parameterType="String" resultType="java.lang.Integer"> 
+	    select count(*) from user u where u.mobile_number=#{value}
+	</select>
+	
+	<select id="isUserNameExist" parameterType="String" resultType="java.lang.Integer"> 
+	    select count(*) from user u where u.user_name=#{value}
+	</select>
+	
+	<select id="isUserCodeExist" parameterType="java.lang.Integer" resultType="java.lang.Integer"> 
+	    select count(*) from user u where u.user_code=#{value}
+	</select>
+	
+	<select id="isDeviceIdExist" parameterType="java.lang.String" resultType="java.lang.Integer">
+	    select count(*) from user u where u.device_id=#{value}
+	</select>
+	
+
+	
+	
+	<select id="getUserData" parameterType="java.lang.Integer" resultType="userData">
+	  SELECT
+  		t.real_name realName,
+  		IFNULL(t.has_pay_password,'0') hasPayPassword,
+  		u.mobile_number mobileNumber,
+  		IFNULL(u.has_login_password,'0') hasLoginPassword,
+  		IFNULL(t.is_certificate_authen,'0') isCertificateAuthen
+	  FROM user  u LEFT JOIN user_detail t
+	      ON u.user_code = t.user_code
+    	where u.user_code = #{value}
+    </select>
+    
+     <select id="checkLoginPassword" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(*) from user u
+        where u.user_code=#{userCode}
+        and u.login_password=#{password}
+    </select>
+    <select id="checkPayPassword" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(*) from user_detail ud
+        where ud.user_code=#{userCode}       
+        and ud.pay_password=#{password}
+    </select>
+    <update id="updateLoginPassword" parameterType="java.util.Map">
+        update user u set u.login_password=#{password},u.has_login_password='1'
+        where u.user_code=#{userCode}
+    </update>
+     <update id="updatePayPassword" parameterType="java.util.Map">
+        update user_detail u set u.pay_password=#{password},u.has_pay_password='1'
+        where u.user_code=#{userCode}
+    </update>
+    <select id="checkMobileCertificate" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT 
+  			u.user_code  userCode
+		FROM user u,  user_detail ud 
+        WHERE u.user_code = ud.user_code 
+          AND u.mobile_number = #{mobileNumber}
+          AND ud.certificate_number = #{certificateNumber} 
+    </select>
+    <select id="isCertificateAuthen" parameterType="String" resultType="String">
+        SELECT 
+  			ud.is_certificate_authen
+		FROM user u,  user_detail ud 
+        WHERE u.user_code = ud.user_code 
+          AND u.mobile_number = #{mobileNumber}
+    </select>
+    
+    <update id="updateLoginPasswordByMobile" parameterType="java.util.Map">
+        update user u set u.login_password=#{password},u.has_login_password='1'
+        where u.mobile_number=#{mobileNumber}
+    </update>
+    <update id="updatePayPasswordByMobile" parameterType="java.util.Map">
+        update user_detail u set u.pay_password=#{password},u.has_pay_password='1'
+        where u.user_code =(select t.user_code from user t where t.mobile_number=#{mobileNumber})
+    </update>
+   
+    <select id="getUserCodeByMobile" parameterType="java.lang.String" resultType="java.lang.Integer">
+    	SELECT
+			t.user_code
+		FROM
+			user t
+		WHERE
+			t.mobile_number = #{mobile}
+    </select>
+    <select id="getMobileByUserCode" parameterType="java.lang.Integer" resultType="java.lang.String">
+    	SELECT
+			t.mobile_number
+		FROM
+			user t
+		WHERE
+			t.user_code = #{userCode}
+    </select>
+     <select id="getUsers" resultType="String">
+    	SELECT
+			t.user_code
+		FROM
+			user t
+    </select>
+    
+    <select id="getUserByOpenId" parameterType="java.util.Map" resultType="UserInfo">
+		SELECT user_code userCode,openid openid
+		FROM user_detail u 
+		WHERE u.openid=#{openid}
+		and (select 1 from user t where t.user_code = u.user_code AND t.mobile_number is not null)
+	</select>
+	
+	<update id="updateUserStyle" parameterType="java.util.Map">
+		update user set user_style = #{userStyle} where user_code = #{userCode}
+	</update>
+    <select id="getUserByUserCode" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    	select user_style from user where user_code = #{userCode}
+    </select>
+    
+    <select id="getUserInfoByUserCode" parameterType="java.lang.Integer" resultType="UserInfo">
+		SELECT user_code userCode,
+		       user_name userName, 
+		       login_password loginPassword,
+		       hand_password handPassword,
+		       created_date createdDate,
+		       mobile_number mobileNumber
+		FROM user u WHERE user_code =#{value}
+	</select>
+	<select id="getMobileByIdno" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT y.mobile_number FROM user_detail x
+		INNER JOIN user y ON x.user_code = y.user_code
+		WHERE x.certificate_number = #{idno}
+	</select>
+    
+</mapper>

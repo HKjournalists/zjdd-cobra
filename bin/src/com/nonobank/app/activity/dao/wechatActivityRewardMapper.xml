@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.activity.dao.WechatActivityRewardDAO">
+
+	<select id="getActivityRewardScore" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+		SELECT
+			ifnull(activity_reward,0)
+		FROM
+			wechat_activity_reward t
+		WHERE
+			openid = #{openid}
+		AND wechat_activity_id = #{activityId}
+	</select>
+	<insert id="addActivityReward" parameterType="java.util.Map">
+		insert into wechat_activity_reward( wechat_activity_id, openid, activity_reward, create_date, update_date)
+		values( #{activityId}, #{openid}, #{score}, now(), now() )
+	</insert>
+	<update id="updateActivityReward" parameterType="java.util.Map">
+		update wechat_activity_reward set activity_reward = #{score}, update_date = now() where openid = #{openid} and wechat_activity_id = #{activityId}
+	</update>
+	<select id="getChildsDayRankInfo" parameterType="java.util.Map" resultType="childsDayRankDto">
+		SELECT * from(
+			SELECT b.*, @rank :=@rank + 1 AS rank from (
+			SELECT
+				t.openid,
+				t.activity_reward score,
+				a.head_url headUrl,
+				a.user_name nickName
+			FROM
+				wechat_activity_reward t
+			LEFT JOIN wechat_user_info a ON a.openid = t.openid
+			WHERE t.wechat_activity_id = #{activityId}
+			ORDER BY
+				activity_reward,
+				t.update_date
+			) b, (SELECT @rank := 0) c
+			) d 
+			<![CDATA[
+		WHERE d.rank <= 50 OR d.openid = #{openid}
+			]]>
+	</select>
+</mapper>

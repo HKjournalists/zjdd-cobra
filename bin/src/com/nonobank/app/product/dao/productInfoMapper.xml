@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.product.dao.ProductDAO">
+	
+	<select id="isProductCodeExist" parameterType="String" resultType="java.lang.Integer">
+		select count(*) from product_info p where p.product_code = #{value}
+	</select>
+    <update id="preAllocateProduct" parameterType="java.util.Map">
+        UPDATE  product_info p 
+          SET p.current_available_amount= p.current_available_amount- #{amount},
+              p.lock_amount = p.lock_amount+#{amount}
+        where p.product_code=#{productCode}
+    </update>
+    <update id="failAllocateProduct" parameterType="java.util.Map">
+        UPDATE  product_info p 
+          SET p.current_available_amount =p.current_available_amount + #{amount},
+              p.lock_amount = p.lock_amount-#{amount}
+        where p.product_code=#{productCode}
+    </update>
+    <select id="getProductByCode" parameterType="java.lang.String" resultType="productInfo">
+    	SELECT
+			t.product_code productCode,
+			t.product_name productName,
+			t.description  description
+		FROM
+			product_info t
+		WHERE
+			t.product_code = #{productCode}
+    </select>
+	<select id="getProductInfoList" resultType="productInfo">
+		SELECT
+			t.product_code  productCode,
+			t.product_name	productName,
+			t.description	description,
+			t.title_urls titleUrls,
+			t.rate_url rateUrl,
+			t.product_detail_url productDetailUrl
+		FROM
+			product_info t
+		WHERE
+			t.status = "1"
+			order by product_code
+	</select>
+    <select id="validProductCode" parameterType="java.lang.String" resultType="java.lang.Integer">
+    	SELECT
+			count(*)
+		FROM
+			product_info t
+		WHERE
+			t.product_code = #{productCode}
+		AND t.status = 1
+    </select>
+    <select id="getAllProductInfoList" resultType="productInfo">
+    	SELECT
+			t.product_code  productCode,
+			t.product_name	productName,
+			t.description	description,
+			t.title_urls titleUrls,
+			t.rate_url rateUrl,
+			t.product_detail_url productDetailUrl
+		FROM
+			product_info t
+			order by t.order_b
+    </select>
+</mapper>

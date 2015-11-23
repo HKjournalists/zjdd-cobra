@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.system.dao.SystemVersionDAO">
+
+	<select id="isVersionExist" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			system_app_version t
+		WHERE
+			t.app_name = #{appName}
+		AND t.app_version = #{version}
+		AND t.status = 1
+	</select>	
+	<select id="getProvinceData" resultType="provinceDataDto">
+		SELECT
+			t.province_id provinceId,
+			t.province_name provinceName
+		FROM
+			system_province_define t
+		WHERE
+			t.status = 1
+	</select>
+	<select id="getCityData" resultType="cityDataDto">
+		SELECT
+			t.city_id cityId,
+			t.city_name cityName,
+			t.province_id provinceId
+		FROM
+			system_city_define t
+		WHERE
+			t.status = 1
+	</select>
+	<select id="getBranchData" resultType="bankBranchDto">
+		SELECT
+			t.bank_branch_id bankBranchId,
+			t.bank_branch_name bankBranchName,
+			t.city_id cityId,
+			t.province_id provinceId,
+			t.bank_code bankCode
+		FROM
+			system_bank_branch_define t
+		WHERE
+			t.status = 1
+	</select>
+</mapper>

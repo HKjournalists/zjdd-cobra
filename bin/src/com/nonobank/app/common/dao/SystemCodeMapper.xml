@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.common.dao.SystemCodeDao">
+
+    <select id="get" parameterType="com.nonobank.app.common.entity.SystemCode" resultType="com.nonobank.app.common.entity.SystemCode">
+        SELECT c.id id ,c.code_type codeType,c.code_value codeValue,c.code_desc  codeDesc
+        FROM system_code c
+        <where>
+            <if test="null != codeType">
+                c.code_type=#{codeType}
+            </if>
+            <if test="null != codeValue">
+               AND c.code_value=#{codeValue}
+            </if>
+        </where>
+    </select>
+</mapper>

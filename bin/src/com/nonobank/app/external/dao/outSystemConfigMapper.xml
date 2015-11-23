@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.external.dao.OutSystemConfigDAO">
+
+	<select id="getOutSystemConfig" parameterType="java.lang.String" resultType="outSystemConfig">
+		select
+  			out_system_config_id    outSystemConfigId,
+  			out_system_code         outSystemCode,
+  			sn,
+  			pwd,
+  			is_valid                isValid,
+  			created_date            createdDate,
+  			updated_date            updatedDate
+		from out_system_config
+		where sn = #{value}
+	</select>
+	<select id="getIpWhiteList" parameterType="java.lang.String" resultType="java.lang.String">
+	   select ip from out_system_ip_whitelist where sn=#{value}
+	</select>
+	<select id="getTotalInterestForShiKe" parameterType="java.lang.String" resultType="java.math.BigDecimal">
+	    select ifnull(sum(ifnull(total_interest,0)),0) from user_account where user_code =(select user_code from user where mobile_number=#{value})
+	</select>
+	<select id="getYesterdayInterestForShiKe" parameterType="java.lang.String" resultType="java.math.BigDecimal">
+	    select ifnull(sum(ifnull(actual_interest,0)),0) from user_interest where user_code =(select user_code from user where mobile_number=#{value})
+	    and interest_date= from_days(to_days(now())-1)
+	</select>
+	<select id ="getTotalInvestingAmountForShiKe" parameterType="java.lang.String" resultType="java.math.BigDecimal">
+	   select ifnull(sum(ifnull(investing_amount,0)),0) from user_account where user_code =(select user_code from user where mobile_number=#{value})
+	   
+	</select>
+</mapper>

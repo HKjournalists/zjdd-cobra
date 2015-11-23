@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.activity.dao.WechatDAO">
+	<select id="bountyHunterCountRank" resultType="bountyHunterRankDto" parameterType="java.util.Map">
+		SELECT * FROM(
+			SELECT
+				b.*, @rank :=@rank + 1 AS rank
+			FROM
+				(
+					SELECT
+						t.invite_user_code userCode,
+						e.mobile_number username,
+						count(*) totalAmount
+					FROM
+						user_relation t
+					LEFT JOIN user a ON t.user_code = a.user_code
+					INNER JOIN user e on e.user_code = t.invite_user_code
+					WHERE
+						a.user_style = 2
+					AND	t.invite_user_code not in (1, 2, 3)
+
+					AND 
+						a.user_code != t.invite_user_code
+					GROUP BY
+						userCode
+					ORDER BY
+						totalAmount DESC, a.created_date 
+				) b,
+				(SELECT @rank := 0) c
+			)d
+			WHERE
+			<![CDATA[
+				d.rank < 4
+			OR d.rank = 50
+			OR d.userCode = #{userCode}
+			]]>
+	</select>
+	<select id="bountyHunterAmountRank" resultType="bountyHunterRankDto" parameterType="java.util.Map" >
+		SELECT
+			*
+		FROM
+			(
+				SELECT
+					d.*, @rank :=@rank + 1 AS rank
+				FROM
+					(
+						SELECT
+							SUM(b.totalAmount) totalAmount,
+							b.userCode,
+							c.mobile_number username
+						FROM
+							(
+								SELECT
+									SUM(t.amount) totalAmount,
+									a.invite_user_code userCode
+								FROM
+									trans_detail t
+								INNER JOIN user_relation a ON a.user_code = t.user_code
+								WHERE
+								<![CDATA[
+								t.trans_code = 1 and t.status = 2 and date_format(t.create_date, '%Y%m%d') < '20150509' and
+									a.invite_user_code != 2
+								AND a.invite_user_code != 3
+								GROUP BY
+									a.invite_user_code
+								UNION
+									SELECT
+										SUM(amount) totalAmount,
+										user_code userCode
+									FROM
+										trans_detail
+									WHERE
+										trans_code = 1 and status = 2 AND date_format(create_date, '%Y%m%d%H%i%s') < '20150509'
+									GROUP BY
+										user_code
+										]]>
+							) b,
+							user c
+						WHERE
+							c.user_code = b.userCode
+						GROUP BY
+							userCode
+						ORDER BY
+							totalAmount DESC, c.created_date
+					) d,
+					(SELECT @rank := 0) e
+			) f
+		WHERE
+		<![CDATA[
+			f.rank < 4
+		OR f.rank = 50
+		OR f.userCode = #{userCode}
+		]]>
+	</select>
+	<select id="getFinanceFriendCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			user_relation t
+		INNER JOIN user a ON a.user_code = t.user_code
+		WHERE
+			t.invite_user_code = #{userCode}
+		AND a.user_style = 2
+	</select>
+	<select id="getRegisterFriendCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		SELECT
+			ifnull(sum(t.invite_limit), 0) count
+		FROM
+			activity_user t
+		WHERE
+			t.user_code = #{userCode}
+		AND
+			(t.activity_reward_id = 1
+		OR	t.activity_reward_id = 4)
+	</select>
+	<select id="getFriendShipList" parameterType="java.lang.Integer" resultType="friendShip">
+		SELECT
+			a.user_style userStyle,
+			a.created_date createdate,
+			a.mobile_number username
+		FROM
+			user_relation t
+		LEFT JOIN user a ON t.user_code = a.user_code
+		WHERE
+			t.invite_user_code = #{userCode}
+		ORDER BY
+			a.user_style,
+			a.created_date
+	</select>
+	<insert id="insertAttentionWechatInfo" parameterType="attentionWechat">
+		insert into user_wechat
+			( open_id, user_code, operation, wechat_service_id, status, create_date, update_date )
+		values
+			( #{openid}, #{userCode}, #{operation}, #{wechat_service_id}, #{status}, now(), now() )
+	</insert>
+	<select id="isOpenidExist" parameterType="attentionWechat" resultType="java.lang.Integer">
+		select 
+			count(*)
+		from
+			user_wechat
+		where
+			user_code = #{userCode}
+		and
+			open_id = #{userCode}
+		and
+			wechat_service_id
+	</select>
+	<update id="updateAttentionWechatStatus" parameterType="attentionWechat">
+		update
+			user_wechat
+		set
+			operation = #{operation}
+		where
+			open_id = #{openid}
+		and
+			user_code = #{userCode}
+	</update>
+	<select id="getUserWechatList" resultType="userWechatDto">
+		SELECT
+			t.user_code userCode,
+			t.openid openid
+		FROM
+			user_detail t
+		LEFT JOIN user_account a ON a.user_code = t.user_code
+		LEFT JOIN user_interest b ON b.user_code = t.user_code
+		LEFT JOIN activity_user_detail c ON c.user_code = t.user_code
+		LEFT JOIN user_product d ON d.user_code = t.user_code
+		WHERE  t.operation = '1'
+		GROUP BY
+			t.user_code;
+	</select>
+	<select id="getUserTotalInterest" resultType="java.math.BigDecimal" parameterType="java.lang.Integer">
+		SELECT
+			sum(IFNULL(t.total_interest, 0.00)) total_interest
+		FROM
+			user_account t
+		WHERE
+			t.user_code = #{userCode}
+	</select>
+	<select id="getLastProductInterest" resultType="java.math.BigDecimal" parameterType="java.lang.Integer">
+		SELECT
+			IFNULL(
+				sum(t.actual_interest),
+				0.00
+			) last_interest
+		FROM
+			user_interest t
+		WHERE
+			to_days(date_add(
+				t.created_date,
+				INTERVAL 1 DAY)
+			) = to_days( now() )
+		AND t.user_code = #{userCode}
+		GROUP BY
+			t.user_code
+	</select>
+	<select id="getLastValidRewardAmount" resultType="java.math.BigDecimal" parameterType="java.lang.Integer">
+		SELECT
+			IFNULL(sum(t.draw_amount), 0.00) last_interest
+		FROM
+			activity_user_detail t
+		WHERE
+		<![CDATA[
+			to_days(
+				date_add(t.start_date, INTERVAL 1 DAY)
+			) <= to_days(now())
+		AND to_days(
+			date_add(t.end_date, INTERVAL 1 DAY)
+		) >= to_days(now())
+		]]>
+		AND user_code = #{userCode}
+		GROUP BY
+			t.user_code
+	</select>
+	<select id="getInviteCode" parameterType="java.util.Map" resultType="java.lang.String">
+		select invite_code from activity_invite_code
+		where user_code = #{userCode}
+		and activity_id = #{activityid}
+		limit 1
+	</select>
+	<select id="isVipUser" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			activity_invite_code t
+		INNER JOIN activity_vip_invite_code a ON t.invite_code = a.vip_invite_code
+		WHERE
+			user_code = #{userCode}
+	</select>
+</mapper>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.activity.v4.dao.UserDeductDAO">
+
+     <insert id="addCsmUserDeductInfo" parameterType="userDeductEntity" useGeneratedKeys="true" keyProperty="userProductId">
+         insert into csm_user_deduct(user_code,original_amount,deduct_amount,start_date,change_user_code,created_date,updated_date)
+         select 
+            #{userCode},
+            #{originalAmount},
+            0,
+            date(now()),
+            #{changeUserCode},
+            now(),
+            now()
+         from dual where 1=1
+          and not exists(select 1 from csm_user_deduct where user_code = #{userCode} )
+     </insert>
+     <select id="getCsmUserDeductInfo" parameterType="java.lang.Integer" resultType="userDeductEntity">
+         select csm_user_deduct_id csmUserDeductId,
+                user_code userCode,
+                ifnull(original_amount,0) originalAmount,
+                ifnull(deduct_amount,0) deductAmount,
+                start_date startDate,
+                end_date endDate,
+                created_date createdDate,
+                updated_date updatedDate
+        from csm_user_deduct
+        where user_code = #{vlaue}
+     </select>
+  	 <select id="getRemainingPrincipal" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
+  	     select sum(ifnull(remaining_principal,0)) from user_product where user_code = #{value}
+  	     and trans_code = '1'
+  	     <![CDATA[
+  	     and status<>'A'
+  	     ]]>
+  	 </select>
+  	 <select id="getRemainingSpecialExperienceAmountForCSM" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
+  	     select sum(draw_amount) from  activity_user_detail t where t.user_code = #{value}
+  	     and activity_reward_id = 17
+  	     <![CDATA[	     
+  	     and t.end_date>=date(now())
+  	     ]]>
+  	 </select>
+  	 <update id="updateUserDeductInfo"  parameterType="userDeductEntity" >
+  	     update csm_user_deduct set deduct_amount = #{deductAmount},change_user_code = #{changeUserCode},updated_date = now()
+  	      where user_code = #{userCode}
+  	 </update>
+  	 <insert id="addHistLog" parameterType="java.util.Map">
+  	     insert into 
+  	         csm_user_deduct_hist(csm_user_deduct_id,
+  	                             user_code,original_amount,
+  	                             deduct_amount,start_date,
+  	                             end_date,
+  	                             change_user_code,
+  	                             created_date,
+  	                             updated_date,
+  	                             change_msg)
+  	     select csm_user_deduct_id,
+  	            user_code,original_amount,
+  	            deduct_amount,
+  	            start_date,
+  	            end_date,
+  	            change_user_code,
+  	            created_date,
+  	            updated_date,
+  	            #{changeMsg}
+  	     from csm_user_deduct where user_code = #{userCode}
+  	     
+  	 </insert>
+  	 
+  	 
+  	 <select id = "getNeedAddDebtList" resultType="java.util.Map">
+  	     select user_product_id,user_code,remaining_principal,debt_amount from (
+select t.user_product_id ,t.user_code,t.remaining_principal,
+(select sum(invest_amount) from user_product_detail d where d.user_product_id = t.user_product_id) debt_amount
+ from user_product t where t.trans_code = 1 
+and t.remaining_principal>(select sum(invest_amount) from user_product_detail d where d.user_product_id = t.user_product_id)
+) bb where (bb.remaining_principal- bb.debt_amount>100 or bb.debt_amount = 0)
+
+  	 </select>
+  	 
+</mapper>

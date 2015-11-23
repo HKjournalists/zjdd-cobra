@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.user.dao.UserRelationDAO">
+	<insert id="insertUserRelation" parameterType="userRelation">		
+		INSERT INTO user_relation (
+			user_code,
+			invite_user_code,
+			activity_id,
+			create_date
+		)
+		VALUES (
+			#{userCode}, #{inviteUserCode},#{activityId}, now() 
+		)
+	</insert>
+	<select id="queryUserRelation" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select invite_user_code from user_relation where user_code = #{userCode} and activity_id = #{activityid}
+	</select>
+    <select id="queryInvitee" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select user_code from user_relation where invite_user_code = #{inviteUserCode} and activity_id = #{activityid}
+    </select>
+	<select id="isActivityUser" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+	  select count(1) from (
+          select 
+              user_relation_id 
+          from user_relation 
+             where user_code = #{userCode}
+              and activity_id in
+              <foreach collection="activityIdList" item="activityId" open="(" close=")" separator=",">
+                #{activityId} 
+              </foreach>              
+          union
+          select user_relation_id 
+          from user_relation 
+             where invite_user_code = #{userCode}
+               and activity_id in
+               <foreach collection="activityIdList" item="activityId" open="(" close=")" separator=",">
+                #{activityId} 
+              </foreach>
+        ) a
+	</select>
+	<select id="getActivityCount" resultType="java.lang.Integer">
+		<![CDATA[
+			SELECT COUNT(0) FROM user_relation WHERE create_date >= (SELECT start_date FROM activity_info WHERE activity_id = #{activityId})
+			AND create_date < (SELECT create_date FROM user_relation WHERE user_code = #{userCode} AND activity_id = #{activityId})
+		]]>
+	</select>
+</mapper>

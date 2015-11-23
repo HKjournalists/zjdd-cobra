@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.external.dao.OutSystemTradeLogDAO">
+    <insert id="addOutSystemTradeLog" parameterType="outSystemTradeLog" useGeneratedKeys="true" keyProperty="outSystemTradeLogId">
+        insert into out_system_trade_log(
+            sn,
+            user_code,
+            mobile_number, 
+            amount,
+            status,
+            msg,
+            ip,
+            trans_code,
+            created_date,
+            updated_date
+        )values(
+           #{sn},
+           #{userCode},
+           #{mobileNumber},
+           #{amount},
+           #{status},
+           #{msg},
+           #{ip},
+           #{transCode},
+           now(),
+           now()
+         )
+    </insert>
+    <update id="updateTradeLogStatus" parameterType="java.util.Map">
+        update out_system_trade_log set status=#{status},msg=#{msg},updated_date=now() where out_system_trade_log_id = #{id}
+    </update>
+	
+</mapper>

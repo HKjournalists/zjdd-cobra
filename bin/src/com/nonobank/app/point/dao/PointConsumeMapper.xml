@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.point.dao.PointConsumeDao">
+    <resultMap id="pointConsumeMap" type="pointConsume">
+        <id property="pointConsumeId" column="point_consume_id"/>
+        <result property="consumeAmount" column="consume_amount"/>
+        <result property="usedDesc" column="used_desc"/>
+        <result property="usedType" column="used_type"/>
+        <result property="result" column="result"/>
+        <result property="pointMartProductId" column="point_mart_product_id"/>
+        <result property="userCode" column="user_code"/>
+        <result property="sn" column="sn"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="updatedDate" column="updated_date"/>
+        <result property="receiverId" column="receiver_id"/>
+        <association property="pointExchangeReceiver" javaType="pointExchangeReceiver"
+                     notNullColumn="receiver_name,receiver_address,receiver_mobile">
+            <id property="pointExchangeReceiverId" column="point_exchange_receiver_id"/>
+            <result property="pointConsumeId" column="point_consume_id"/>
+            <result property="userCode" column="user_code"/>
+            <result property="receiverName" column="receiver_name"/>
+            <result property="receiverAddress" column="receiver_address"/>
+            <result property="receiverMobile" column="receiver_mobile"/>
+            <result property="createdDate" column="created_date"/>
+            <result property="updatedDate" column="updated_date"/>
+        </association>
+    </resultMap>
+    <select id="get" parameterType="pointConsume" resultMap="pointConsumeMap">
+        SELECT c.*,r.*
+        FROM point_consume c
+        LEFT JOIN point_exchange_receiver r ON c.receiver_id=r.point_exchange_receiver_id
+        <where>
+            c.user_code=#{userCode}
+            <if test="null != pointMartProductId">AND c.point_mart_product_id=#{pointMartProductId}</if>
+            <if test="null != usedType">AND c.used_type=#{usedType}</if>
+            <if test="null != result">AND c.result=#{result}</if>
+        </where>
+        ORDER BY c.created_date DESC
+        LIMIT 10
+    </select>
+    <insert id="insert" parameterType="pointConsume" useGeneratedKeys="true" keyProperty="pointConsumeId">
+        INSERT INTO point_consume(consume_amount,used_desc,used_type,result,point_mart_product_id,user_code,sn,created_date,updated_date)
+        VALUES(#{consumeAmount},#{usedDesc},#{usedType},#{result},#{pointMartProductId},#{userCode},#{sn},NOW(),NOW())
+    </insert>
+    <select id="countBySn" parameterType="pointConsume" resultType="java.lang.Integer">
+        SELECT count(1) FROM point_consume c where c.sn=#{sn}
+    </select>
+    <update id="updateReceiverId" parameterType="pointConsume">
+        UPDATE point_consume p
+        SET p.receiver_id=#{receiverId},updated_date=NOW()
+        WHERE p.point_consume_id=#{pointConsumeId}
+    </update>
+</mapper>

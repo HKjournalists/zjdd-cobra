@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.quartz.dao.AsyncJobDAO">
+	
+	<select id="getJobInfo" parameterType="String" resultType="asyncJob">
+		SELECT
+  	      j.async_job_id           asyncJobId,
+          j.job_code               jobCode,
+          j.last_run_begin_time    lastRunBeginTime,
+          j.last_run_end_time      lastRunEndTime,
+          j.last_run_status lastRunStatus,
+          j.last_success_date  lastSuccessDate,
+          j.name NAME,
+          j.flag flag,
+          j.run_after_fail runAfterFail
+        FROM async_job j
+        WHERE j.job_code =#{value} 
+	</select>
+    <update id="updateJobStartInfo" parameterType="java.lang.Integer">
+        update async_job a set a.last_run_begin_time = now()
+        where a.async_job_id=#{value}
+    </update>
+    
+   
+    <update id="updateJobFinishInfo" parameterType="java.util.Map">
+        update async_job a set a.last_run_end_time=now(),
+        <if test="currentDate!=null and currentDate!='' and lastRunStatus==1">
+           <!--        任务成功时才更新last_sucess_date      -->
+          a.last_success_date=#{currentDate},
+        </if>
+        a.last_run_status=#{lastRunStatus},
+        a.flag='1'
+        where a.async_job_id=#{asyncJobId}
+    </update>
+    
+    <select id="isJobSucessRun" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(*) from  async_jbo j where j.job_code = #{jobCode}
+        and j.last_sucess_date>=#{currentDay}
+    </select>
+    
+     <update id="lockJob"  parameterType="java.lang.Integer">
+        update async_job a set a.last_run_begin_time = now(),
+        a.flag='0'
+        where a.async_job_id=#{value}
+        and flag='1'
+    </update>
+    
+    
+   
+   
+</mapper>

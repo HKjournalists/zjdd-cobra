@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.system.dao.SystemStatisticsDAO">
+   <!--   查询提现手续费  -->
+   <select id="getTotalWithdrawFee" parameterType="java.lang.String" resultType="java.math.BigDecimal">
+       select 
+           sum(amount*-1)
+       from trans_detail  
+       where trans_code = 4 
+       and date_format(trans_date,'%Y%m')=#{value}
+       and status='2'
+   </select>
+   
+   <!--   一个月内卖出债权量  -->
+   <select id="getDebtAmount" parameterType="java.lang.String" resultType="java.math.BigDecimal">
+       select ifnull(sum(amount),0)
+       from trans_detail  
+       where trans_code = 1 
+       and date_format(trans_date,'%Y%m')=#{value} 
+       and status='2'
+   </select>
+   
+   
+    <!--   一个月内卖出债权量  -->
+   <select id="getDebtPerProduct" parameterType="java.util.Map" resultType="systemStatisticsDto">
+     select ifnull(sum(amount),0) amount,product_code productCode
+     from trans_detail  
+     where trans_code = 1 
+     and date_format(trans_date,'%Y%m')=#{yearMonth}
+     and status='2' 
+     and product_code in 
+     <foreach collection="productCodeList" item="type" open="(" close=")" separator=",">
+             #{type} 
+     </foreach>
+     group by product_code
+   </select>
+    <select id="getActivityWithdraw" parameterType="java.lang.String" resultType="java.math.BigDecimal">
+       select ifnull(sum(amount),0)
+       from trans_detail  
+       where trans_code = 5
+       and date_format(trans_date,'%Y%m')=#{value} 
+       and status='2'
+   </select>
+   
+   
+</mapper>

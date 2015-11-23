@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.activity.v4.dao.InviteActivityDAO">
+
+     <select id="getInvitedUserCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+         select count(1) from user_relation where invite_user_code=#{inviterUserCode} and activity_id= #{activityId}
+     </select>
+     
+     <select id="getInvitedUserList" parameterType="java.util.Map" resultType="inviteInfoDto">         
+		select 
+		 	 a.create_date inviteDate,
+  			 u.mobile_number mobileNumber,
+  			(select count(1) from user_product t where t.user_code= a.user_code and trans_code = '1') isInvest
+		from
+  			(select 
+    				user_code,
+   					create_date 
+ 			 from
+    			user_relation u 
+  			 where u.activity_id = #{activityId} 
+    					and invite_user_code = #{inviterUserCode}
+    		) a   left join user u on a.user_code = u.user_code 
+     </select>
+       
+     <!--   获取活动奖励  -->
+     <!--
+      <select id="getUserRewardAmountByRewardId" parameterType="java.util.Map" resultType="java.math.BigDecimal"> 
+		SELECT
+			IFNULL(sum(draw_amount), 0.00)
+		FROM
+			activity_user_detail
+		WHERE
+		<![CDATA[
+			start_date <= now()
+		AND end_date >= date(now())
+		]]>
+		AND user_code = #{userCode}
+		and  activity_reward_id in
+		<foreach collection="activityRewardId" item="type" open="(" close=")" separator=",">
+             #{type} 
+         </foreach>
+     </select>    
+     -->
+     
+     
+     <select id="getUserRewardListNotContainShare" parameterType="java.lang.Integer" resultType="rewardInfoDto"> 			
+		select
+  			a.draw_amount    amount,
+  			a.start_date     startDate,
+  			a.end_date       endDate,
+  			a.activity_id    activityId,
+ 			a.description    rewardDesc,
+  			a.activity_reward_id activityRewardId
+		from (select
+        		t.draw_amount,
+        		t.start_date,
+        		t.end_date,
+        		t1.activity_id,
+        		t1.description,
+        		t1.activity_reward_id 
+      		from activity_user_detail t,
+        			activity_reward t1
+      		where t.user_code = #{value}
+          		and t.activity_reward_id = t1.activity_reward_id
+          		and t1.activity_id >= 6
+          		and t.end_date >= date(now())
+          		and t.activity_reward_id not in (17,18,19)
+          		and exists(
+          		   select 1 from reward_define d where d.reward_code = t1.reward_code and (d.type='0002' or d.type='0005')
+          		)
+          		) a order by a.start_date
+     </select>    
+     
+      <select id="getUserRewardListContainShare" parameterType="java.lang.Integer" resultType="rewardInfoDto"> 			
+		select
+  			a.draw_amount    amount,
+  			a.start_date     startDate,
+  			a.end_date       endDate,
+  			a.activity_id    activityId,
+ 			a.description    rewardDesc,
+  			a.activity_reward_id activityRewardId
+		from (
+		   select sum(draw_amount) draw_amount,
+                  b.start_date,
+                  b.end_date,
+                  b.activity_id,
+                  b.description,
+                  b.activity_reward_id,
+                  b.resource_user_code  
+		     from (
+		      select
+        		t.draw_amount,
+        		t.start_date,
+        		t.end_date,
+        		t1.activity_id,
+        		t1.description,
+        		t1.activity_reward_id,
+        		t.resource_user_code
+      		from activity_user_detail t,
+        			activity_reward t1
+      		where t.user_code = #{value}
+          		and t.activity_reward_id = t1.activity_reward_id
+          		and t1.activity_id >= 6
+          		and t.end_date >= date(now())
+          		and t.activity_reward_id=17) b group by b.resource_user_code
+          	) a order by a.start_date
+     </select>    
+     
+     <select id="getLatestEndRewardDate" parameterType="java.util.Map" resultType="java.util.Date">
+       select date_add(end_date,interval 1 day) 
+       from activity_user_detail d  
+       where d.user_code = #{userCode} and d.activity_reward_id in
+           <foreach collection="activityRewardId" item="type" open="(" close=")" separator=",">
+             #{type} 
+           </foreach>
+           and end_date>=(select max(end_date) 
+                          from activity_user_detail b 
+                          where b.user_code = #{userCode} 
+                          and b.activity_reward_id in 
+                          <foreach collection="activityRewardId" item="type" open="(" close=")" separator=",">
+                           #{type} 
+                          </foreach> )
+     </select>
+     
+      <select id="needAddRate" parameterType="java.util.Map" resultType="java.lang.Integer">
+       select count(1) 
+       from activity_user_detail d  
+       where d.user_code = #{userCode} and d.activity_reward_id in (18,19)
+           and d.start_date>=#{currentDate}
+           <![CDATA[
+           and d.end_date<=#{currentDate}
+           ]]>
+     </select>
+     <select id="drawInviteCodeList" resultType="java.util.Date">
+         select create_date from 
+         (select create_date 
+         from activity_user_detail 
+         where activity_reward_id = 19 
+         order by create_date desc) a limit 3
+     </select>
+     
+     <select id="drawInviteCodeCount" resultType="java.lang.Integer">
+       select count(1) 
+         from activity_user_detail 
+         where activity_reward_id = 19         
+     </select>
+     
+     
+      <select id="hasValidAddRate" parameterType="java.util.Map" resultType="java.lang.Integer">
+       select count(1) 
+         from activity_user_detail 
+         where user_code= #{userCode}         
+         and activity_reward_id in
+         <foreach collection="activityRewardId" item="type" open="(" close=")" separator=",">
+                           #{type} 
+         </foreach>
+         <![CDATA[
+         and start_date<=#{currentDate}
+          ]]>
+         and end_date>=date(#{currentDate})   
+         
+     </select>
+     
+     <select id="hasParticipateActivity" parameterType="java.util.Map" resultType="java.lang.Integer">
+       select count(1) 
+         from activity_user_detail 
+         where user_code= #{userCode}
+         and activity_reward_id in
+         <foreach collection="activityRewardId" item="type" open="(" close=")" separator=",">
+                           #{type} 
+         </foreach>                 
+     </select>
+     
+     
+     <select id="logAutoMobile">
+             insert into auto_email_log(log_date,created_date,updated_date) values(now(),now(),now())
+     </select>
+     
+      <select id="remainDebt" resultType="java.math.BigDecimal">
+        select current_available_amount from debt_info 
+     </select>
+     <select id="getDateLogCount" resultType="java.lang.Integer">
+             select count(1) from auto_email_log where log_date = date(now())	
+     </select>
+     
+     <select id="getRealNameByUserCode" parameterType="java.lang.Integer" resultType="java.lang.String">
+         select real_name from user_detail where user_code = #{value}
+     </select>
+     <select id="getActivityUserCountByActivityId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+         select count(1) from user_relation where activity_id = #{value}
+     </select>
+     	<select id="getUserAward" resultType="rewardInfoDto">
+		SELECT
+			rd.amount,
+			rd.type,
+			ar.effective_days
+		FROM activity_reward ar
+		LEFT JOIN reward_define rd ON rd.reward_code = ar.reward_code
+		WHERE ar.activity_reward_id = #{activityRewardId} AND ar.activity_id = #{activityId}
+	</select>
+    <select id="getTurntableRate" resultType= "java.math.BigDecimal" parameterType="java.util.Map">
+        select draw_amount/100.0 from activity_user_detail where user_code =#{userCode}
+        and activity_reward_id in
+         <foreach collection="activityRewardId" item="type" open="(" close=")" separator=",">
+                           #{type} 
+         </foreach> 
+          <![CDATA[
+         and start_date<=#{currentDate}
+          ]]>
+         and end_date>=date(#{currentDate}) limit 1
+    </select>
+     <select id="isInviteeUser" parameterType="java.util.Map" resultType="java.lang.Integer">
+         select count(1) from user_relation where user_code = #{inviteeUserCode} and activity_id = #{activityId}
+         and length(invite_user_code)>2
+     </select>
+     
+     <select id="hasCashLotteryForDD" parameterType="java.lang.String" resultType="java.lang.Integer">
+		select count(1) from activity_user_detail where user_code =(
+                        select user_code from user where mobile_number = #{value}		
+		) and activity_reward_id in (
+                   select activity_reward_id from activity_reward t where t.activity_id=7		
+		)
+	</select>
+	<select id="getTotalInviteRewardAmountFor17" parameterType="java.util.Map" resultType="java.math.BigDecimal">	    
+         select sum(draw_amount) from activity_user_detail 
+         where resource_user_code=#{inviteedUserCode} 
+         and user_code = #{inviterUserCode} and activity_reward_id =17
+	</select>
+	<select id="getFirstInvestAmount" parameterType="java.lang.Integer"  resultType="java.math.BigDecimal">	    
+      select amount from trans_detail 
+      where trans_code = 1 and status=2 
+      and user_code = #{value} 
+      order by update_date asc limit 1	    
+	</select>
+	<select id="getCSMShareRightCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+	   select count(1) from csm_share_right where user_code = #{value} and is_valid_share='1'
+	</select>
+	
+	<select id="getCSMShareUserType" parameterType="java.lang.Integer" resultType="java.lang.String">
+	   select share_user_type from csm_share_right where user_code = #{value} and is_valid_share='1'
+	</select>
+	<select id="getCheckListForCSMShareRightUser" resultType="java.lang.Integer">
+	    select distinct user_code from user_product t where trans_code = 1 and not exists(
+            select 1 from csm_share_right t1 where t1.user_code = t.user_code and t1.is_valid_share='1'
+          )
+	</select>
+	
+	<select id="checkSerialPrincipalAmount" parameterType="java.util.Map" resultType="java.lang.Integer">	    
+       select count(1) from user_interest 
+       where user_code= #{userCode}
+       and interest_date>=date_add(date(now()),interval #{limitDay} day) 
+       and demand_amount >=10000
+       
+	    
+	</select>
+	<insert id="addCSMShareRight" parameterType="java.util.Map">	    
+        insert into csm_share_right(user_code,is_valid_share,share_user_type,created_date,updated_date)
+        values(
+            #{userCode},
+            #{isValidShare},
+            #{shareUserType},
+            now(),
+            now()
+        )
+	</insert>
+	<select id="isExistCSMRightUser" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+	   select count(1) from csm_share_right where user_code =#{value}
+	</select>
+</mapper>

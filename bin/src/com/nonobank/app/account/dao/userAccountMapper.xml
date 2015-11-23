@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.account.dao.UserAccountDAO">
+	
+	<select id="getUserAccByUserCode" parameterType="String" resultType="userAccount">
+		SELECT user_code userCode,
+		       IFNULL(total_interest,0.0) totalInterest,
+		       IFNULL(investing_amount,0.0) investingAmount
+		FROM user_account u WHERE u.user_code = #{value}
+	</select>
+	<update id="updateUserAccount" parameterType = "userAccount">	   
+	    UPDATE user_account u 
+	    <trim prefix="set" suffixOverrides=",">
+	      <if test="userCode!=null and userCode!=''">
+	         u.user_code=#{userCode},
+	      </if>
+	      <if test="totalInterest!=null and totalInterest!=''">
+	         u.total_interest = u.total_interest + #{totalInterest},
+	      </if>
+	       <if test="investingAmount!=null and investingAmount!=''">
+	         u.investing_amount = u.investing_amount + #{investingAmount}
+	      </if>
+	    </trim>
+        WHERE u.user_code=#{userCode} and u.product_code = #{productCode}
+	</update>
+	<select id="getAllUserAccountList" resultType="userAccount">
+	     select
+	      u.user_account_id userAccountId,
+          u.user_code userCode,
+          product_code productCode,
+          ifnull(total_reward_interest,0) totalRewardInterest,
+          ifnull(total_reward_amount,0) totalRewardAmount,
+          ifnull(investing_amount,0) investingAmount
+        from user_account u
+        where 
+        <![CDATA[
+        (u.investing_amount>0
+        or u.total_reward_amount<>0) 
+        ]]>       
+	</select>
+	<update id="updateAccountAmount" parameterType="java.util.Map">
+	    update user_account u set u.investing_amount=u.investing_amount+#{amount}
+	    <if test="rewardAmount!=null and rewardAmount1=''">
+	        , u.total_reward_amount =#{rewardAmount}
+	    </if>
+	    where u.user_account_id=#{userAccountId}
+	</update>
+	<update id="updateTotalInterest" parameterType="java.util.Map">
+	    update user_account u 
+	       set u.total_interest=ifnull(u.total_interest,0)+#{interestAmount},
+	           u.investing_amount = u.investing_amount+#{interestAmount},
+	           u.total_reward_interest=ifnull(u.total_reward_interest,0)+ifnull(#{rewardInterest},0),
+	           u.total_demand_interest = ifnull(u.total_demand_interest,0)+ifnull(#{demandInterest},0),
+	           u.total_term_interest = ifnull(u.total_term_interest,0)+ifnull(#{termInterest},0),
+	           u.total_special_reward_interest= ifnull(u.total_special_reward_interest,0)+ifnull(#{specialInterestReward},0),
+	           u.updateed_date=now()
+	    where u.user_account_id=#{userAccountId}
+	</update>
+	<update id="updateTotalRewardAmount" parameterType="java.util.Map">
+		UPDATE user_account b
+		SET b.total_reward_amount = (
+			SELECT
+				IFNULL(SUM(t.draw_amount), 0.00)
+			FROM
+				activity_user_detail t
+			INNER JOIN activity_reward a ON a.activity_reward_id = t.activity_reward_id
+			WHERE
+			<if test="activityid != null and activityid != ''">
+				a.activity_id = #{activityid} AND
+			</if>
+			<![CDATA[
+				t.start_date <= #{curDate}
+			AND
+				t.end_date >= #{curDate}
+			]]>
+			AND
+				t.user_code = b.user_code
+				and exists(
+          		   select 1 from reward_define d where d.reward_code = a.reward_code and (d.type='0002' or d.type='0005')
+          		)
+		)
+		where b.product_code = #{productCode}
+	</update>
+	<select id="getTotalRewardAmount" resultType="java.math.BigDecimal" parameterType="java.util.Map">
+		SELECT
+			IFNULL(sum(t.draw_amount), 0.00)
+		FROM
+			activity_user_detail t
+		WHERE
+			t.user_code = #{userCode}
+			<![CDATA[
+		AND date_add(t.end_date, INTERVAL 1 DAY) < now()
+			]]>
+		<if test="activityRewardIdList!= null">
+			AND t.activity_reward_id 
+			in 
+			<foreach collection="activityRewardIdList" item="type" open="(" close=")" separator=",">
+             #{type} 
+           </foreach>
+		</if>		
+		<if test="activityRewardIdList==null or activityRewardid==''">
+		<![CDATA[
+		    and t.activity_reward_id<=7
+		    ]]>
+		</if>
+	</select>
+	<select id="getUserAccByCondition" resultType="userAccount" parameterType="java.util.Map">
+		SELECT
+			t.user_account_id			userAccountId,
+			t.user_code 				userCode,
+			t.total_interest			totalInterest,
+			t.investing_amount			investingAmount,
+			t.invest_type				investType,
+			t.product_code				productCode,
+			t.total_reward_amount		totalRewardAmount,
+			t.total_reward_interest		totalRewardInterest
+		FROM
+			user_account t
+		WHERE
+			t.user_code = #{userCode}
+		AND
+			t.product_code = #{productCode}
+	</select>
+	<update id="updateTotalRewardInterest" parameterType="java.util.Map">
+		update user_account t
+		set t.total_reward_interest = t.total_reward_interest - #{totalRewardInterest}
+		where t.user_code = #{userCode}
+		and	t.product_code = #{productCode}
+	</update>
+	<select id="getUserAccountByCondition" parameterType="userAccount" resultType="java.lang.Integer">
+		select count(*) from user_account t
+		where t.user_code = #{userCode} and t.product_code = #{productCode}
+	</select>
+	<insert id="insertUserAccount" parameterType="userAccount">
+		insert into user_account( investing_amount, product_code, user_code )
+		values( #{investingAmount}, #{productCode}, #{userCode} )
+	</insert>
+	<select id="getWithdrawRewardAmount" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+		SELECT
+			IFNULL(
+				sum(t.withdraw_amount),
+				0.00
+			)
+		FROM
+			withdraw_reward t
+		WHERE
+			t.user_code = #{userCode}
+		AND t.trans_code = 2
+	</select>
+	
+	<insert id="addCombineAccountLog" parameterType="java.util.Map">
+	    insert into account_combine_log(user_code,openid,change_type)
+	    select user_code,openid,#{changeType} from user_detail d where d.openid=#{openid}
+	</insert>
+	<update id="addInvestingAmount">
+		UPDATE user_account SET investing_amount = investing_amount +#{amount} WHERE user_code =#{userCode} AND product_code = 'NN0005'
+	</update>
+	
+	<update id="lockUserAccount" parameterType="java.lang.Integer">
+	    update user_account 
+	    set is_lock='1' 
+	    where user_code = #{value} 
+	    and product_code = 'NN0005' 
+	    <![CDATA[
+	    and ifnull(is_lock,'0')<>'1'
+	    ]]>
+	</update>
+	<update id="releaseUserAccount" parameterType="java.lang.Integer">
+	    update user_account 
+	    set is_lock='0' 
+	    where user_code = #{value} 
+	    and product_code = 'NN0005'	  
+	    and ifnull(is_lock,'0')='1'	
+	</update>
+	<!--    检查上次提现订单的时间，如果是在5分钟前，则可以释放锁  -->
+	<select id="checkLastWithdrawOrderDate"  parameterType="java.util.Map" resultType="java.lang.Integer">
+	    <![CDATA[
+	    select count(1) from order_info oi where oi.order_id =(
+           select order_id from order_info where user_code = #{userCode} 
+           and order_id<>#{orderId}
+           and trans_code = 2
+           order by create_date desc limit 1)
+        and oi.create_date<=date_add(now(),interval -5 minute)
+        ]]>
+	</select>
+</mapper>

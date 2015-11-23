@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.common.dao.SystemParamDAO">
+	
+	<select id="getInterestBeginDatePeriod" resultType="String">
+		select t.param_value from system_param t where t.param_code = 'LXQSRI' 
+	</select>
+    <select id="checkHoliday" parameterType="java.util.Map" resultType="java.lang.Integer" >
+        select count(1) from holiday_day t where t.day_time=#{currentDate}
+    </select>
+    <select id="getSalaryDayExtraRate" resultType="String">
+        select t.param_value from system_param t where t.param_code = 'SALARYDAY_RATE' 
+    </select>
+    <select id="getSystemParam" resultType="String" parameterType="String">
+        select ifnull(t.param_value, '') from system_param t where t.param_code =#{value}
+    </select>
+    <select id = "getSystemQQ" resultType="String">
+        select qq from system_config where status='1'
+    </select>
+    <select id="getIdfaCallbackUrl" resultType="String" parameterType="String">
+        select callback_url from idfa_platform where platform_id = #{value} and status='1'
+    </select>
+    
+     <!-- 上报有效url列表  -->
+     <select id="getIdfaInUrls" resultType="String" parameterType="String">
+        select in_url from idfa_platform where platform_id = #{value} and status = '1'
+    </select>
+    <select id="getTestInfo" resultType="java.lang.Integer">
+    	SELECT count(1) FROM system_param
+    </select>
+
+    <select id="getShowShareActivityDetail" resultType="String">
+        select t.param_value from system_param t where t.param_code = 'SHOW_SHARE_ACTIVITY_DETAIL'
+    </select>
+    
+    <update id="updateSystemParam" parameterType="java.util.Map">
+        update system_param set param_value=#{paramValue} where param_code = #{paramCode}
+    </update>
+</mapper> 

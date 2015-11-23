@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.point.dao.UserPointDao">
+	<select id="get" parameterType="userPoint" resultType="userPoint">
+		SELECT  p.user_point_id userPointId,p.user_code userCode,p.total_point_amount totalPointAmount,p.created_date createdDate,p.updated_date updatedDate
+		FROM user_point p
+		WHERE   p.user_code = #{userCode}
+	</select>
+	<update id="update" parameterType="userPoint" >
+		UPDATE user_point p
+		SET p.total_point_amount = p.total_point_amount + #{offset},p.updated_date = NOW()
+		WHERE p.user_code = #{userCode} AND  p.total_point_amount>0
+	</update>
+	<insert id="insert" parameterType="userPoint" >
+		INSERT INTO user_point(user_code,total_point_amount,created_date,updated_date)
+		VALUES(#{userCode},#{totalPointAmount},NOW(),NOW())
+	</insert>
+</mapper>

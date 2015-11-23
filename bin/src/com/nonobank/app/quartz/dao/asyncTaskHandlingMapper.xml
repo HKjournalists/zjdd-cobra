@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.quartz.dao.AsyncTaskHandlingDAO">
+	<insert id="transWait2Handling" parameterType="java.util.List">
+	    insert into async_task_handling(bussiness_key,job_code,priority,retry_time,remark,created_date,updated_date)
+	    select bussiness_key,job_code,priority,retry_time,remark,now(),now()
+	    from async_task_wait
+	    where
+	    <foreach collection="list" separator="or" item="asyncTask" index="index">
+              async_task_wait_id=#{asyncTask.id}
+        </foreach>
+	</insert>
+	<delete id="deleteHandlingTask" parameterType="asyncTask">
+	    delete from async_task_handling where bussiness_key = #{businessKey} and jobCode =#{jobCode}
+	</delete>
+</mapper>

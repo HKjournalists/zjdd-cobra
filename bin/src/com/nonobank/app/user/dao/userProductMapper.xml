@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.user.dao.UserProductDAO">
+	
+    <insert id="addUserProduct" parameterType="userProduct" useGeneratedKeys="true" keyProperty="userProductId">
+        INSERT INTO user_product
+            (order_id,
+             user_code,
+             product_code,
+             invest_amount,  
+             interest_begin_date,  
+             invest_begin_date,
+             invest_end_date,
+             total_interest, 
+             salary_interest,
+             term_interest,
+             operator_type,  
+             has_salary_day,          
+             status,
+             trans_code,
+             withdraw_status,
+             remaining_principal,
+             remaining_interest,
+             created_date,
+             updated_date)
+        VALUES (#{orderId},
+                #{userCode},
+                #{productCode},
+                #{investAmount},
+                #{interestBeginDate},
+                #{investBeginDate},
+                #{investEndDate},
+                ifnull(#{totalInterest},0),
+                ifnull(#{salaryInterest},0),
+                ifnull(#{termInterest},0),
+                #{operatorType},
+                #{hasSalaryDay},
+                #{status},
+                #{transCode},
+                #{withdrawStatus},
+                #{remainingPrincipal},
+                #{remainingInterest},
+                now(),
+                now()
+                )
+    </insert>
+    
+    <select id="selectTotalInvestUser" resultType="java.lang.Integer">
+        SELECT
+  			COUNT(1)
+		FROM (SELECT
+        		p.user_code,
+                COUNT(1)
+              FROM user_product p
+                GROUP BY p.user_code
+              ) b
+    </select>
+    
+   
+    <select id="getInvesetList" parameterType="java.util.Map" resultType="userInvest">
+        SELECT
+            DATE_FORMAT(t.created_date,'%Y-%m-%d') investDate,
+            t.invest_amount  investAmount,
+            t.trans_code type 	
+        FROM user_product t
+        WHERE t.user_code = #{userCode}
+          <if test="productCode!=null and productCode!=''">
+             AND t.product_code =#{productCode}
+          </if>
+    </select>
+
+    <!-- 可计息充值记录  -->
+    <select id="getInterestedUserProductList" parameterType="java.util.Map" resultType="userProduct">
+       <![CDATA[
+        SELECT
+          t.user_product_id userProductId,
+          t.total_interest totalInterest,
+          t.product_code productCode,
+          t.interest_begin_date interestBeginDate,
+          t.user_code userCode,
+          t.invest_amount investAmount,
+          t.invest_begin_date investBeginDate,
+          t.invest_end_date investEndDate,
+          t.has_salary_day hasSalaryDay,
+          t.withdraw_status withdrawStatus,
+          t.remaining_principal remainingPrincipal,
+          t.remaining_interest remainingInterest,
+          t.status status         
+        FROM user_product t
+        WHERE t.user_code=#{userCode}
+          AND (ifnull(t.remaining_principal,0)>0 or ifnull(t.remaining_interest,0)>0)
+          AND t.interest_begin_date <DATE_ADD(#{currentDate},INTERVAL 1 DAY)
+          AND t.product_code =#{productCode}
+          AND t.trans_code = '1'
+          ]]>
+    </select>
+    
+     <select id="getWithdrawAmountByUserProductId" parameterType="java.lang.Integer" resultType="java.lang.Double">       
+       SELECT IFNULL( SUM( d.withdraw_amount ), 0.00 ) 
+       FROM withdraw_recharge_rel d 
+       WHERE d.recharge_product_id=#{value}        
+    </select>
+    <update id="updateInterest" parameterType = "java.util.Map">
+        update user_product up 
+        set up.total_interest = up.total_interest+#{interestAmount},
+        salary_interest = salary_interest+#{salaryInterest},
+        term_interest = term_interest+#{termInterest},
+        remaining_interest=remaining_interest+#{interestAmount}
+        where up.user_product_id=#{userProductId}
+    </update>
+    
+    <!--  可提现充值记录  -->
+    <select id="getAvailableWithdrawProduct" parameterType="java.util.Map" resultType="userProduct"> 
+       
+        SELECT 
+             t.user_product_id userProductId,
+             t.invest_amount investAmount,
+             ifnull(t.total_interest,0) totalInterest,
+             t.user_code userCode,
+             t.withdraw_status withdrawStatus,
+             ifnull(t.remaining_principal,0) remainingPrincipal,
+             ifnull(t.remaining_interest,0)  remainingInterest,
+             t.status status
+        FROM user_product t WHERE t.user_code =#{userCode}
+             <![CDATA[
+             AND (ifnull(t.remaining_principal,0)>0 or ifnull(t.remaining_interest,0)>0)
+              ]]>
+              <if test="productCode=='NN0004'">
+                 <![CDATA[
+                 and t.invest_end_date<=#{currentDate}
+                 AND t.product_code=#{productCode}
+                  ]]>
+              </if>
+              <if test="productCode=='NN0001' or productCode=='NN0002' or productCode =='NN0003'">
+                  AND DATEDIFF(#{currentDate},t.invest_begin_date) >=#{diffDay}
+                  AND t.product_code=#{productCode}
+              </if> 
+              <if test="productCode=='NN0005'">
+                  <![CDATA[
+                  and t.invest_end_date<=now()
+                  ]]>
+              </if>            
+             AND t.trans_code = '1'   
+             <if test ="productCode=='NN0004'">
+                 order by t.invest_end_date,t.interest_begin_date
+             </if>
+             <if test="productCode=='NN0001' or productCode=='NN0002' or productCode =='NN0003'">
+                 order by t.interest_begin_date asc
+             </if>
+             <if test="productCode=='NN0005'">
+                order by t.created_date asc
+             </if>          
+                 
+        
+    </select>
+   
+    <select id="isCurrentMonthWithdraw" parameterType="java.util.Map" resultType="java.lang.Integer">
+     <![CDATA[
+         SELECT count(1) FROM withdraw_log d 
+         WHERE d.user_code=#{userCode} 
+         AND d.product_code=#{productCode}                
+         and d.withdraw_date>=DATE_ADD(DATE_FORMAT(NOW(),'%y-%m-%d'),INTERVAL DAYOFMONTH(NOW())*(-1)+1 DAY)
+         and withdraw_date<= LAST_DAY(NOW())              
+            
+         ]]>
+    </select>
+   
+    <update id="changeUserProductStatus" parameterType="java.util.List">
+        update user_product        
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="withdraw_status =case" suffix="end,">
+                 <foreach collection="list" item="userProduct">
+                     when user_product_id = #{userProduct.userProductId} THEN #{userProduct.withdrawStatus}
+                 </foreach>
+            </trim>
+            <trim prefix="to_term =case" suffix="end,">
+                 <foreach collection="list" item="userProduct">
+                     when user_product_id = #{userProduct.userProductId} THEN #{userProduct.toTerm}
+                 </foreach>
+            </trim>
+        </trim>
+        where (
+        <foreach collection="list" separator="or" item="userProduct" index="index" >
+              user_product_id=#{userProduct.userProductId}
+        </foreach>
+       
+    </update>
+    
+    <select id="getAllInvestAmount" parameterType="java.util.Map" resultType="java.lang.Double">
+        select sum(IFNULL(t.invest_amount,0))
+        from user_product t 
+        where t.user_code=#{userCode}
+        and t.trans_code='1'
+    </select>
+    <select id="getInvestTimes" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1)
+        from user_product t 
+        where t.user_code=#{userCode}
+        and t.trans_code='1'
+        <![CDATA[
+        and ifnull(status,'1')<>'A'
+        ]]>
+    </select>
+    <select id="getUserProductById" parameterType="java.lang.String" resultType="userProduct">
+        select order_id orderId,
+             user_code userCode,
+             product_code productCode,
+             invest_amount investAmount,  
+             interest_begin_date interestBeginDate,  
+             invest_begin_date investBeginDate,
+             total_interest totalInterest,             
+             status status,
+             trans_code transCode,
+             withdraw_status withdrawStatus,
+             created_date createdDate,
+             updated_date updatedDate
+         from user_product
+         where user_product_id = #{value}
+    </select>
+    
+    <select id="getDaySaleAmount" resultType="java.math.BigDecimal">
+        select 
+            ifnull(sum(invest_amount),0) 
+        from user_product 
+        where invest_begin_date>=from_days(to_days(now()))
+        and trans_code = 1
+    </select>
+
+    <select id="isFirstFinance" resultType="java.lang.Integer" parameterType="java.util.Map">
+    	SELECT
+			count(*)
+		FROM
+			trans_detail t
+		WHERE
+			t.trans_code = #{transCode}
+		AND t.status = 2
+		AND t.user_code = #{userCode}
+		<if test="productCode != null and productCode != ''">
+			AND t.product_code = #{productCode}
+		</if>
+    </select>
+
+    <!--    获取资产信息   -->
+    <select id="getInvestDetailList" parameterType="java.util.Map" resultType="investDetail">
+        SELECT
+            DATE_FORMAT(t.created_date,'%Y-%m-%d') investDate,
+            DATE_FORMAT(t.invest_end_date,'%Y-%m-%d') investEndDate,
+            DATE_FORMAT(t.interest_begin_date,'%Y-%m-%d') interestBeginDate,
+             <![CDATA[
+            (case when #{queryType} <> 1 then
+            ]]> 
+            t.invest_amount+ifnull(t.total_interest,0) 
+            else 
+               t.invest_amount
+            end ) investAmount,
+            t.trans_code transType,
+            t.to_term toTerm,
+            t.status status,
+            t.product_code productCode            
+        FROM user_product t
+        WHERE t.user_code = #{userCode}            
+          <if test="queryType == 1">
+              <!-- 查总资产投资列表  -->
+              and t.trans_code = '1'
+          </if>          
+          <if  test="queryType ==2">
+               <!-- 查定期资产投资列表  -->              
+               and t.trans_code = '1'
+               <![CDATA[
+               and status <>'A'
+                ]]> 
+          </if>
+          <if test="queryType == 3">
+                <!-- 查活期资产列表,到期的数据或提现的数据  -->                
+                <![CDATA[
+                and (t.invest_end_date<=now() or t.trans_code = '2') 
+                     
+                ]]>
+                     
+          </if>  
+          order by t.created_date desc       
+    </select>
+    
+    <!-- 固定资产合计[含所有未到期产品]   -->
+    <select id="getTotalTermAssetAmount" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
+       select
+             ifnull(sum(assetAmount),0)
+       from (select invest_amount+IFNULL(total_interest,0) assetAmount
+             from user_product t
+             where  t.trans_code = '1'
+                and t.invest_end_date > now()                
+                and t.user_code = #{userCode}
+      ) a
+    </select>
+    <select id="investCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select count(1) from user_product where user_code = #{value}
+        <![CDATA[
+        and ifnull(status,'1')<>'A'
+         ]]>  
+    </select>
+    <!-- 获取获取总活期资产 -->
+    <select id="getTotalDemandAssetAmount" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
+        select
+             ifnull(sum(assetAmount),0)
+       from (select invest_amount+IFNULL(total_interest,0) assetAmount
+             from user_product t
+             where  t.trans_code = '1'
+                <![CDATA[
+                and t.invest_end_date <= now() 
+                ]]>               
+                and t.user_code = #{userCode}
+      ) a
+    </select>
+    <select id="getRewardEndDate" parameterType="java.lang.Integer" resultType="java.util.Date">
+       select end_date from (
+           select end_date from activity_user_detail where user_code = #{value}
+        order by end_date desc) a limit 1
+    </select>
+    <select id="getTotalInvestAsset" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">       
+      select sum(assetAmount) from (
+          select invest_amount+ifnull(total_interest,0)  assetAmount from user_product t where t.user_code = #{value}
+           and trans_code = '1'
+           ) a
+    </select>
+    
+    
+     <select id="getTotalWithdraw" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
+         select  sum(withdraw_amount) from withdraw_reward where user_code = #{value} and trans_code = 2
+    </select>
+    
+    <select id="getTotalFees" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">        
+       select sum(-1*amount) from trans_detail where  user_code = #{value} and trans_code = 4 and status=2       
+    </select>
+    
+    <select id="getInvestInterest" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
+       select ifnull(sum(ifnull(total_interest,0)),0) 
+       from user_product where user_code = #{value}
+         and trans_code = '1'             
+    </select>
+    
+    <select id="getTotalValidRewardAmount" resultType="java.math.BigDecimal" parameterType="java.util.Map">
+		SELECT
+			IFNULL(sum(t.draw_amount), 0.00)
+		FROM
+			activity_user_detail t
+		WHERE
+			t.user_code = #{userCode}
+			<![CDATA[
+		AND date_add(t.end_date, INTERVAL 1 DAY) < now()
+			]]>
+	</select>
+	<select id="getCountUserId" resultType="java.lang.Integer">
+	  select distinct user_code from user_account t where product_code ='NN0001'
+	  and not exists(
+	   select 1 from user_product where user_code = t.user_code
+	   and product_code ='NN0001'
+	  )
+	   	  
+	</select>
+	<update id="updateAccountTmp" parameterType="java.util.Map">
+	    update user_account set investing_amount =#{investingAmount},total_interest=#{totalInterest}
+	    ,total_reward_interest=#{rewardInterest}
+	    where user_code = #{userCode}
+	    and product_code = 'NN0001'	   
+	</update>
+	
+	<!-- 计算收益的体验金金额 -->
+	<select id="oldActivityValidReward" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+	   SELECT
+			IFNULL(sum(t.draw_amount), 0.00)
+		FROM
+			activity_user_detail t
+		WHERE
+			t.user_code = #{userCode}
+			<![CDATA[
+		    t.start_date <= now()
+		    and activity_reward_id in (1,2,3,4,5,6,7)
+			]]>
+	</select>
+	
+	<select id="getNewValidActivityRewardList" parameterType="java.util.Map" resultType="java.util.Map">
+	   SELECT
+			t.start_date startDate,IFNULL(t.draw_amount, 0.00) amount,t.end_date endDate
+		FROM
+			activity_user_detail t
+		WHERE
+			t.user_code = #{userCode}
+			<![CDATA[
+			 and t.start_date <= now()		   
+			]]>
+			and activity_reward_id in 
+			<foreach collection="activityRewardIdList" item="type" open="(" close=")" separator=",">
+             #{type} 
+           </foreach>
+	</select>
+	
+	<select id="getTotalAutoTransAmount" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">	
+      select sum(amount) from auto_trans_invest_log where old_user_product_id in (
+         select user_product_id from user_product where user_code = #{userCode} and to_term='1' and trans_code ='1'
+      ) 
+	</select>
+	
+	
+	 
+	<update id="changeUserProductForWithdraw" parameterType="userProduct">
+	    update user_product u
+	     <trim prefix="set" suffixOverrides=",">
+	       <if test="toTerm!=null">
+	         u.to_term=#{toTerm},
+	       </if>
+	       <if test="withdrawStatus!=null">
+	         u.withdraw_status=#{withdrawStatus},
+	       </if>
+	       <if test="remainingPrincipal!=null">
+	         u.remaining_principal=u.remaining_principal-#{remainingPrincipal},
+	       </if>
+	       <if test="remainingInterest!=null">
+	         u.remaining_interest=u.remaining_interest-#{remainingInterest}
+	       </if>
+	    </trim>
+	    where u.user_product_id=#{userProductId}
+	</update>
+	
+	<select id="isFirstInvest" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+	    select count(1) from user_product where user_code =#{value} and trans_code= '1' 
+	    <![CDATA[
+	    and ifnull(status,'1')<>'A'
+	    ]]>
+	    and exists(	     
+           select 1 from activity_user_detail where activity_reward_id = 13 and user_code=#{value}  
+	    )
+	</select>
+	
+	<select id="getFirstInvestDate" parameterType="java.lang.Integer" resultType="java.util.Date">
+	    select invest_begin_date from (
+	    select 	invest_begin_date 
+	    from user_product t where t.user_code = #{value} and product_code = 'NN0005' and trans_code = '1'
+	     <![CDATA[
+	     and ifnull(status,'1')<>'A'
+	    ]]>
+	    order by invest_begin_date asc ) b limit 1
+	</select>
+	
+	<select id="getFirstInvestDateForAll" parameterType="java.lang.Integer" resultType="java.util.Date">
+	    select invest_begin_date from (
+	    select 	invest_begin_date 
+	    from user_product t where t.user_code = #{value}  and trans_code = '1'
+	     <![CDATA[
+	     and ifnull(status,'1')<>'A'
+	    ]]>
+	    order by invest_begin_date asc ) b limit 1
+	</select>
+	
+	<select id="getInvestTimesForDemand" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+	    select count(1) from user_product where user_code = #{value} and trans_code = '1' and product_code='NN0005'
+	     <![CDATA[
+	     and ifnull(status,'1')<>'A'
+	    ]]>
+	</select>
+	<select id="getCurrentDebtAmount" resultType="java.math.BigDecimal">
+		SELECT
+			sum(remaining_principal)
+		FROM
+			user_product
+	</select>
+	
+	
+	<!--       补数据     -->
+	
+	<select id ="getErrlist" resultType="java.util.Map">
+	    select user_product_id id, invest_amount*-1 investAmount,user_code userCode from user_product where user_product_id in (
+	        select id from myexpid 
+	    )
+	</select>
+	<delete id="delerror" parameterType="java.lang.Integer" >	
+	    delete from withdraw_recharge_rel where withdraw_product_id = #{value}
+	</delete>
+	
+</mapper>

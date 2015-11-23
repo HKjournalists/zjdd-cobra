@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.user.dao.StudentAuthDao">
+	<insert id="addStudentAuthInfo" parameterType="studentAuthEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into user_school_roll_authen_log (
+		    user_code, 
+			user_name, 
+			mobile_number, 
+			certificate_number, 
+			school_name, 
+			entry_time, 
+			degree, 
+			result_code, 
+			result_msg, 
+			authen_time
+		)values(
+		  #{userCode},
+		  #{realName},
+		  #{mobileNum},
+		  #{idNum},
+		  #{schoolName},
+		  #{eduStartDate},
+		  #{education},
+		  #{resultCode},
+		  #{resultMsg},
+		  #{authenTime}
+		)
+	</insert>
+	<insert id="addUserCreditLimit" parameterType="userCreditEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into user_credit_limit (
+		    user_code, 
+			`limit`, 
+			`level`, 
+			`type`, 
+			`status`,
+			create_time,
+			update_time
+		)values(
+		  #{userCode},
+		  #{limit},
+		  #{level},
+		  #{type},
+		  #{status},
+		  now(),
+		  now()
+		)
+	</insert>
+	<select id="loadAuthCount" parameterType="integer" resultType="java.lang.Integer">
+		select count(id) from user_school_roll_authen_log where user_code = #{userCode}
+	</select>
+	<select id="loadTodayAuthDate" parameterType="integer" resultType="java.util.Date">
+		select authen_time FROM user_school_roll_authen_log WHERE user_code = #{userCode} AND authen_time &lt; DATE_ADD(CURDATE(),INTERVAL 1 DAY) AND authen_time &gt;= CURDATE() LIMIT 1
+	</select>
+	<update id="addFirstDepositeAmount" parameterType="string">
+        update system_param set param_value = param_value+1 where param_code = #{paramCode}
+    </update>
+    <select id="getFirstDempsoteAmount" parameterType="string" resultType="java.lang.Integer">
+		SELECT count(param_value) FROM system_param WHERE param_code = #{paramCode}
+	</select>
+	<insert id="addDempsoteAmountParam" parameterType="java.util.Map" useGeneratedKeys="true">
+		insert into system_param (
+		    param_code, 
+			param_value, 
+			description
+		)values(
+		  #{paramCode},
+		  #{paramValue},
+		  #{description}
+		)
+	</insert>
+	<select id="getAuthStatus" parameterType="integer" resultType="UserAuthEntity">
+		SELECT is_bind_bankcard as bankAuthStatus, is_schoolroll_authen as studentAuthStatus FROM user_detail WHERE user_code = #{userCode}
+	</select>
+	<update id="updateSchoolAuthStatus" parameterType="java.util.Map">
+        update user_detail set is_schoolroll_authen = #{status}, schoolroll_authen_time = #{authDate} where user_code = #{userCode}
+    </update>
+    <select id="getUserMobileByUserCode" parameterType="integer" resultType="UserInfo">
+		SELECT mobile_number as mobileNumber FROM `user` WHERE user_code = #{userCode}
+	</select>
+	<update id="updateMxdMember" parameterType="java.util.Map">
+        update user_detail set is_mxd_student = #{isMxdStudent} where user_code = #{userCode}
+    </update>
+    <select id="getCreditAmount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT `limit` as creditAmount FROM user_credit_limit WHERE user_code = #{userCode} and type = #{type}
+	</select>
+	<insert id="addCreditAmount" parameterType="userCreditEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into user_credit_limit (
+		   user_code, 
+		   `limit`, 
+		   `level`, 
+		   `type`, 
+		   `status`, 
+			create_time, 
+			update_time
+		)values(
+		  #{userCode},
+		  #{limit},
+		  #{level},
+		  #{type},
+		  #{status},
+		  now(),
+		  now()
+		)
+	</insert>
+	<select id="getLastAuthDate" parameterType="integer" resultType="java.util.Date">
+		SELECT authen_time FROM user_school_roll_authen_log WHERE user_code = #{userCode} ORDER BY authen_time DESC LIMIT 1
+	</select>
+	<select id="loadWithdrawNum" resultType = "java.lang.Integer">
+		SELECT IFNULL(COUNT(user_code),0) AS withdraw FROM user_detail WHERE is_schoolroll_authen = 1 AND is_bind_bankcard = 1
+	</select>
+	<select id="loadCsyySmsInfo" parameterType = "integer" resultType = "csyySmsEntity">
+		SELECT  mobile_number AS mobile, real_name AS realName, c.limit AS creditMoney FROM `user` a INNER JOIN user_detail b ON a.user_code = b.user_code INNER JOIN user_credit_limit c ON a.user_code = c.user_code
+ 		WHERE a.user_code = #{userCode} AND c.type = 1
+	</select>
+</mapper>
+
+

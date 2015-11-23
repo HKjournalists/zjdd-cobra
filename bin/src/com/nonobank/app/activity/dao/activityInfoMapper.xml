@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.activity.dao.ActivityDAO">
+
+	<select id="getActInfoByCondition" parameterType="java.util.Map" resultType="activityInfo">
+	
+		SELECT 
+			t.activity_id activityid, 
+			t.activity_name activityName, 
+			t.activity_content activityContent, 
+			t.activity_type activityType, 
+			t.status status, 
+			t.operator operator, 
+			t.start_date startDate,
+			t.end_date endDate
+		FROM activity_info t
+		WHERE
+			t.status = #{status}
+			<![CDATA[
+		AND
+			t.start_date <= now()
+		AND
+			t.end_date >= now()
+			]]>
+		AND
+			t.activity_type = #{activityType}
+	</select>	
+	<select id="getActRewardDetail" resultType="activityRewardDetail" parameterType="java.lang.Integer">
+		SELECT
+			t.activity_reward_id actRewardid,
+			t.activity_id activityid,
+			t.reward_code rewardCode,
+			t.reward_object rewardObject,
+			t.limit_max limitMax,
+			t.limit_count limitCount,
+			t.effective_days effectiveDays,
+			t.product_code productCode,
+			t.description description,
+			a.amount amount,
+			a.reward_name rewardName,
+			a.type type,
+			a.reward_desc rewardDesc
+		FROM
+			activity_reward t
+		INNER JOIN reward_define a ON t.reward_code = a.reward_code
+		WHERE
+			t.activity_id = #{activityid}
+	</select>
+	<insert id="insertActivityUser" parameterType="activityUser">
+		INSERT INTO activity_user (
+			user_code,
+			activity_reward_id,
+			invite_limit,
+			total_count,
+			total_amount,
+			update_date,
+			create_date
+		)
+		VALUES (
+			#{userCode},
+			#{actRewardid},
+			#{inviteLimit},
+			#{totalCount},
+			#{totalAmount},
+			now(),
+			now()
+		)
+	</insert>
+	<insert id="insertActivityUserDetail" parameterType="activityUserDetail" useGeneratedKeys="true" keyProperty="actUserDetailid" >
+		INSERT INTO activity_user_detail (
+			user_code,
+			activity_reward_id,
+			draw_count,
+			draw_amount,
+			resource_user_code,
+			update_date,
+			start_date,
+			end_date,
+			invite_type
+		)
+		VALUES (
+			#{userCode},
+			#{actRewardid},
+			#{drawCount},
+			#{drawAmount},
+			#{resourceUserCode},
+			now(),
+			#{startDate},
+			#{endDate},
+			#{inviteType}
+		)
+	</insert>
+	<select id="getActUserRemainCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			a.limit_count - t.invite_limit remain
+		FROM
+			activity_user t
+		INNER JOIN activity_reward a ON a.activity_reward_id = t.activity_reward_id
+		WHERE
+			t.user_code = #{userCode}
+		AND t.activity_reward_id = #{actRewardid}
+	</select>
+	<select id="getActUserCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			activity_user b
+		WHERE
+			b.user_code = #{userCode}
+		AND b.activity_reward_id = #{actRewardid}
+	</select>
+	<update id="updateActivityUser" parameterType="java.util.Map">
+		UPDATE activity_user
+		SET invite_limit = invite_limit + #{inviteLimit}, total_count = total_count + #{totalCount}, 
+			total_amount = total_amount + #{totalAmount}, update_date = now()
+		WHERE
+			user_code = #{userCode}
+		AND activity_reward_id = #{actRewardid}
+	</update>
+	<select id="getActivityUserDetailMaxCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			MAX(draw_count)
+		FROM
+			activity_user_detail
+		WHERE
+			user_code = #{userCode}
+		AND activity_reward_id = #{activityRewardid}
+	</select>
+	<select id="getCurrentRewardAmount" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+		SELECT
+			IFNULL(SUM(t.draw_amount), 0.00)
+		FROM
+			activity_user_detail t
+		INNER JOIN activity_reward a ON a.activity_reward_id = t.activity_reward_id
+		WHERE
+		<if test="activityid != null and activityid != ''">
+			a.activity_id = #{activityid} AND
+		</if>
+		 t.user_code = #{userCode}
+		<![CDATA[
+		AND 
+			t.create_date <= #{curDate}
+		AND
+			t.end_date >= #{curDate}
+		]]>
+	</select>
+	<select id="getActivityUserByCondition" parameterType="java.util.Map" resultType="activityUser">
+		SELECT
+			t.activity_user_id activityUserid,
+			t.user_code userCode,
+			t.activity_reward_id actRewardid,
+			t.invite_limit inviteLimit,
+			t.total_count totalCount,
+			t.total_amount totalAmount
+		FROM
+			activity_user t
+		INNER JOIN activity_reward a ON a.activity_reward_id = t.activity_reward_id
+		WHERE
+			t.user_code = #{userCode}
+		AND
+			a.activity_id = #{activityid}
+		AND
+			a.activity_reward_id = 1
+	</select>
+	<select id="getActivityUrl" parameterType="java.lang.Integer" resultType="activityUrl">
+		select
+			t.activity_url_id	activityUrlid,
+			t.activity_name		activityName,
+			t.activity_url		activityUrl,
+			t.status			status,
+			t.title				title,
+			t.content			content
+		from
+			activity_url t
+		where
+			t.status = 1
+		and
+			t.activity_url_id = #{activityUrlid}
+	</select>
+	<select id="isValidInviteCode" parameterType="java.lang.String" resultType="java.lang.Integer">
+	    SELECT
+            SUM(a_count)
+        FROM (
+              SELECT COUNT(1)    a_count
+                   FROM activity_invite_code t
+              WHERE t.invite_code = #{value} 
+              UNION 
+              SELECT COUNT(1)    a_count
+                   FROM activity_vip_invite_code t1
+              WHERE t1.vip_invite_code = #{value}
+              ) a	
+	</select>
+	<select id="isOverRewardLimit" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		SELECT
+			ifnull(sum(total_count), 0.00)
+		FROM
+			activity_user
+		WHERE
+			activity_reward_id = 8
+	</select>
+	<select id="getActivitySpecial" resultType="java.util.Map">
+	    select activity_special_id activitySpecialId,available_count availableCount,max_limit maxLimit,effective_days effectiveDays from activity_special where status='1'			
+	</select>
+	<update id="decreaseActivitySpecialCount" parameterType="java.lang.Integer">
+	   update activity_special set available_count=available_count-1 where activity_special_id=#{value}
+	</update> 
+	<select id="isActivityExist" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			count(1)
+		FROM
+			activity_info t
+		WHERE
+			t.activity_type = #{activityType}
+		AND t.activity_id = #{activityId}
+		<![CDATA[
+		AND t.start_date <= now()
+		AND t.end_date >= date(now())
+		]]>
+	</select>
+	<select id="isActivityOpen" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			count(1)
+		FROM
+			activity_info t
+		WHERE
+			t.activity_type = #{activityType}
+		AND t.activity_id = #{activityId}
+		<![CDATA[
+		AND t.start_date <= now()
+		]]>
+	</select>
+	<select id="isRewardResourseExist" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			ifnull( count(1), 0 )
+		FROM
+			activity_reward_channel t
+		WHERE
+			t.channel_resource = #{resource}
+		AND t.activity_id = #{activityid}
+	</select>
+	<select id="getActivityStartDate" parameterType="java.lang.Integer" resultType="java.util.Date">
+		SELECT
+			start_date
+		FROM
+			activity_info
+		WHERE
+			activity_id = #{activityid}
+	</select>
+	<select id="getActivityUserDetailCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			count(1)
+		FROM
+			activity_user_detail t
+		WHERE
+			t.user_code = #{userCode}
+		AND t.activity_reward_id = #{activityRewardid}
+	</select>
+	<select id="getActivityUserDetail" parameterType="java.util.Map" resultType="activityUserDetail">
+		SELECT
+			t.activity_reward_id actRewardid,
+			t.draw_amount drawAmount,
+			b.mobile_number mobile,
+			t.create_date createDate
+		FROM
+			activity_user_detail t
+		INNER JOIN activity_reward a ON a.activity_reward_id = t.activity_reward_id
+		LEFT JOIN user b ON t.resource_user_code = b.user_code
+		WHERE
+			t.user_code = #{userCode}
+		order by t.create_date desc
+	</select>
+	<select id="getExperienceAmount" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
+		SELECT
+			IFNULL(sum(draw_amount), 0.00)
+		FROM
+			activity_user_detail
+		WHERE
+		<![CDATA[
+			start_date <= now()
+		AND end_date >= date(now())
+		and activity_reward_id<>'17'
+		]]>
+		AND user_code = #{userCode}
+		and activity_reward_id in(
+		 select activity_reward_id from activity_reward ar where ar.reward_code in (
+		     select reward_code from reward_define where type='0002' or type='0005'
+		 )
+		)
+		
+	</select>
+	<select id="countUserReward" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(1) from activity_user_detail
+		where user_code = #{userCode} and activity_reward_id = #{activityRewardid}
+	</select>
+	<select id="getCashLotteryInfo" parameterType="java.util.Map" resultType="java.math.BigDecimal">	     
+        select t1.draw_amount 
+        from activity_user_detail t1,activity_reward t2
+         where t1.activity_reward_id = t2.activity_reward_id
+            and t2.activity_id = #{activityId}
+            and t1.user_code in (
+                select user_code from user where mobile_number = #{mobileNumber}
+           ) 
+	</select>
+	
+	
+    <select id="getLotteryUserList" parameterType="java.lang.Integer" resultType="java.util.Map" >
+     	select ifnull(b.draw_amount,2000) lotteryAmount,u.mobile_number mobileNumber from (
+			select * from (
+			select user_code,draw_amount
+		from activity_user_detail t
+		where t.activity_reward_id in(select
+                                activity_reward_id
+                              from activity_reward
+                              where activity_id = #{value})  order by create_date desc)  a limit 10)  b,user u 
+           where u.user_code = b.user_code 
+    </select>
+    <select id="getActivityInfo" parameterType="java.lang.Integer" resultType="activityInfo">
+        select activity_id activityId,
+               start_date startDate,
+               end_date endDate
+        from activity_info 
+        where status='1'
+        and activity_id = #{value}
+    </select>
+
+   <select id="getActivityUserTotalNumber" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+       select ifnull(total_user_number,0) from activity_info where activity_id = #{value}
+   </select>
+   <select id="increaseActivityUserNumber" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+       update activity_info set  total_user_number =ifnull(total_user_number,0)+1 where activity_id = #{value}
+   </select>
+
+
+    <update id="updateActivityInfo" parameterType="activityInfo">
+        UPDATE `activity_info`
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="activityid != null">activity_id = #{activityid},</if>
+            <if test="activityName != null">activity_name = #{activityName},</if>
+            <if test="activityContent != null">activity_content = #{activityContent},</if>
+            <if test="activityType != null">activity_type = #{activityType},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="operator != null">operator = #{operator},</if>
+            <if test="startDate != null">start_date = #{startDate},</if>
+            <if test="endDate != null">end_date = #{endDate},</if>
+            update_date = now()
+        </trim>
+        WHERE activity_id = #{activityid}
+    </update>
+    <select id="getActivityReward" resultType="activityRewardDetail">
+    	SELECT
+			t.activity_reward_id actRewardid,
+			t.activity_id activityid,
+			t.reward_code rewardCode,
+			t.reward_object rewardObject,
+			t.limit_max limitMax,
+			t.limit_count limitCount,
+			t.effective_days effectiveDays,
+			t.product_code productCode,
+			t.description description
+		FROM activity_reward t
+		WHERE reward_code = #{rewardCode}
+		AND activity_id = #{activityid}
+    </select>
+    <select id="getActivityBeginDate" parameterType="java.lang.Integer" resultType="java.util.Date">
+    	SELECT start_date FROM activity_info WHERE activity_id = #{activityId}
+    </select>
+    <select id="getShareItems" resultType="com.nonobank.app.activity.entity.ShareItem" >
+		SELECT id id,type type ,share_url shareUrl,picture_url pictureUrl,share_title shareTitle,share_content shareContent,is_used isUsed
+		FROM share_items
+		WHERE is_used='1';
+	</select>
+
+	<update id="updateReward" parameterType="activityRewardDetail">
+		UPDATE activity_user_detail SET activity_reward_id=#{actRewardid} ,draw_amount=#{drawAmount} WHERE activity_user_detail_id=#{actUserDetailid}
+	</update>
+</mapper>

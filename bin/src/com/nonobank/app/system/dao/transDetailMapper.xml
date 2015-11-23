@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.system.dao.TransDetailDAO">
+	
+	<select id="rechargeAmountByDay" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+		SELECT
+			ifnull(sum(amount), 0.00)
+		FROM
+			trans_detail
+		WHERE
+			trans_code = 1
+		AND status = 2
+		AND user_code = #{userCode} 
+		AND trans_date = #{transDate}
+	</select>
+	<select id="rechargeAmountByDayNew" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+		SELECT
+			ifnull(sum(amount), 0.00)
+		FROM
+			trans_detail
+		WHERE
+			trans_code = 1
+		AND status = 2
+		AND user_code = #{userCode} 
+		AND trans_date = #{transDate}
+		AND user_card_code = #{userCardCode}
+	</select>
+	
+	<select id="rechargeAmountByMonth" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+		SELECT
+			ifnull(sum(amount), 0.00)
+		FROM
+			trans_detail
+		WHERE
+			trans_code = 1
+		AND status = 2
+		AND user_code = #{userCode} 
+		AND date_format(trans_date, '%Y%m') = #{transMonth}
+	</select>
+	<select id="rechargeAmountByMonthNew" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+		SELECT
+			ifnull(sum(amount), 0.00)
+		FROM
+			trans_detail
+		WHERE
+			trans_code = 1
+		AND status = 2
+		AND user_code = #{userCode} 
+		AND date_format(trans_date, '%Y%m') = #{transMonth}
+		AND user_card_code = #{userCardCode}
+	</select>
+	<select id="countUserFinanceTimes" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			trans_detail
+		WHERE
+			user_code = #{userCode}
+		AND trans_code = 1
+		AND status = 2
+	</select>
+	<select id="countUserFinanceAmountByTransDate" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+		SELECT
+			ifnull( sum(amount), 0.00 )
+		FROM
+			trans_detail t
+		WHERE
+			t.user_code = #{userCode}
+		AND t.trans_code = 1
+		AND STATUS = 2
+		<![CDATA[
+		AND trans_date >= #{transDate}
+		]]>
+	</select>
+	<select id="countFriendFinanceAmountByTransDate" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+		SELECT
+			sum(a.amount)
+		FROM
+			user_relation t
+		INNER JOIN trans_detail a ON a.user_code = t.user_code
+		WHERE
+			t.invite_user_code = #{userCode}
+		AND a.trans_code = 1
+		AND a.status = 2
+		<![CDATA[
+		AND a.trans_date >= #{transDate}
+		]]>
+	</select>
+	<select id="countWithdrawTotalAmount" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+		SELECT
+			IFNULL(sum(amount), 0.00)
+		FROM
+			trans_detail
+		WHERE
+			trans_code = 5
+		AND status = 2
+		AND user_code = #{userCode}
+	</select>
+	<select id="getFinanceList" parameterType="java.lang.Integer" resultType="financeListDto">
+		SELECT
+			t.update_date transDate,
+			t.amount transAmount,
+			t.status status
+		FROM
+			trans_detail t
+		where t.user_code = #{userCode}
+		and trans_code ='1'
+		<![CDATA[
+		and status<>'1'
+		]]>
+		order by t.update_date desc 
+	</select>
+	<select id="getWithdrawList" parameterType="java.lang.Integer" resultType="withdrawListDto">
+		SELECT t.create_date transDate,
+			t.withdraw_amount withdrawAmount,
+			t.status status, 
+			t.process_date processDate,
+			t.arrive_date arriveDate
+		FROM withdraw_reward t
+		WHERE t.user_code = #{userCode}
+		and trans_code = 2
+		ORDER BY t.create_date DESC
+	</select>
+	<select id="getWithdrawListByQuartz" parameterType="java.lang.Integer" resultType="java.lang.String">
+		select orderid from withdraw_reward where status = #{status} and ( trans_code = 2 or trans_code = 6 )
+	</select>
+
+</mapper>

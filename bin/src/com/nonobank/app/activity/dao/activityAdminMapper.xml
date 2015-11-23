@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.activity.dao.ActivityAdminDAO">
+
+	<select id="getHandMovementRewardList" resultType="java.lang.Integer">
+		SELECT
+			user_code
+		FROM
+			user_approach
+		WHERE
+			approach_define_id = 81
+		<![CDATA[
+		AND created_date <= '2015-06-11 09:37:15'
+		]]>
+	</select>
+	
+</mapper>

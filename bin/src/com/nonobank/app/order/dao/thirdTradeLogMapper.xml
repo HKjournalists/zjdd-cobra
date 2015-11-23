@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.order.dao.ThirdTradeLogDAO">
+	
+    <insert id="insertTradeLog" parameterType="tradeLog">
+    	insert into third_trade_log
+    		( order_id, user_code, platform_id, request_data, response_data, response_code, 
+    		trans_status, update_date )
+    	values( #{orderid}, #{userCode}, #{platformid}, #{requestData}, #{responseData}, 
+    		#{responseCode}, #{transStatus}, #{updateDate} );
+    </insert>
+    <insert id="insertWithdrawLog" parameterType="java.util.Map">
+    	insert into auto_withdraw_log
+    		( user_code, order_id, response_msg, request_msg, create_date )
+    	values( #{userCode}, #{orderid}, #{responseMsg}, #{requestMsg}, now() )
+    </insert>
+
+</mapper>

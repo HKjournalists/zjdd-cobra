@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.order.dao.OrderDAO">
+	
+    <insert id="insertOrder" parameterType="OrderInfo" >
+		insert into order_info( order_id, user_code, product_code, status, trans_code )
+			values( #{orderid}, #{userCode}, #{productCode}, #{status}, #{transCode} );
+    </insert>
+    <select id="findOrderById" parameterType="java.util.Map" resultType="java.lang.Integer">
+    	select count(*) from order_info 
+    		where order_id = #{orderid} and user_code = #{userCode}
+    		and product_code = #{productCode} and ( status = 3 or status = 5 or status = 2 )
+    </select>
+    <update id="updateOrderStatus" parameterType="java.util.Map">
+    	update order_info set status = #{transStatus} where order_id = #{orderid}
+    </update>
+    <update id="updateOrderInfo" parameterType="java.util.Map">
+    	update order_info set status = #{transStatus}, count = #{count}, amount = #{amount}
+    	where order_id = #{orderid}
+    </update>
+	<insert id="insertWithdrawReward" parameterType="withdrawReward">
+		insert into withdraw_reward( orderid, user_code, status, create_date, update_date, trans_code, withdraw_amount )
+		values( #{orderid}, #{userCode}, #{status}, now(), now(), #{transCode}, #{withdrawAmount} )
+	</insert>
+	<select id="isOrderidExist" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(*) from order_info 
+		where order_id = #{orderid} and user_code = #{userCode} and product_code = #{productCode}
+	</select>
+	<select id="getBankidByBankCode" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT
+			t.bank_id
+		FROM
+			bank_define t
+		WHERE
+			t.is_avaliable = 1
+		AND t.bank_code = #{bankCode}
+	</select>
+	<select id="getTotalAmountByUserCode" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
+		SELECT
+			ifnull(sum(investing_amount-total_interest), 0.00) totalAmount
+		FROM
+			user_account
+		WHERE
+			user_code = #{userCode};
+	</select>
+	<select id="getLimitAmount" parameterType="java.lang.Integer" resultType="java.lang.String">
+		SELECT
+			param_value
+		FROM
+			system_param
+		WHERE
+			param_id = 2
+	</select>
+	<select id="getProductAmountByUserCode" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+		SELECT
+			ifnull(
+				sum(
+					t.investing_amount - t.total_interest
+				),
+				0.00
+			) totalAmount
+		FROM
+			user_account t
+		WHERE
+			t.user_code = #{userCode}
+		AND t.product_code = #{productCode}
+	</select>
+	<select id="getLimitProductAmount" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT
+			t.invest_amount_max
+		FROM
+			product_rule t
+		WHERE
+			t.product_code = #{productCode}
+	</select>
+	<select id="countTotalAmount" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+		select ifnull( sum(amount), 0.00 ) amount from trans_detail
+		where trans_code = 1 and status = 2 and trans_date = #{curDate}
+		and user_code = #{userCode}
+		<if test="monthRateLimit != null and monthRateLimit != ''">
+		<![CDATA[
+			and ( month_rate_id is not null and month_rate_id <= #{monthRateLimit} )
+		]]>
+		</if>
+	</select>
+	<select id="countTotalInvestAmount" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
+		select ifnull( sum( investing_amount ), 0.00 ) from user_account where user_code = #{userCode}
+	</select>
+	
+	
+	
+	<select id="getUserCodeFromTransDetail" resultType="java.lang.Integer">
+		select user_code from user order by created_date
+	</select>
+	<select id="isInviteCodeExist" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		select count(*) from activity_invite_code where user_code = #{userCode}
+	</select>
+	<delete id="deleteInviteCode" parameterType="java.util.Map">
+		DELETE FROM activity_invite_code WHERE user_code = #{userCode} order by create_date limit #{deleteCount};
+	</delete>
+	<update id="updateWithdrawReward" parameterType="java.util.Map">
+		update withdraw_reward set status = #{status} , message = #{message}
+		<if test="updateType == 1">
+		, process_date = now()
+		</if>
+		<if test="updateType == 2">
+		, arrive_date = #{arriveDate}
+		</if>
+		where orderid = #{orderid}
+	</update>
+	<select id="getWithdrawRewardEntity" parameterType="java.lang.String" resultType="withdrawReward">
+		SELECT
+			t.orderid orderid,
+			t.user_code userCode,
+			t.withdraw_amount withdrawAmount,
+			t.arrive_date arriveDate
+		FROM
+			withdraw_reward t
+		WHERE
+			t.orderid = #{orderid}
+		ORDER BY
+			create_date DESC
+		LIMIT 1
+	</select>
+	<select id="isAllowBindCardByBankCode" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT
+			avaliable_bind
+		FROM
+			bank_define
+		WHERE
+			bank_code = #{bankCode}
+	</select>
+	<select id="getOderInfoEntity" parameterType="com.nonobank.app.order.entity.OrderInfoEntity" resultType="com.nonobank.app.order.entity.OrderInfoEntity">
+		SELECT order_id orderid,user_code userCode,product_code productCode,count count,status status,trans_code transCode,amount amount,create_date createTime
+		FROM order_info
+		WHERE order_id=#{orderid} LIMIT 1
+	</select>
+	
+</mapper>

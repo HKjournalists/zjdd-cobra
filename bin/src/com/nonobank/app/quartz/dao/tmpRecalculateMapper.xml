@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.quartz.dao.TmpReCalculteDAO">
+	
+	<select id="getTmpAccountList" resultType="userAccount">
+	     select
+	      u.user_account_id userAccountId,
+          u.user_code userCode,
+          product_code productCode,
+          total_reward_interest totalRewardInterest,
+          total_reward_amount totalRewardAmount,
+          investing_amount investingAmount
+        from user_account u
+        where u.investing_amount>0
+	</select>
+    <select id="getTmpRewardAmount" resultType="java.math.BigDecimal" parameterType="java.util.Map">
+       SELECT
+				IFNULL(SUM(t.draw_amount), 0.00)
+			FROM
+				activity_user_detail t
+			INNER JOIN activity_reward a ON a.activity_reward_id = t.activity_reward_id
+			WHERE
+				a.activity_id = '1'
+			<![CDATA[
+			AND 
+				t.start_date <= #{curDate}
+			AND
+				t.end_date >= #{curDate}
+			]]>
+			AND
+				t.user_code = #{userCode}
+    
+    </select>
+    <select id="getTmpYesterDayInterestCount" resultType="java.lang.Integer" parameterType="java.util.Map">    
+      select count(1) from user_interest where user_code = #{userCode} 
+      and product_code=#{productCode} 
+      and interest_date = #{currentDate}
+    </select>
+    <update id="updateTmpYesterDayInterest" parameterType="java.util.Map">
+        update user_interest set actual_interest = actual_interest+#{interestAmount} 
+        where user_code = #{userCode} 
+        and product_code=#{productCode} 
+        and interest_date = #{currentDate}
+    </update>   
+   
+    
+  
+    
+    
+</mapper>

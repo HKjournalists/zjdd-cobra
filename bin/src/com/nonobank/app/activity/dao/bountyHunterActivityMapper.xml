@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.activity.dao.BountyHunterActivityDAO">
+	
+	<select id="isDrewReward" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			count(1)
+		FROM
+			activity_user_detail
+		WHERE
+			activity_reward_id = #{activityRewardid}
+		AND user_code = #{userCode}
+	</select>
+	<select id="isRewardExistByBountyHunter" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			activity_user_detail t
+		INNER JOIN 
+			activity_reward a 
+		ON 
+			a.activity_reward_id = t.activity_reward_id
+		WHERE
+			t.user_code = #{userCode}
+		AND
+			t.resource_user_code = #{resourceUserCode}
+		AND
+			a.activity_id = #{activityid}
+		AND
+			a.reward_object = #{rewardObject}
+	</select>
+	<select id="getAICEByInviteCode" parameterType="java.util.Map" resultType="activityInviteCode">
+		SELECT
+			t.activity_id activityid,
+			t.invite_code inviteCode,
+			t.user_code userCode
+		FROM
+			activity_invite_code t
+		WHERE
+			t.activity_id = #{activityid} 
+		AND t.invite_code = #{inviteCode}
+	</select>
+	<select id="getAICEByInviteCodeNew" parameterType="java.lang.String" resultType="activityInviteCode">
+		SELECT
+			t.activity_id activityid,
+			t.invite_code inviteCode,
+			t.user_code userCode
+		FROM
+			activity_invite_code t
+		WHERE
+		 t.invite_code = #{inviteCode} limit 1
+	</select>
+	<select id="getInviteLimitByUserCode" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			t.invite_limit
+		FROM
+			activity_user t
+		WHERE
+			t.user_code = #{userCode}
+		AND t.activity_reward_id = #{activityRewardid};
+	</select>
+	<select id="getEarliestUserCode" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT user_code FROM user_relation
+		WHERE
+			invite_user_code = #{userCode}
+		AND user_code NOT IN (
+			SELECT
+				resource_user_code
+			FROM
+				activity_user_detail
+			WHERE
+				user_code = #{userCode}
+			AND activity_reward_id = #{activityRewardid}
+		)
+		ORDER BY
+			create_date
+		LIMIT 1
+	</select>
+	<select id="isAddressBook" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			user t
+		INNER JOIN address_book a ON a.mobile_number = t.mobile_number
+		WHERE
+			t.user_code = #{userCode}
+	</select>
+	<select id="isAddressBookInvited" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			user_relation t
+		INNER JOIN user a ON t.invite_user_code = a.user_code
+		INNER JOIN address_book b ON b.mobile_number = a.mobile_number
+		WHERE
+			t.user_code = #{userCode}
+	</select>
+	<select id="isDrawedReward" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			activity_user_detail t
+		WHERE
+			t.user_code = #{userCode}
+		AND t.activity_reward_id = #{activityRewardid}
+	</select>
+	<select id="getMobileByUserCode" parameterType="java.lang.Integer" resultType="java.lang.String">
+		SELECT
+			t.mobile_number
+		FROM
+			user t
+		WHERE
+			t.user_code = #{userCode}
+	</select>
+	<select id="getRealnameByMobile" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT
+			t.real_name
+		FROM
+			address_book t
+		WHERE
+			t.mobile_number = #{mobile}
+	</select>
+	<select id="getFatherMobileByUserCode" parameterType="java.lang.Integer" resultType="java.lang.String">
+		SELECT
+			a.mobile_number
+		FROM
+			user_relation t
+		INNER JOIN user a ON a.user_code = t.invite_user_code
+		WHERE
+			t.user_code = #{userCode}
+	</select>
+	<select id="isDrawedFirstReward" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			activity_user t
+		WHERE
+			t.user_code = #{userCode}
+		AND t.activity_reward_id = #{activityRewardid}
+	</select>
+	<select id="getInviteUserCode" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		SELECT
+			invite_user_code
+		FROM
+			user_relation
+		WHERE
+			user_code = #{userCode}
+		AND invite_user_code NOT IN (1, 2, 3);
+	</select>
+</mapper>

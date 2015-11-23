@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.external.dao.ChannelDataStatisticsDAO">
+
+	<select id="countRegisterByChannel" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT count(1) FROM user t
+		INNER JOIN user_approach a ON a.user_code = t.user_code
+		INNER JOIN approach_define b ON b.approach_define_id = a.approach_define_id
+		WHERE
+			DATE_FORMAT( t.created_date, '%Y%m%d' ) = #{accDate}
+		AND b.resource = #{channel}
+	</select>
+	<select id="countFinanceByChannel" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT count(t.user_code) FROM user t
+		INNER JOIN user_approach a ON a.user_code = t.user_code
+		INNER JOIN approach_define b ON b.approach_define_id = a.approach_define_id
+		INNER JOIN trans_detail c ON c.user_code = t.user_code
+		WHERE
+			DATE_FORMAT(t.created_date, '%Y%m%d') = #{accDate}
+		AND c.trans_code = 1 AND c.status = 2
+		AND b.resource = #{channel}
+	</select>
+	<select id="countFinanceAmountByChannel" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+		SELECT
+			ifnull(sum(amount), 0.00)
+		FROM
+			user t
+		INNER JOIN user_approach a ON a.user_code = t.user_code
+		INNER JOIN approach_define b ON b.approach_define_id = a.approach_define_id
+		INNER JOIN trans_detail c ON c.user_code = t.user_code
+		WHERE
+			DATE_FORMAT(t.created_date, '%Y%m%d') = #{accDate}
+		AND c.trans_code = 1 and c.status = 2
+		AND b.resource = #{channel}
+	</select>
+
+</mapper>

@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+
+<!-- 	<import resource="classpath:biz/biz-order-quartz-context.xml"/> -->
+	
+	<bean id="quartzService" class="com.nonobank.app.quartz.service.impl.QuartzServiceImpl"></bean>
+	
+	<!-- 自动更新债权人详细信息 -->
+	<bean id="autoImportDebtInfoService" class="com.nonobank.app.quartz.service.impl.AutoImportDebtInfoServiceImpl"></bean>
+	<bean id="autoUpdateDebterInfoJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="autoImportDebtInfoService">
+		</property>
+		<property name="targetMethod" value="autoUpdateDebterInfo"></property>
+	</bean>
+	<bean id="autoUpdateDebterInfoTrigger" 
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="autoUpdateDebterInfoJob"></property>
+		<property name="cronExpression">
+			<value>0 0 12 * * ?</value>
+		</property>
+	</bean>	 
+	
+	<!-- 自动导入债权服务 -->
+	<bean id="autoImportDebtInfoJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="autoImportDebtInfoService">
+		</property>
+		<property name="targetMethod" value="autoImportDebtInfo"></property>
+	</bean>
+	<bean id="autoImportDebtInfoTrigger" 
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="autoImportDebtInfoJob"></property>
+		<property name="cronExpression">
+			<value>0 0/10 1-23 * * ?</value>
+		</property>
+	</bean>	 
+	
+	<!-- 自动更新债权服务 -->
+	<bean id="autoUpdateDebtInfoJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="autoImportDebtInfoService">
+		</property>
+		<property name="targetMethod" value="autoUpdateDebtInfo"></property>
+	</bean>
+	<bean id="autoUpdateDebtInfoTrigger" 
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="autoUpdateDebtInfoJob"></property>
+		<property name="cronExpression">
+			<value>0 0/59 1-23 * * ?</value>
+		</property>
+	</bean>	 
+	
+	
+	<!--  查询提现订单状态变更   -->
+	<bean id="autoWithdrawQuartzService" class="com.nonobank.app.quartz.service.impl.AutoWithdrawQuartzServiceImpl"></bean>
+	<bean id="autoWithdrawQueryOrderInfoJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="autoWithdrawQuartzService">
+		</property>
+		<property name="targetMethod" value="autoWithdrawQueryOrderInfo"></property>
+	</bean>
+	 
+	<bean id="autoWithdrawQueryOrderInfoTrigger" 
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="autoWithdrawQueryOrderInfoJob"></property>
+		<property name="cronExpression">
+			<value>0 0/10 4-23 * * ?</value>
+		</property>
+	</bean>
+
+
+	<!--自动创建抽奖记录 -->
+	<bean id="userRouletteJob" class="com.nonobank.app.quartz.service.impl.UserRouletteJobServiceImpl"></bean>
+	<bean id="autoGenerateUserRouletteJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="userRouletteJob"></property>
+		<property name="targetMethod" value="generateUserRouletteList"></property>
+	</bean>
+	 <bean id="autoGenerateUserRouletteTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="autoGenerateUserRouletteJob"></property>
+		<property name="cronExpression">
+			<value>0 0 0/2 * * ?</value>
+		</property>
+	</bean>	
+	
+	<bean id="interestCaculationJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="quartzService">
+		</property>
+		<property name="targetMethod" value="calculateInterest"></property>
+	</bean>
+ 
+	<bean id="interestCaculationTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="interestCaculationJob"></property>
+		<property name="cronExpression">
+			<value>${nonobank.app.interestCaculate.time}</value>
+		</property>
+	</bean>
+	
+	
+  <bean id="initRandomVirtualCountJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="quartzService">
+		</property>
+		<property name="targetMethod" value="initRandomVirtualCount"></property>
+	</bean>
+ 
+	<bean id="initRandomVirtualCountTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="initRandomVirtualCountJob"></property>
+		<property name="cronExpression">
+			<value>0 0/1 * * * ?</value>
+		</property>
+	</bean>
+	
+	<bean id="checkRechargeOrderJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="quartzService">
+		</property>
+		<property name="targetMethod" value="checkRechargeOrderJob"></property>
+	</bean>
+ 
+   	<bean id="checkRechargeOrderTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="checkRechargeOrderJob"></property>
+		<property name="cronExpression">
+			<value>0 7/10 * * * ? </value>
+		</property>
+	</bean>
+	
+	
+	<bean id="addRechargeOrderJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="quartzService">
+		</property>
+		<property name="targetMethod" value="addRechargeOrderJob"></property>
+	</bean>
+ 
+	<bean id="addRechargeOrderTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="addRechargeOrderJob"></property>
+		<property name="cronExpression">
+			<value>0 3/5 * * * ? </value>
+		</property>
+	</bean>
+	
+	
+	<bean id="checkCSMRightJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="quartzService">
+		</property>
+		<property name="targetMethod" value="checkCSMRightJob"></property>
+	</bean>
+ 
+	<bean id="checkCSMRightTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="checkCSMRightJob"></property>
+		<property name="cronExpression">
+			<value>0 13 2 * * ? </value>
+		</property>
+	</bean>
+	
+	
+	
+	
+	<bean id="syncUserDataJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="quartzService">
+		</property>
+		<property name="targetMethod" value="syncUserDataJob"></property>
+	</bean>
+ 
+	<bean id="syncUserDataTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="syncUserDataJob"></property>
+		<property name="cronExpression">
+			<value>0 0/2 * * * ? </value>
+		</property>
+	</bean>
+	
+	<bean id="syncUserDetailDataJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="quartzService">
+		</property>
+		<property name="targetMethod" value="syncUserDetailDataJob"></property>
+	</bean>
+ 
+	<bean id="syncUserDetailDataTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="syncUserDetailDataJob"></property>
+		<property name="cronExpression">
+			<value>0 0/2 * * * ? </value>
+		</property>
+	</bean>
+	
+	<bean id="syncRechargeDataJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="quartzService">
+		</property>
+		<property name="targetMethod" value="syncRechargeDataJob"></property>
+	</bean>
+ 
+	<bean id="syncRechargeDataTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="syncRechargeDataJob"></property>
+		<property name="cronExpression">
+			<value>0 13 2 * * ? </value>
+		</property>
+	</bean>
+	
+	<bean id="schedulerFactory" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<!-- 收益计算 -->
+				<!-- 
+				<ref bean="interestCaculationTrigger" />
+				 
+				<ref bean="autoWithdrawQueryOrderInfoTrigger"/>
+				<ref bean="autoImportDebtInfoTrigger"/>
+				<ref bean="autoUpdateDebtInfoTrigger"/>
+				
+				<ref bean="autoGenerateUserRouletteTrigger"/>
+				<ref bean="addRechargeOrderTrigger"/>
+				<ref bean="checkRechargeOrderTrigger"/>
+				<ref bean="checkCSMRightTrigger"/>
+				-->
+				<ref bean="syncUserDataTrigger"/>
+				<ref bean="syncUserDetailDataTrigger"/>
+				<!--  
+				<ref bean="syncRechargeDataTrigger"/>
+				-->
+			</list>
+		</property>
+		<property name ="autoStartup" value="${autoStartup}"></property>
+		<property name ="startupDelay" value="${startupDelay}"></property>
+		<!-- 
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="transactionManager" ref="txManager"></property>
+		 -->
+		<property name="configLocation" value="classpath:nonobank_app-quartzmanage.properties"></property>
+		<property name="applicationContextSchedulerContextKey" value="applicationContext"></property>
+	
+	</bean>
+	
+</beans>

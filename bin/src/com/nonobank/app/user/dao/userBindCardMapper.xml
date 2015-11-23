@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.user.dao.BindCardDAO">
+    <insert id="insertBindCard" parameterType="bindCard" >
+        INSERT INTO user_bind_card
+            (user_code,
+             bank_code,
+             bank_card_number,
+             reserve_mobile,
+             short_number,
+             total_recharge_amount,
+             total_deposit_amount)
+		VALUES (#{userCode},
+				#{bankCode},
+				#{bankCardNumber},
+				#{reserveMobile},
+				#{shortNumber},
+				#{totalRechargeAmount},
+				#{totalDepositAmount}
+			)
+    </insert>
+    <insert id="insertBindCardNew" parameterType="bindCard" >
+        INSERT INTO user_bind_card
+            (user_code,
+             bank_code,
+             bank_card_number,
+             reserve_mobile,
+             short_number,
+             total_recharge_amount,
+             total_deposit_amount,
+             is_validate_bank_code)
+		VALUES (#{userCode},
+				#{bankCode},
+				#{bankCardNumber},
+				#{reserveMobile},
+				#{shortNumber},
+				#{totalRechargeAmount},
+				#{totalDepositAmount},
+				#{isValidateBankCode}
+			)
+    </insert>
+    <!--  
+	<select id="getBindCardList" parameterType="String" resultType="bindCard">
+		SELECT
+			user_card_code				userCardCode,
+  			user_code           		userCode,
+  			bank_code           		bankCode,
+  			bank_card_number			  bankCardNumber,
+  			reserve_mobile      		reserveMobile,
+  			short_number        		shortNumber,
+  			total_recharge_amount		totalRechargeAmount
+  			total_deposit_amount		totalDepositAmount
+		FROM user_bind_card t
+			WHERE t.user_code =#{userCode} 
+	</select>
+	-->
+	<select id="getBindCardDetailList" parameterType="String" resultType="bindCardDetail">
+		SELECT
+			t.user_card_code					userCardCode,
+  			t.user_code           				userCode,
+  			t.bank_code           				bankCode,
+  			right(t.bank_card_number, 4)    	bankCardNumber,
+  			t.reserve_mobile      				reserveMobile,
+  			t.short_number        				shortNumber,
+  			t.total_recharge_amount				totalRechargeAmount,
+  			t.total_deposit_amount				totalDepositAmount,
+  			a.bank_name 						bankName,
+  			a.is_avaliable						isAvaliable
+  		FROM user_bind_card t inner join bank_define a
+  			on t.bank_code = a.bank_code
+			WHERE t.user_code =#{userCode} and a.is_avaliable = '1'
+			and is_used=1
+	</select>
+	<select id="getUserBindCardDto" parameterType="java.lang.Integer" resultType="userBindCardDto">
+		SELECT
+			t.user_card_code					userCardCode,
+  			right(t.bank_card_number, 4)    	bankCardNumber,
+  			t.short_number        				shortNumber,
+  			a.bank_name 						bankName,
+  			t.bank_code							bankCode,
+  			t.province_id						provinceId,
+  			t.city_id							cityId
+  		FROM user_bind_card t inner join bank_define a
+  			on t.bank_code = a.bank_code
+			WHERE t.user_code =#{userCode} 
+			and is_used=1
+	</select>
+	<select id="getUserBindCard" resultType="userBindCardDto">
+		SELECT
+			t.user_card_code					userCardCode,
+  			t.bank_card_number			    	bankCardNumber,
+  			t.short_number        				shortNumber,
+  			t.bank_code							bankCode,
+  			t.province_id						provinceId,
+  			t.city_id							cityId
+  		FROM user_bind_card t 
+  			where t.is_validate_bank_code = 0
+	</select>
+	<select id="getUserBindCardList" resultType="userBindCardDto">
+		SELECT
+			t.user_card_code					userCardCode,
+  			right(t.bank_card_number, 4)    	bankCardNumber,
+  			t.short_number        				shortNumber,
+  			a.bank_name 						bankName,
+  			t.bank_code							bankCode,
+  			t.province_id						provinceId,
+  			t.city_id							cityId
+  		FROM user_bind_card t inner join bank_define a
+  			on t.bank_code = a.bank_code
+	</select>
+	<select id="isBankCardNoExist" parameterType="java.lang.String" resultType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			user_bind_card u
+		WHERE
+			u.bank_card_number = #{bankCardno}
+			and is_used=1
+	</select>
+	<select id="isShortNoExist" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			user_bind_card t
+		WHERE
+			t.short_number = #{shortNo}
+		AND
+			t.user_code = #{userCode}
+			and is_used=1
+	</select>
+	<update id="updateBindCardInfo" parameterType="java.util.Map">
+		UPDATE user_bind_card t
+		SET t.total_recharge_amount = t.total_recharge_amount + #{totalRechargeAmount}
+		WHERE t.user_card_code = #{userCardCode}
+	</update>
+	<update id="updateBindCardInfoNew" parameterType="java.util.Map">
+		UPDATE user_bind_card t
+		t.city_id = #{cityId}, t.province_id = #{provinceId}, t.city_name = #{cityName}, t.is_validate_city_name = 1
+		WHERE t.user_card_code = #{userCardCode}
+	</update>
+	<update id="updateBindCard" parameterType="java.util.Map">
+		update user_bind_card t
+		set t.province_id = #{provinceId}, t.city_id = #{cityId}, t.bank_branch_id = #{bankBranchId}
+		where t.user_card_code = #{userCardCode}
+	</update>
+	<update id="updateBankCode" parameterType="java.util.Map">
+		update user_bind_card
+		set bank_code = #{bankCode}, is_validate_bank_code = 1 where user_card_code = #{userCardCode}
+	</update>
+	<select id="getWithdrawDtoByUserCode" parameterType="java.util.Map" resultType="autoWithdrawDto">
+		SELECT
+			t.bank_card_number bankCardNumber,
+			a.real_name creditName,
+			b.bank_name bankName,
+			c.city_name provinceCity
+		FROM
+			user_bind_card t
+		INNER JOIN user_detail a ON t.user_code = a.user_code
+		INNER JOIN bank_define b ON t.bank_code = b.bank_code
+		LEFT JOIN system_city_define c ON c.city_id = t.city_id
+		WHERE
+			t.user_code = #{userCode}
+			and t.user_card_code = #{userCardCode}
+	</select>
+	
+	<select id="getCityName" parameterType= "java.lang.Integer" resultType="String">
+	     select city_name from system_city_define where city_id =#{value}
+	</select>
+	<select id="getUserBindCardByCityInfo" resultType="userBindCardDto">
+		SELECT
+			t.user_card_code					userCardCode,
+  			t.bank_card_number			    	bankCardNumber,
+  			t.short_number        				shortNumber,
+  			t.bank_code							bankCode,
+  			t.province_id						provinceId,
+  			t.city_id							cityId
+  		FROM user_bind_card t 
+  			where t.is_validate_city_name = 0 and bank_code = 'bk5'
+	</select>
+	<select id="getBindCardCodeByUserCode" parameterType="java.lang.Integer" resultType="String">
+	    select bank_card_number from user_bind_card where user_code = #{value} and is_used=1 limit 1
+	</select>
+	<select id="getBindCardCodeByOrderId" parameterType="String" resultType="String">
+	    select bank_card_number from user_bind_card where user_code  in 
+	    (select distinct user_code from withdraw_reward where orderid=#{value}) 
+	    limit 1
+	</select>
+	<select id="getUserBindCardListDto" parameterType="java.lang.Integer" resultType="userBindCardListDto">
+		SELECT
+			t.user_card_code userCardCode,
+			right(t.bank_card_number, 4) bankCardNumber,
+			t.short_number shortNumber,
+			t.bank_code bankCode,
+			t.province_id provinceId,
+			t.city_id cityId,
+			a.bank_name bankName,
+			a.quickRecharge_single_limit singleLimit,
+			a.quickRecharge_monthly_limit monthlyLimit,
+			a.quickRecharge_daily_limit dailyLimit,
+			t.default_flag defaultFlag
+		FROM
+			user_bind_card t
+		INNER JOIN bank_define a ON a.bank_code = t.bank_code
+		WHERE t.is_used = 1
+		AND t.user_code = #{userCode}
+		ORDER BY default_flag desc
+	</select>
+	<select id="getRemoveBindDto" parameterType="java.lang.Integer" resultType="removeBindDto">
+		SELECT
+			t.user_code userCode,
+			t.bank_card_number bankCardNo,
+			t.short_number storablePan,
+			a.quickBill_cu bankName
+		FROM
+			user_bind_card t
+		INNER JOIN bank_define a ON a.bank_code = t.bank_code
+		WHERE
+			t.user_card_code = #{userCardCode}
+	</select>
+	<update id="updateBindCardIsUsed" parameterType="java.lang.Integer">
+		UPDATE user_bind_card
+		SET is_used = 0
+		WHERE
+			user_card_code = #{userCardCode}
+	</update>
+	<select id="loadUserCardCode" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT user_card_code FROM user_bind_card WHERE user_code = #{userCode} AND bank_card_number = #{bankCardNum}
+	</select>
+</mapper>

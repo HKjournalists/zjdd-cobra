@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.system.dao.SystemLotteryRewardDAO">
+	
+	<select id="getSystemLotteryReward" parameterType="java.lang.Integer" resultType="systemLotteryRewardDto">
+		SELECT
+			t.lottery_reward_id lotteryRewardId,
+			t.lottery_reward_fixed lotteryRewardFixed,
+			t.lottery_reward_max lotteryRewardMax,
+			t.lottery_reward_min lotteryRewardMin,
+			t.lottery_reward_probability lotteryRewardProbability,
+			t.lottery_reward_name lotteryRewardName
+		FROM
+			system_lottery_reward t
+		WHERE
+			t.activity_id = #{activityId}
+	</select>
+    <select id="getLotteryAmount" parameterType="java.lang.Integer" resultType="java.math.BigDecimal">
+       select lottery_reward_fixed from system_lottery_reward where lottery_reward_id=#{value}
+    </select>
+</mapper>

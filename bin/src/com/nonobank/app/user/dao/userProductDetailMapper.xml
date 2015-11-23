@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.user.dao.UserProductDetailDAO">
+	
+	<insert id="addUserProductDetailBatch" parameterType="java.util.List" useGeneratedKeys="true">
+	    <selectKey resultType="long" keyProperty="userProductDetailId" order="AFTER">  
+            SELECT    
+            LAST_INSERT_ID()  
+        </selectKey> 	    
+		INSERT INTO user_product_detail
+            (user_product_id,
+             debt_detail_id,
+             invest_amount,
+             change_resource,
+             created_date,
+             updated_date)
+     	VALUES   
+          <foreach collection ="list" item="userProductDetail"  separator=",">
+           (#{userProductDetail.userProductId},
+            #{userProductDetail.debtDetailId},
+            #{userProductDetail.investAmount},
+            #{userProductDetail.changeResource},          
+            now(),
+            now()
+            )
+          </foreach>
+	</insert>
+	<select id="getUserProductDetailList" parameterType="java.lang.Integer" resultType="userProductDetail">
+	    select t.user_product_id userProductId,
+	        t.user_product_detail_id userProductDetailId,
+	        t.debt_detail_id debtDetailId,
+	        t.invest_amount investAmount	    
+	    from user_product_detail t,debt_detail t2	
+	    where user_product_id=#{value}
+	        and invest_amount>0
+	        and t.debt_detail_id = t2.debt_detail_id
+	    order by t2.debt_type desc
+	</select>
+	<update id="updateUserProductDetail" parameterType="java.util.Map">
+	    update user_product_detail u set u.invest_amount=u.invest_amount-#{amount}
+	    where u.user_product_detail_id=#{id}
+	</update>
+	<select id="getUserProductDetailByDebtId" parameterType ="java.lang.Integer" resultType= "userProductDetail">
+       select user_product_id userProductId,
+	    user_product_detail_id userProductDetailId,
+	    debt_detail_id debtDetailId,
+	    invest_amount investAmount
+	    from user_product_detail
+	    where debt_detail_id=#{value}
+	    and invest_amount>0
+ 	</select>
+ 	<select id="getUserProductDetailDTOBydebtId" parameterType="java.lang.Integer" resultType="userProductDetailDto">
+ 		<![CDATA[
+ 		SELECT
+ 			t.user_product_detail_id userProductDetailId,
+ 			t.user_product_id userProductId,
+			t.debt_detail_id debtDetailId,
+			t.invest_amount investAmount,
+			a.user_code userCode
+		FROM
+			user_product_detail t
+		INNER JOIN user_product a ON a.user_product_id = t.user_product_id
+		WHERE
+			debt_detail_id = #{debtDetailId}
+		and t.invest_amount > 0
+		ORDER BY
+			t.invest_amount DESC
+		]]>
+ 	</select>
+ 	<update id="reductUserProductDetailInvestAmount" parameterType="java.util.Map">
+ 		update user_product_detail set invest_amount = invest_amount - #{reduceAmount}
+ 		where user_product_detail_id = #{userProductDetailId}
+ 	</update>
+ 	<insert id="insertUserProductDetail" parameterType="java.util.Map">
+ 		insert into user_product_detail( user_product_id, debt_detail_id, invest_amount, change_resource, created_date, updated_date )
+ 		values( #{userProductId}, #{debtDetailId}, #{investAmount}, #{changeResource}, now(), now() )
+ 	</insert>
+</mapper>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.activity.dao.ActivityInviteCodeDAO">
+	<select id="isInviteCodeExist" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			activity_invite_code t
+		WHERE
+			t.invite_code = #{inviteCode}
+			<if test="activityId!=null">
+			and t.activity_id =#{activityId}
+			</if>
+	</select>
+	<select id="isInviteCodeTempExist" parameterType="java.lang.String" resultType="java.lang.Integer">
+		select
+			count(1)
+		from
+			user_invite_code_temp
+		where 
+			invite_code = #{inviteCode}
+	</select>
+	<insert id="insertActivityInviteCode" parameterType="activityInviteCode">
+		insert into activity_invite_code( user_code, invite_code, activity_id, create_date )
+		values( #{userCode}, #{inviteCode}, #{activityid}, now() )
+	</insert>
+	<select id="isVipInviteCode" resultType="java.lang.Integer" parameterType="java.util.Map">
+		select count(*) from activity_vip_invite_code t
+		where t.activity_id = #{activityid}
+		and t.vip_invite_code = #{vipInviteCode}
+		and t.invite_code_type = #{inviteCodeType}
+		and t.status = 1
+	</select>
+	<select id="getActivityVipInviteCodeidByCondition" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select t.activity_vip_invite_id from activity_vip_invite_code t
+		where t.activity_id = #{activityid}
+		and t.vip_invite_code = #{inviteCode}
+		and t.status = 1
+		and t.invite_code_type = #{inviteCodeType}
+	</select>
+	<select id="getInviteCodeList" parameterType="java.util.Map" resultType="inviteCodeDto">
+		SELECT
+			t.activity_invitecode_id inviteCodeId,
+			a.mobile_number mobile,
+			t.invite_code inviteCode
+		FROM
+			activity_invite_code t
+		INNER JOIN user a ON a.user_code = t.user_code
+		where 
+			t.sync_status = 0
+			and activity_id = #{activityId}
+		order by t.activity_invitecode_id
+		<if test="limitCount != null and limitCount != ''">
+			limit #{limitCount}
+		</if>
+	</select>
+	<update id="updateSyncStatus" parameterType="java.util.Map">
+		update activity_invite_code set sync_status = 1
+		where activity_invitecode_id between #{minId} and #{maxId}
+	</update>
+	<select id="getInviteCodeListByMobile" parameterType="java.lang.String" resultType="inviteCodeDto">
+		SELECT
+			t.activity_invitecode_id inviteCodeId,
+			a.mobile_number mobile,
+			t.invite_code inviteCode
+		FROM
+			activity_invite_code t
+		INNER JOIN user a ON a.user_code = t.user_code
+		WHERE
+			a.mobile_number = #{mobile}
+			and activity_id = '1'
+		limit 1
+	</select>
+	<update id="updateSyncStatusByInviteCodeid" parameterType="java.lang.Integer">
+		update activity_invite_code set sync_status = 1
+		where activity_invitecode_id = #{inviteCodeId}
+	</update>
+	<update id="rollBackSyncStatus" parameterType="java.lang.String">
+		update activity_invite_code set sync_status = 0
+		where user_code = ( select user_code from user where mobile_number = #{mobile} )
+	</update>
+	<select id="getInviteCodeTempByMoblie" parameterType="java.lang.String" resultType="inviteCodeDto">
+		SELECT
+			t.user_invite_code_id inviteCodeId,
+			t.mobile mobile,
+			t.invite_code inviteCode
+		FROM
+			user_invite_code_temp t
+		WHERE
+			t.mobile = #{mobile}
+		limit 1
+	</select>
+	<insert id="insertUserInviteCodeTemp" parameterType="java.util.Map">
+		insert into user_invite_code_temp( mobile, invite_code, create_date )
+		values( #{mobile}, #{inviteCode}, now() )
+	</insert>
+	<select id="getUserInviteCode" parameterType="java.util.Map" resultType="java.lang.String">
+		SELECT
+			invite_code
+		FROM
+			activity_invite_code
+		WHERE
+			user_code = #{userCode} 
+			and activity_id=#{activityId}
+			limit 1
+	</select>
+	<select id="getTempInviteCode" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT invite_code FROM user_invite_code_temp
+			where mobile = #{mobile} limit 1
+	</select>
+	
+	
+	<select id="getInviteCodeEntity" parameterType="java.util.Map" resultType="activityInviteCode">
+	    select * from (
+	    select user_code userCode,
+	           invite_code inviteCode,
+	           activity_id activityId
+	    from 
+	        activity_invite_code
+		WHERE
+			invite_code = #{inviteCode}
+			<if test="activityId!=null">
+			    and activity_id=#{activityId}
+			</if>			
+			order by create_date asc
+			) a limit 1
+	</select>
+	
+	<!--    根据被邀请人编码查询邀请人编码   -->
+	<select id="getInviterUserCodeByInvitedUserCode" parameterType="java.util.Map" resultType="java.lang.Integer">
+	     select 
+           invite_user_code 
+         from user_relation  t1 
+           where t1.user_code=#{userCode}
+           and t1.activity_id= #{activityId}
+	</select>
+	<!--   根据被邀请人手机号查邀请人编码 -->
+	<select id="getInviterUserCodeByMobile" parameterType="java.util.Map" resultType="java.lang.Integer">   
+        select invite_user_code 
+        from user_relation t 
+        where user_code =(select user_code from user where mobile_number=#{mobileNumber})          
+           and activity_id= #{activityId}
+	</select>
+	
+	<update id="updateTmpInviteCode" parameterType="java.util.Map">
+		UPDATE user_invite_code_temp t
+		SET t.invite_code = #{inviteCode}
+		WHERE t.mobile = #{mobile}
+	</update>
+</mapper>

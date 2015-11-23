@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.user.dao.UserDataChangeLogDAO">
+   <insert id="addUserDataChangeLog" parameterType="userDataChangeLog">
+       insert into user_data_change_log(user_code,change_type,change_date,change_times,old_value,new_value,created_date,updated_date)
+       values(#{userCode},#{changeType},now(),#{changeTimes},#{oldValue},#{newValue},now(),now())
+   </insert>
+   <select id="existChangeLog" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+       <!--  
+       <![CDATA[
+       select count(1) from user_data_change_log t where t.user_code =#{value}
+       and change_date>=date_add(curdate(),interval -day(curdate())+1 day)
+       and change_date<now()
+       ]]>
+       -->
+       select count(1) from user_data_change_log t where t.user_code =#{value}
+   </select>
+    
+</mapper>

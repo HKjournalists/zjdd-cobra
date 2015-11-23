@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.debt.dao.DebtDAO">
+	
+	
+	<!-- 债权锁定 -->
+    <update id="lockDebt" parameterType="java.util.Map">
+       <![CDATA[
+        UPDATE  debt_info p 
+          SET p.current_available_amount= p.current_available_amount- #{amount},
+              p.lock_amount = p.lock_amount+#{amount}
+       where p.current_available_amount>=#{amount}
+          ]]>
+    </update>
+    <update id="releaseDebt" parameterType="java.util.Map">
+        UPDATE  debt_info p 
+          SET p.current_available_amount =p.current_available_amount + #{amount},
+              p.lock_amount = p.lock_amount-#{amount}           
+    </update><update id="confirmDebt" parameterType="java.util.Map">
+        UPDATE  debt_info p 
+          SET p.lock_amount = p.lock_amount-#{amount}           
+    </update>
+    <insert id="addDebt" parameterType="java.util.Map">
+        insert into debt_info(debt_info_id,
+                              debt_name,
+                              total_amount,
+                              current_available_amount, 
+                              lock_amount,
+                              debt_desc,
+                              created_date,
+                              updated_date,
+                              status)
+                   values(
+                      #{debtInfoId},
+                      #{debtName},
+                      #{totalAmount},
+                      #{currentAvailableAmount},
+                      #{lockAmount},
+                      #{debtDesc},
+                      now(),
+                      now(),
+                      #{status}
+                   )
+                              
+    </insert>
+    <update id="addDebtAmount" parameterType="java.util.Map">
+        update debt_info a 
+        set a.total_amount=a.total_amount+#{amount},
+            a.current_available_amount=a.current_available_amount+#{amount},
+            a.lock_amount=a.lock_amount+#{amount}
+         where a.debt_info_id = #{debtInfoId}
+    </update>
+    <update id="updateDebtAmount" parameterType="java.util.Map">
+        update debt_info a 
+        set a.total_amount=a.total_amount+#{amount},
+            a.current_available_amount=a.current_available_amount+#{amount}
+         where a.debt_info_id = #{debtInfoId}
+    </update>
+    <select id="debtCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(1) from debt_info d where d.debt_info_id=#{value}
+    </select>
+    <!--   增加可分配的债权  -->
+    <update id="increaseAvailableDebt" parameterType="java.util.Map" >
+        update debt_info a 
+        set a.current_available_amount=a.current_available_amount+#{amount}
+        where a.debt_info_id = #{debtInfoId}
+    </update>
+    
+    <insert id="insertAllocateErr" parameterType="debtAllocateErr">
+        INSERT INTO debt_allocate_err
+              (param,
+               message,
+               user_code,
+               order_id,
+                 type)
+         VALUES(
+             #{param},
+             #{message},
+             #{userCode},
+             #{orderId},
+             #{type}
+         )
+    </insert>
+    <select id="currentAvailableAmount" resultType="java.math.BigDecimal">
+    	select current_available_amount from debt_info
+    </select>
+    <select id="getCurrentDebtDetailList" resultType="addDebtDetailDto">
+    	SELECT
+			t.debt_detail_id debtDetailId,
+			t.debter_id debterId,
+			a.debter_order_id debterOrderId,
+			t.original_total_amount originalTotalAmount,
+			t.current_total_amount currentTotalAmount
+		FROM
+			debt_detail t
+		INNER JOIN debter a ON a.debter_id = t.debter_id
+    </select>
+    <select id="getLastUpdateDebtDate" resultType="java.lang.String">
+    	select update_debt_date from update_debt_log order by update_debt_id desc limit 1
+    </select>
+    <select id="getDebtDetailByOrderid" resultType="addDebtDetailDto" parameterType="java.lang.String">
+    	SELECT
+			t.debt_detail_id debtDetailId,
+			t.original_total_amount originalTotalAmount,
+			t.current_total_amount currentTotalAmount,
+			t.debter_id debterId,
+			a.debter_order_id debterOrderId
+		FROM
+			debt_detail t
+		INNER JOIN debter a ON t.debter_id = a.debter_id
+		WHERE a.debter_order_id = #{boid}
+    </select>
+    <update id="reduceDebtInfo" parameterType="java.math.BigDecimal">
+    	update debt_info set total_amount = total_amount - #{reduceAmount}, 
+    	current_available_amount = current_available_amount - #{reduceAmount}
+    	where debt_info_id = 'NND0001'
+    </update>
+    <update id="reduceDebtInfoTotalAmount" parameterType="java.math.BigDecimal">
+    	update debt_info set total_amount = total_amount - #{reduceAmount}
+    	where debt_info_id = 'NND0001'
+    </update>
+    <insert id="insertDebtDate" parameterType="java.lang.String">
+    	insert into update_debt_log( update_debt_date, create_date, update_date )
+    	values( #{date}, now(), now() )
+    </insert>
+    <update id="promoteDebtAmount" parameterType="java.util.Map">
+    	update debt_info set total_amount = total_amount + #{amount},
+    	current_available_amount = current_available_amount + #{amount}
+    	where debt_info_id = #{debtInfoId}
+    </update>
+    <select id="getDebtInfoTotalAmount" resultType="java.math.BigDecimal">
+    	select total_amount from debt_info where debt_info_id = 'NND0001'
+    </select>
+    <select id="getDebterListForUpdate" resultType="java.lang.String">
+    	select debter_order_id from debter where debter_name is null or school is null
+    </select>
+    <update id="updateDebterInfo" parameterType="java.util.Map">
+    	update debter set debter_name = #{realName}, school = #{school}
+    	where debter_order_id = #{boid}
+    </update>
+    
+    <select id="getTotalDebtAmount" resultType="java.math.BigDecimal">
+        <![CDATA[
+        select sum(current_total_amount) from debt_detail where debt_type<>'NNDT_04'
+        ]]>
+    </select>
+     
+    <select id="getAllDebtWithoutFund" resultType="java.util.Map">
+       select user_product_id userProductId,sum(invest_amount) a from user_product_detail t
+       where 1=1
+       and not exists(
+           select 1 from user_product_detail t1 where t1.user_product_id = t.user_product_id 
+           and t1.debt_detail_id in (
+               select debt_detail_id from debt_detail where debt_type= 'NNDT_04'
+           )
+       )  group by user_product_id having sum(invest_amount)>=100 order by a desc
+    </select>
+   
+    
+    
+</mapper>

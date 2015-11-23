@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nonobank.app.activity.dao.WechatActivityMessageDAO">
+
+	<select id="getActivityMessage" resultType="messageListDto" parameterType="java.util.Map">
+		SELECT
+			t.wechat_activity_message_content messageContent,
+			t.create_user openid,
+			t.like_count likeCount,
+			a.user_name userName,
+			a.head_url headUrl
+		FROM
+			wechat_activity_message t
+		LEFT JOIN wechat_user_info a
+		on a.openid = t.create_user
+		WHERE
+			t.message_type = #{messageType}
+		AND t.wechat_activity_id = #{wechatActivityId}
+		<if test="limit != null and limit != ''">
+			LIMIT #{limit}
+		</if>
+	</select>
+	<select id="getActivityMessageById" resultType="wechatActivityMessageDto" parameterType="java.util.Map">
+		SELECT
+			t.wechat_activity_message_id messageId,
+			t.wechat_activity_message_content messageContent,
+			t.create_user openid,
+			t.like_count likeCount,
+			t.wechat_activity_id activityId,
+			a.user_name userName,
+			a.head_url headUrl
+		FROM
+			wechat_activity_message t
+		LEFT JOIN wechat_user_info a
+		on a.openid = t.create_user
+		WHERE
+			t.message_type = #{messageType}
+		<if test="wechatActivityId !=null and wechatActivityId != ''">
+			AND t.wechat_activity_id = #{wechatActivityId}
+		</if>
+			AND t.wechat_activity_message_id = #{activityMessageId}
+		<if test="limit != null and limit != ''">
+			LIMIT #{limit}
+		</if>
+	</select>
+	<update id="updateWechatActivityMessageById" parameterType="java.lang.Integer">
+		UPDATE wechat_activity_message
+		SET like_count = like_count + 1
+		WHERE
+			wechat_activity_message_id = #{messageId};
+	</update>
+	<insert id="insertWechatMessageDoLikeDetail" parameterType="java.util.Map">
+		INSERT INTO wechat_message_dolike_detail (
+			wechat_activity_message_id,
+			dolike_openid,
+			create_date
+		)
+		VALUES
+			( #{messageId}, #{openid}, now());
+	</insert>
+	<insert id="insertWechatActivityMessage" parameterType="wechatActivityMessageDto">
+		INSERT INTO wechat_activity_message (
+			wechat_activity_message_content,
+			wechat_activity_id,
+			create_user,
+			like_count,
+			message_type,
+			create_date,
+			status
+		)
+		VALUES
+			(
+				#{messageContent},
+				#{activityId},
+				#{openid},
+				#{likeCount},
+				#{messageType},
+				now(), 1
+			)
+	</insert>
+	<select id="isLikeByOpenid" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			wechat_message_dolike_detail t
+		WHERE
+			t.dolike_openid = #{openid}
+		AND t.wechat_activity_message_id = #{activityMessageId}
+	</select>
+	<select id="getActivityMessageId" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			t.wechat_activity_message_id
+		FROM
+			wechat_activity_message t
+		WHERE
+			t.wechat_activity_id = 1
+		AND t.create_user = #{openid}
+		AND t.message_type = #{messageType}
+		AND t.wechat_activity_id = #{activityId}
+		AND t.like_count = #{likeCount}
+		ORDER BY
+			t.create_date DESC
+		LIMIT 1;
+	</select>
+	<insert id="insertWechatUserInfo" parameterType="wechatUserInfoDto">
+		INSERT INTO wechat_user_info( openid, head_url, user_name, create_date, update_date )
+		VALUES
+			(
+				#{openid},
+				#{headUrl},
+				#{userName},
+				now(),
+				now()
+			)
+	</insert>
+	<select id="getOpenidByMessageId" parameterType="java.lang.Integer" resultType="java.lang.String">
+		SELECT
+			t.create_user
+		FROM
+			wechat_activity_message t
+		WHERE
+			t.wechat_activity_message_id = #{messageId}
+	</select>
+	<insert id="insertWechatUserRelation" parameterType="java.util.Map">
+		INSERT INTO wechat_user_relation (
+			openid,
+			friend_openid,
+			create_date,
+			update_date
+		)
+		VALUES
+			(
+				#{openid}, #{friendOpenid}, now(), now() );
+	</insert>
+	<select id="isOpenExist" parameterType="java.lang.String" resultType="java.lang.Integer">
+		select count(*) from wechat_user_info where openid = #{openid}
+	</select>
+	<update id="updateWechatUserInfo" parameterType="wechatUserInfoDto">
+		update wechat_user_info 
+		set head_url = #{headUrl},
+			user_name = #{userName},
+			update_date = now()
+		where
+			openid = #{openid}
+	</update>
+	<select id="isWechatUserRelationExist" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			wechat_user_relation t
+		WHERE
+			t.openid = #{openid}
+		AND t.friend_openid = #{friendOpenid}
+	</select>
+	<select id="countRank" parameterType="java.lang.String" resultType="messageRankDto">
+		SELECT
+			b.rank rank,
+			b.wechat_activity_message_id messageId
+		FROM
+			(
+				SELECT
+					a.* ,@rank :=@rank + 1 AS rank
+				FROM
+					(
+						SELECT
+							*
+						FROM
+							wechat_activity_message t
+						WHERE
+							message_type = 2
+						ORDER BY
+							t.like_count DESC,
+							t.create_date
+					) a,
+					(SELECT @rank := 0) c
+			) b
+			where b.create_user = #{openid}
+			order by b.rank
+		LIMIT 1
+	</select>
+	<select id="getWechatUserInfo" parameterType="java.lang.String" resultType="wechatUserInfoDto">
+		SELECT
+			t.head_url headUrl,
+			t.user_name userName
+		FROM
+			wechat_user_info t
+		WHERE
+			t.openid = #{openid}
+	</select>
+	<select id="getFriendListInfo" parameterType="java.util.Map" resultType="friendListDto">
+		SELECT
+			a.head_url friendHeadUrl,
+			a.user_name friendUserName
+		FROM
+			wechat_message_dolike_detail t
+		INNER JOIN wechat_user_info a ON t.dolike_openid = a.openid
+		WHERE
+			t.wechat_activity_message_id = #{messageId}
+	</select>
+	<select id="isActivityOpened" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			wechat_activity_info t
+		WHERE
+		<![CDATA[
+			t.start_date <= now()
+		AND t.end_date >= now()
+		]]>
+	</select>
+	<select id="isActivityStart" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			wechat_activity_info t
+		WHERE
+		<![CDATA[
+			t.start_date > now()
+		]]>
+	</select>
+</mapper>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zaijiadd.app.dataquery.dao.YjsReqMsgDao" >
+  <select id="queryByParam" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+    select 
+    	*
+    from yjs_req_msg
+    where 1=1
+    <if test="id != null and id !='' " >
+        and msgid = #{id,jdbcType=INTEGER}
+     </if>
+      <if test="cussrc != null and cussrc !='' " >
+        and cussrc = #{cussrc,jdbcType=VARCHAR}
+     </if>
+      <if test=" custype!= null and custype !='' " >
+        and custype =#{custype,jdbcType=VARCHAR}
+     </if>
+      <if test="city != null and city!='' " >
+        and ccity = #{city,jdbcType=VARCHAR}
+     </if>
+     <if test="cgroup!= null and cgroup!='' " >
+        and cgroup = #{cgroup,jdbcType=VARCHAR}
+     </if>
+      <if test="txnsts!= null and txnsts !='' " >
+        and txnsts = #{txnsts,jdbcType=VARCHAR}
+     </if>
+      <if test="cuser != null and cuser !='' " >
+        and cuser = #{cuser,jdbcType=VARCHAR}
+     </if>
+     limit  #{start,jdbcType=INTEGER}, #{end}
+  </select>
+  <select id="queryByParamCount" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select 
+    	count(1)
+    from yjs_req_msg
+    where 1=1
+    <if test="id != null and id !='' " >
+        and msgid = #{id,jdbcType=INTEGER}
+     </if>
+      <if test="cussrc != null and cussrc !='' " >
+        and cussrc = #{cussrc,jdbcType=VARCHAR}
+     </if>
+      <if test=" custype!= null and custype !='' " >
+        and custype =#{custype,jdbcType=VARCHAR}
+     </if>
+      <if test="city != null and city!='' " >
+        and ccity = #{city,jdbcType=VARCHAR}
+     </if>
+     <if test="cgroup!= null and cgroup!='' " >
+        and cgroup = #{cgroup,jdbcType=VARCHAR}
+     </if>
+      <if test="txnsts!= null and txnsts !='' " >
+        and txnsts = #{txnsts,jdbcType=VARCHAR}
+     </if>
+      <if test="cuser != null and cuser !='' " >
+        and cuser = #{cuser,jdbcType=VARCHAR}
+     </if>
+  </select>
+  <update id="updReqMsg" parameterType="java.util.HashMap" >
+  	update yjs_req_msg
+  	set name = #{name,jdbcType=VARCHAR},
+  	phone = #{phone,jdbcType=VARCHAR},
+  	wx = #{wx,jdbcType=VARCHAR},
+  	qq = #{qq,jdbcType=VARCHAR},
+  	ccity = #{ccity,jdbcType=VARCHAR},
+  	custype = #{custype,jdbcType=VARCHAR},
+  	dtlsts = #{dtlsts,jdbcType=VARCHAR},
+  	remark = #{remark,jdbcType=VARCHAR}
+  	where msgid = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="groupList"  resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+  	select * from yjs_org where upid=(select orgid from yjs_user where userid = #{uid,jdbcType=INTEGER})
+  </select>
+  <select id="groupInfo"  resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+  	select * from yjs_org where orgid=(select orgid from yjs_user where userid = #{uid,jdbcType=INTEGER})
+  </select>
+  <select id="workCount"  resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+  	select * from yjs_req_msg where cgroup= #{orgid,jdbcType=VARCHAR}
+  </select>
+  <select id="workCountUser"  resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+  	select * from yjs_req_msg where cuser= #{cuser,jdbcType=VARCHAR}
+  </select>
+  <select id="userList"  resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+  	select * from yjs_user where orgid=#{orgid,jdbcType=INTEGER}
+  </select>
+   <select id="userInfo"  resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+  	select u.userid id,u.username,u.roleid,u.isleader,u.orgid,o.upid from yjs_user u 
+     inner join yjs_org o on u.orgid=o.orgid
+     where u.userid=#{uid,jdbcType=INTEGER} 
+  	<if test="passwd!= null and passwd !='' " >
+        and u.password = #{passwd,jdbcType=VARCHAR}
+     </if>
+  </select>
+  <update id="dispatchGroupWork" parameterType="java.util.HashMap" >
+  	update yjs_req_msg
+  	set cgroup = #{orgid,jdbcType=VARCHAR},
+  	txnsts = '0',
+  	dtlsts = '02'
+  	where msgid = #{wid,jdbcType=INTEGER}
+  </update>
+  <update id="dispatchPersonWork" parameterType="java.util.HashMap" >
+  	update yjs_req_msg
+  	set cgroup = #{orgid,jdbcType=VARCHAR},cuser = #{uid,jdbcType=VARCHAR},txnsts='1',dtlsts='11'
+  	where msgid = #{wid,jdbcType=INTEGER}
+  </update>
+  
+  <select id="timeInfo"  resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+  	select max(protim) protim from yjs_req_msg
+  </select>
+  <select id="dataImport"  resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+  	select * from home_visitor where 1=1
+  	<if test="created_at!= null and created_at !='' " >
+        and created_at > #{created_at,jdbcType=VARCHAR}
+     </if>
+  	 order by created_at
+  </select>
+  <insert id="dataInsert" parameterType="java.util.HashMap" >
+  	insert into yjs_req_msg(cussrc,srcdtl,protim,phncnt,name,phone,email,wx,qq,city,custype,ccity,cgroup,cuser,txnsts,dtlsts,salman,remark)
+  	values(#{cussrc,jdbcType=VARCHAR},#{srcdtl,jdbcType=VARCHAR},#{protim,jdbcType=VARCHAR},#{phncnt,jdbcType=VARCHAR},
+  	#{name,jdbcType=VARCHAR},#{phone,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},#{wx,jdbcType=VARCHAR},
+  	#{qq,jdbcType=VARCHAR},#{city,jdbcType=VARCHAR},#{custype,jdbcType=VARCHAR},#{ccity,jdbcType=VARCHAR},#{cgroup,jdbcType=VARCHAR},
+  	#{cuser,jdbcType=VARCHAR},#{txnsts,jdbcType=VARCHAR},#{dtlsts,jdbcType=VARCHAR},#{salman,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR})
+  </insert>
+</mapper>
