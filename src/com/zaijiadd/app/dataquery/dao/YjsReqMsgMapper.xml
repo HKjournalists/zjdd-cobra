@@ -4,10 +4,10 @@
 	<select id="queryByParam" resultType="java.util.HashMap"
 		parameterType="java.util.HashMap">
 		select
-		t.*, a.username crewRealName
+		t.*, a.realname crewRealName
 		from yjs_req_msg t
 		left join yjs_user a
-		on a.userid = t.cuser
+		on a.user_id = t.cuser
 		where 1=1
 		<if test="dtlsts != null and dtlsts != ''">
 			and dtlsts = #{dtlsts,jdbcType=INTEGER}
@@ -32,6 +32,13 @@
 		</if>
 		<if test="cuser != null and cuser !='' ">
 			and t.cuser = #{cuser,jdbcType=VARCHAR}
+		</if>
+		<if test="searchStr != null and searchStr != ''">
+			and ( name like CONCAT('%','${searchStr}','%' ) 
+			or phone like CONCAT('%','${searchStr}','%' ) 
+			or qq like CONCAT('%','${searchStr}','%' ) 
+			or wx like CONCAT('%','${searchStr}','%' )
+			)
 		</if>
 		limit #{start,jdbcType=INTEGER}, #{end}
 	</select>
@@ -65,6 +72,13 @@
 		<if test="cuser != null and cuser !='' ">
 			and cuser = #{cuser,jdbcType=VARCHAR}
 		</if>
+		<if test="searchStr != null and searchStr != ''">
+			and ( name like CONCAT('%','${searchStr}','%' ) 
+			or phone like CONCAT('%','${searchStr}','%' ) 
+			or qq like CONCAT('%','${searchStr}','%' ) 
+			or wx like CONCAT('%','${searchStr}','%' )
+			)
+		</if>
 	</select>
 	<update id="updReqMsg" parameterType="java.util.HashMap">
 		update yjs_req_msg
@@ -80,12 +94,12 @@
 	</update>
 	<select id="groupList" resultType="java.util.HashMap"
 		parameterType="java.util.HashMap">
-		select * from yjs_org where upid=(select orgid from yjs_user where userid =
+		select * from yjs_org where upid=(select orgid from yjs_user where user_id =
 		#{uid,jdbcType=INTEGER})
 	</select>
 	<select id="groupInfo" resultType="java.util.HashMap"
 		parameterType="java.util.HashMap">
-		select * from yjs_org where orgid=(select orgid from yjs_user where userid =
+		select * from yjs_org where orgid=(select orgid from yjs_user where user_id =
 		#{uid,jdbcType=INTEGER})
 	</select>
 	<select id="workCount" resultType="java.util.HashMap"
@@ -102,10 +116,16 @@
 	</select>
 	<select id="userInfo" resultType="java.util.HashMap"
 		parameterType="java.util.HashMap">
-		select u.userid id,u.username,u.roleid,u.isleader,u.orgid,o.upid from
+		select u.user_id id, u.mobile mobile, u.realname,u.roleid,u.isleader,u.orgid,o.upid from
 		yjs_user u
 		inner join yjs_org o on u.orgid=o.orgid
-		where u.userid=#{uid,jdbcType=INTEGER}
+		where 1 = 1
+		<if test="uid!= null and uid !='' ">
+			and u.user_id=#{uid,jdbcType=INTEGER}
+		</if>
+		<if test="mobile!= null and mobile !='' ">
+			and u.mobile=#{mobile,jdbcType=INTEGER}
+		</if>
 		<if test="passwd!= null and passwd !='' ">
 			and u.password = #{passwd,jdbcType=VARCHAR}
 		</if>
@@ -144,4 +164,10 @@
 		#{qq,jdbcType=VARCHAR},#{city,jdbcType=VARCHAR},#{custype,jdbcType=VARCHAR},#{ccity,jdbcType=VARCHAR},#{cgroup,jdbcType=VARCHAR},
 		#{cuser,jdbcType=VARCHAR},#{txnsts,jdbcType=VARCHAR},#{dtlsts,jdbcType=VARCHAR},#{salman,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR})
 	</insert>
+	
+	<select id="getStatusType" resultType="java.util.Map">
+		select status_name statusName, status_value statusValue from status_type
+		where status = 1
+	</select>
+	
 </mapper>

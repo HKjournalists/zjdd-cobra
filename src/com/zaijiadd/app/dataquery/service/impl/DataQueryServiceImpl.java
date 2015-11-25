@@ -1,14 +1,13 @@
 package com.zaijiadd.app.dataquery.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.zaijiadd.app.dataquery.dao.YjsReqMsgDao;
-import com.zaijiadd.app.dataquery.entity.YjsReqMsg;
 import com.zaijiadd.app.dataquery.service.DataQueryService;
-import com.zaijiadd.app.external.dao.ExternalDataDAO;
 
 public class DataQueryServiceImpl implements DataQueryService {
 	@Autowired
@@ -88,6 +87,17 @@ public class DataQueryServiceImpl implements DataQueryService {
 	@Override
 	public Integer queryReqMsgByCount( Map<String, Object> param ) {
 		return yjsReqMsgDao.queryByParamCount( param );
+	}
+
+	@Override
+	public Map<String, Object> getStatusDict() {
+		
+		List<Map<String, Object>> result = yjsReqMsgDao.getStatusType();
+		Map<String, Object> res = new HashMap<String, Object>();
+		res.put( "statusTypeList", result );
+		
+		return res;
+	
 	}
 
 }

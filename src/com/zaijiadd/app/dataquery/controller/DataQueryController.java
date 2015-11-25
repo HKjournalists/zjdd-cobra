@@ -32,9 +32,6 @@ import com.zaijiadd.app.external.dao.ExternalDataDAO;
 @Controller
 public class DataQueryController extends BaseController {
 
-	private static Logger logger = LoggerFactory
-			.getLogger( DataQueryController.class );
-
 	@Autowired
 	private DataQueryService service;
 	
@@ -52,6 +49,7 @@ public class DataQueryController extends BaseController {
 		String uid = jsonRequest.getString( "uid" );
 		String dtlsts = jsonRequest.getString( "dtlsts" );
 		String page = jsonRequest.getString( "page" );
+		String searchStr = jsonRequest.getString( "searchStr" );
 		Integer pageCount = jsonRequest.getInteger( "pageCount" );
 		if ( pageCount == null || pageCount == 0 ) {
 			pageCount = 20;
@@ -67,31 +65,27 @@ public class DataQueryController extends BaseController {
 		param.put( "dtlsts", dtlsts );
 		param.put( "start", ( Integer.parseInt( page ) - 1 ) * pageCount );
 		param.put( "end", pageCount );
+		param.put( "searchStr", searchStr );
 
 		Map<String, Object> user = service.userInfo( param );
-		logger.info( "roleid:" + user.get( "roleid" ) );
 		String roleid = user.get( "roleid" ).toString();
 		Integer dataCount = 0;
 		if ( "0".equals( roleid ) ) {// 管理员
-			logger.info( "管理员" );
 			param.put( "cuser", null );
 			resData = service.queryReqMsg( param );
 			dataCount = service.queryReqMsgByCount( param );
 		} else if ( "1".equals( roleid ) ) {// 城市ceo
-			logger.info( "城市ceo" );
 			param.put( "cuser", null );
 			param.put( "city", user.get( "orgid" ) );
 			resData = service.queryReqMsg( param );
 			dataCount = service.queryReqMsgByCount( param );
 		} else if ( "2".equals( roleid ) ) {
-			logger.info( "部门主管" );
 			param.put( "cuser", null );
 			param.put( "city", user.get( "upid" ) );
 			param.put( "cgroup", user.get( "orgid" ) );
 			resData = service.queryReqMsg( param );
 			dataCount = service.queryReqMsgByCount( param );
 		} else {// 业务人员
-			logger.info( "业务人员" );
 			param.put( "city", user.get( "upid" ) );
 			param.put( "ugroup", user.get( "orgid" ) );
 			resData = service.queryReqMsg( param );
@@ -212,11 +206,6 @@ public class DataQueryController extends BaseController {
 	public Map<String, Object> login( HttpServletRequest request,
 			HttpServletResponse response ) throws ServletException, IOException {
 
-		logger.info( new StringBuilder().append( "请求参数uid：" )
-				.append( request.getParameter( "uid" ) ).toString() );
-		logger.info( new StringBuilder().append( "请求参数passwd：" )
-				.append( request.getParameter( "passwd" ) ).toString() );
-
 		Map<String, Object> res = new HashMap<String, Object>();
 
 		String password = "";
@@ -232,7 +221,7 @@ public class DataQueryController extends BaseController {
 
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put( "passwd", password );
-		param.put( "uid", uid );
+		param.put( "mobile", uid );
 		Map<String, Object> user = service.userInfo( param );
 
 		if ( user == null || user.size() == 0 ) {
@@ -242,7 +231,7 @@ public class DataQueryController extends BaseController {
 		}
 
 		res.put( "uid", user.get( "id" ) );
-		res.put( "username", user.get( "username" ) );
+		res.put( "username", user.get( "realname" ) );
 		res.put( "roleid", user.get( "roleid" ) );
 		res.put( "isleader", user.get( "isleader" ) );
 		res.put( "orgid", user.get( "orgid" ) );
@@ -261,6 +250,19 @@ public class DataQueryController extends BaseController {
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put( "msgid", jsonRequest.getString( "wid" ) );
 		param.put( "userid", jsonRequest.getString( "uid" ) );
+
+		return ContainerUtils.buildResSuccessMap( param );
+
+	}
+	
+	@RequestMapping ( value = "/statusType", method = RequestMethod.POST )
+	@ResponseBody
+	public Map<String, Object> statusType( HttpServletRequest request ) {
+
+
+		Map<String, Object> param = new HashMap<String, Object>();
+		
+		param = service.getStatusDict();
 
 		return ContainerUtils.buildResSuccessMap( param );
 

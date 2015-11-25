@@ -35,4 +35,7 @@ public interface YjsReqMsgDao {
     public void dataInsert(Map<String,Object> param);
     /**查询最新记录时间*/
     public Map<String,Object> timeInfo(Map<String,Object> param);
+    
+    public List<Map<String, Object>> getStatusType();
+    
 }

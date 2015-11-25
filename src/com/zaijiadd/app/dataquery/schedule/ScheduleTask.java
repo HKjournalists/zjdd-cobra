@@ -26,7 +26,8 @@ public class ScheduleTask {
 
 	public void dataImport() {
 
-		logger.info( "数据定时导入... ..." );
+//		logger.info( "数据定时导入... ..." );
+//		LogUtils.asyncLog( "定时任务同步流量数据" );
 		
 		try {
 			
@@ -39,6 +40,7 @@ public class ScheduleTask {
 					.importHomeVisitorData( param );
 			for ( Map<String, Object> map : resData ) {
 				// 数据插入数据表
+//				LogUtils.asyncLog( "【asyn】同步数据" + map.get( "name" ) );
 				param.put( "cussrc", map.get( "channel" ) );// 客户来源
 				param.put( "srcdtl", map.get( "uri" ) );// 来源详情
 				param.put( "protim", map.get( "created_at" ) );// 处理时间
@@ -66,7 +68,8 @@ public class ScheduleTask {
 			}
 			
 		} catch ( Exception e ) {
-			logger.error( "同步流量数据异常", e );
+//			logger.error( "同步流量数据异常", e );
+//			LogUtils.error( "同步流量数据异常", e );
 		}
 		
 	}
@@ -104,6 +107,13 @@ public class ScheduleTask {
 		return cityId;
 		
 		
+	}
+	
+	public static void main( String[] args ) {
+		
+		ScheduleTask s = new ScheduleTask();
+		int i = s.parseCityIdByName( "上海徐汇" );
+		System.out.println( i );
 	}
 	
 	// public void DataImport(){
