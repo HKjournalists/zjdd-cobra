@@ -30,7 +30,7 @@ import com.zaijiadd.app.external.dao.ExternalDataDAO;
 
 @RequestMapping ( "/query" )
 @Controller
-public class DataQueryController extends BaseController {
+public class DataQueryController {
 
 	@Autowired
 	private DataQueryService service;
