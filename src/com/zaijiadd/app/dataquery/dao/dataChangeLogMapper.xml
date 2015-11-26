@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zaijiadd.app.dataquery.dao.DataChangeLogDAO">
+	
+	<insert id="insertRemarkChangeLog" parameterType="java.util.Map">
+		insert into cobra_msg_remark_log
+		( msg_id, user_id, change_remark, created_date )
+		values
+		( #{msgId}, #{userId}, #{changeRemark}, now() )
+	</insert>
+	
+	<insert id="insertStatusChangeLog" parameterType="java.util.Map">
+		insert into cobra_msg_status_log
+		( msg_id, user_id, change_status, created_date )
+		values
+		( #{msgId}, #{userId}, #{changeStatus}, now() )
+	</insert>
+	
+	<select id="queryRemarkChangeLog" parameterType="java.lang.Integer" resultType="java.util.Map">
+		select 
+			t.change_remark changeRemark, a.realname realname, t.created_date changeDate
+		from
+			cobra_msg_remark_log t
+		inner join
+			yjs_user a
+		on
+			a.user_id = t.user_id
+		where
+			t.msg_id = #{msgId}
+	</select>
+	
+	<select id="queryStatusChangeLog" parameterType="java.lang.Integer" resultType="java.util.Map">
+		select 
+			t.change_status statusType, a.realname realname, t.created_date changeDate
+		from
+			cobra_msg_status_log t
+		inner join
+			yjs_user a
+		on
+			a.user_id = t.user_id
+		where
+			t.msg_id = #{msgId}
+	</select>
+	
+</mapper>

@@ -23,6 +23,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 import com.zaijiadd.app.common.utils.ContainerUtils;
 import com.zaijiadd.app.common.utils.ParseUtils;
+import com.zaijiadd.app.dataquery.entity.AllotLogEntity;
+import com.zaijiadd.app.dataquery.service.AllotLogService;
+import com.zaijiadd.app.dataquery.service.DataChangeLogService;
 import com.zaijiadd.app.dataquery.service.DataQueryService;
 
 @RequestMapping ( "/query" )
@@ -30,7 +33,13 @@ import com.zaijiadd.app.dataquery.service.DataQueryService;
 public class DataQueryController {
 
 	@Autowired
+	private AllotLogService allotLogService;
+	
+	@Autowired
 	private DataQueryService service;
+	
+	@Autowired
+	private DataChangeLogService dataChangeLogService;
 
 	@RequestMapping ( value = "/dataList", method = RequestMethod.POST )
 	@ResponseBody
@@ -44,7 +53,7 @@ public class DataQueryController {
 		String cs = jsonRequest.getString( "cs" );
 		String zt = jsonRequest.getString( "zt" );
 		String uid = jsonRequest.getString( "uid" );
-		String dtlsts = jsonRequest.getString( "dtlsts" );
+		String statusType = jsonRequest.getString( "statusType" );
 		String page = jsonRequest.getString( "page" );
 		String searchStr = jsonRequest.getString( "searchStr" );
 		Integer pageCount = jsonRequest.getInteger( "pageCount" );
@@ -59,7 +68,7 @@ public class DataQueryController {
 		param.put( "txnsts", zt );
 		param.put( "cuser", uid );
 		param.put( "uid", uid );
-		param.put( "dtlsts", dtlsts );
+		param.put( "statusType", statusType );
 		param.put( "start", ( Integer.parseInt( page ) - 1 ) * pageCount );
 		param.put( "end", pageCount );
 		param.put( "searchStr", searchStr );
@@ -112,14 +121,24 @@ public class DataQueryController {
 		param.put( "ccity", jsonRequest.getString( "ccity" ) );
 		param.put( "custype", jsonRequest.getString( "custype" ) );
 		param.put( "lb", jsonRequest.getString( "lb" ) );
-		param.put( "dtlsts", jsonRequest.getString( "dtlsts" ) );
+		param.put( "statusType", jsonRequest.getString( "statusType" ) );
 		param.put( "remark", URLDecoder.decode(
 				( jsonRequest.getString( "remark" ) == null ? "" : jsonRequest
 						.getString( "remark" ) ), "UTF-8" ) );
 		param.put( "cgroup", jsonRequest.getString( "cgroup" ) );
 
 		service.updReqMsg( param );
-
+		
+		String remark = jsonRequest.getString( "remark" );
+		if ( remark != null && !remark.trim().equals( "" ) ) {
+			dataChangeLogService.addRemarkChangeLog( jsonRequest.getInteger( "userId" ), remark, jsonRequest.getInteger( "id" ) );
+		}
+		
+		Integer statusType = jsonRequest.getInteger( "statusType" );
+		if ( statusType != null ) {
+			dataChangeLogService.addStatusTypeChangeLog( jsonRequest.getInteger( "userId" ), statusType, jsonRequest.getInteger( "id" ) );
+		}
+		
 		return ContainerUtils.buildResSuccessMap( param );
 
 	}
@@ -181,6 +200,16 @@ public class DataQueryController {
 		param.put( "wid", jsonRequest.getString( "wid" ) );
 		param.put( "orgid", jsonRequest.getString( "orgid" ) );
 		service.dispatchGroupWork( param );
+		
+		AllotLogEntity allotLogEntity = new AllotLogEntity();
+		allotLogEntity.setAllotStatusTypeId( 1 );
+		allotLogEntity.setAllotToUserId( jsonRequest.getInteger( "orgid" ) );
+		allotLogEntity.setAllotUserId( jsonRequest.getInteger( "userId" ) );
+		allotLogEntity.setIsGroupLeader( 1 );
+		allotLogEntity.setMsgId( jsonRequest.getInteger( "wid" ) );
+		
+		allotLogService.addAllotLog( allotLogEntity );
+		
 		return ContainerUtils.buildResSuccessMap( param );
 
 	}
@@ -197,6 +226,16 @@ public class DataQueryController {
 		param.put( "orgid", service.groupInfo( param ).get( "orgid" ) );
 
 		service.dispatchPersonWork( param );
+		
+		AllotLogEntity allotLogEntity = new AllotLogEntity();
+		allotLogEntity.setAllotStatusTypeId( 1 );
+		allotLogEntity.setAllotToUserId( jsonRequest.getInteger( "uid" ) );
+		allotLogEntity.setAllotUserId( jsonRequest.getInteger( "userId" ) );
+		allotLogEntity.setIsGroupLeader( 0 );
+		allotLogEntity.setMsgId( jsonRequest.getInteger( "wid" ) );
+		
+		allotLogService.addAllotLog( allotLogEntity );
+		
 		return ContainerUtils.buildResSuccessMap( param );
 	}
 
@@ -261,6 +300,57 @@ public class DataQueryController {
 		Map<String, Object> param = new HashMap<String, Object>();
 
 		param = service.getStatusDict();
+
+		return ContainerUtils.buildResSuccessMap( param );
+
+	}
+	
+	@RequestMapping ( value = "/dispatchDetail", method = RequestMethod.POST )
+	@ResponseBody
+	public Map<String, Object> dispatchDetail( HttpServletRequest request ) {
+
+		Map<String, Object> param = new HashMap<String, Object>();
+
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
+		Integer wId = jsonRequest.getInteger( "wId" );
+		
+		List<Map<String, Object>> res = allotLogService.getDispatchDetail( wId );
+		
+		param.put( "dispatchDetail", res );
+
+		return ContainerUtils.buildResSuccessMap( param );
+
+	}
+	
+	@RequestMapping ( value = "/remarkLog", method = RequestMethod.POST )
+	@ResponseBody
+	public Map<String, Object> remarkChangeLog( HttpServletRequest request ) {
+
+		Map<String, Object> param = new HashMap<String, Object>();
+
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
+		Integer wId = jsonRequest.getInteger( "wId" );
+		
+		List<Map<String, Object>> res = dataChangeLogService.queryRemarkChangeLog( wId );
+		
+		param.put( "remarkLogList", res );
+
+		return ContainerUtils.buildResSuccessMap( param );
+
+	}
+	
+	@RequestMapping ( value = "/statusLog", method = RequestMethod.POST )
+	@ResponseBody
+	public Map<String, Object> statusLog( HttpServletRequest request ) {
+
+		Map<String, Object> param = new HashMap<String, Object>();
+
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
+		Integer wId = jsonRequest.getInteger( "wId" );
+		
+		List<Map<String, Object>> res = dataChangeLogService.queryStatusChangeLog( wId );
+		
+		param.put( "statusLogList", res );
 
 		return ContainerUtils.buildResSuccessMap( param );
 

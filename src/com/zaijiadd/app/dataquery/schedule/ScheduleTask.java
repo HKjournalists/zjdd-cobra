@@ -59,8 +59,9 @@ public class ScheduleTask {
 				param.put( "custype", "2" );// 客户类别 小店OR经销商，目前默认小店
 				param.put( "cgroup", null );// 分配组
 				param.put( "cuser", null );// 分配客服
-				param.put( "txnsts", "0" );// 状态，默认未分配
-				param.put( "dtlsts", "01" );// 状态，默认无组未分配
+//				param.put( "txnsts", "0" );// 状态，默认未分配
+//				param.put( "dtlsts", "01" );// 状态，默认无组未分配
+				param.put( "statusType", 0 );
 				param.put( "salman", "" );// 销售代表
 				param.put( "remark", map.get( "remark" ) );// 备注
 

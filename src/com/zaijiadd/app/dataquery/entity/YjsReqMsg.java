@@ -44,6 +44,8 @@ public class YjsReqMsg {
     private String rsv2;
 
     private String rsv3;
+    
+    private Integer statusType;
 
     public Integer getId() {
         return id;
@@ -212,4 +214,12 @@ public class YjsReqMsg {
     public void setRsv3(String rsv3) {
         this.rsv3 = rsv3 == null ? null : rsv3.trim();
     }
+
+	public Integer getStatusType() {
+		return statusType;
+	}
+
+	public void setStatusType( Integer statusType ) {
+		this.statusType = statusType;
+	}
 }

@@ -38,5 +38,5 @@ public interface DataQueryService {
 	public Map<String, Object> getStatusDict();
 	
 //	List<Map<String, Object>> externalDataImport( Map<String, Object> param );
-
+	
 }
