@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zaijiadd.app.user.dao.UserInfoDAO">
+
+	<select id="getUserInfoById" parameterType="java.lang.Integer" resultType="userInfoEntity">
+		select
+			user_id userId,
+			mobile mobile,
+			realname realname,
+			password password,
+			email email,
+			roleid roleId,
+			isleader isLeader,
+			orgid orgId,
+			landline_id landlineId,
+			job_id jobId
+		from
+			yjs_user
+		where
+			user_id = #{userId}
+	</select>
+	
+</mapper>

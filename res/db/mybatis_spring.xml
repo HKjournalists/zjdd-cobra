@@ -30,5 +30,15 @@
 		<property name="mapperInterface" value="com.zaijiadd.app.dataquery.dao.YjsReqMsgDao" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
 	</bean>
+	
+	<bean id="userInfoDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.zaijiadd.app.user.dao.UserInfoDAO" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	
+	<bean id="userCallingDetailDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.zaijiadd.app.user.dao.UserCallingDetailDAO" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
 
 </beans>

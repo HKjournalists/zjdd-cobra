@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zaijiadd.app.user.dao.UserCallingDetailDAO">
+
+	<insert id="insertUserCallingDetail" parameterType="userCallingDetailEntity" useGeneratedKeys="true" keyProperty="user_calling_detail_id">
+		insert into
+			user_calling_detail
+		( user_id, msg_id, src_mobile, dest_mobile, status, created_date )	
+		values
+		( #{userId}, #{msgId}, #{srcMobile}, #{destMobile}, #{status}, now() )
+	</insert>
+	
+	<update id="updateUserCallingDetailStatus" parameterType="java.util.Map">
+		update 
+			user_calling_detail
+		set status = #{status}
+		where
+			user_calling_detail_id = #{userCallingDetailId}
+	</update>
+
+</mapper>

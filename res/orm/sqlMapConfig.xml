@@ -20,10 +20,14 @@
 
     <typeAliases>
     	<typeAlias type="com.zaijiadd.app.dataquery.entity.YjsReqMsg" alias="yjsReqMsg"/>
+    	<typeAlias type="com.zaijiadd.app.user.entity.UserInfoEntity" alias="userInfoEntity"/>
+    	<typeAlias type="com.zaijiadd.app.user.entity.UserCallingDetailEntity" alias="userCallingDetailEntity"/>
     </typeAliases>
 
     <mappers>
     	<mapper resource="com/zaijiadd/app/dataquery/dao/YjsReqMsgMapper.xml"/>
+    	<mapper resource="com/zaijiadd/app/user/dao/userInfoMapper.xml"/>
+    	<mapper resource="com/zaijiadd/app/user/dao/userCallingDetailMapper.xml"/>
     </mappers>
 
 </configuration> 

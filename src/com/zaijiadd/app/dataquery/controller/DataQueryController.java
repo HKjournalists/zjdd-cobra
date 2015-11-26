@@ -162,7 +162,7 @@ public class DataQueryController {
 		param.put( "orgid", jsonRequest.getString( "orgid" ) );
 		resData = service.userList( param );
 		for ( Map<String, Object> map : resData ) {
-			param.put( "cuser", map.get( "userid" ) );
+			param.put( "cuser", map.get( "user_id" ) );
 			List<Map<String, Object>> workData = new ArrayList<Map<String, Object>>();
 			workData = service.workCountUser( param );
 			map.put( "workcount", workData == null ? 0 : workData.size() );
