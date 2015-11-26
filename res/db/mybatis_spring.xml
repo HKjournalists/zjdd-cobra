@@ -26,50 +26,6 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
-	<bean id="userInfoDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface" value="com.zaijiadd.app.user.dao.UserInfoDAO" />
-		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
-	</bean>
-	<bean id="userStoreDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface" value="com.zaijiadd.app.user.dao.UserStoreDAO" />
-		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
-	</bean>
-	<bean id="userReceiveInfoDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface" value="com.zaijiadd.app.user.dao.UserReceiveInfoDAO" />
-		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
-	</bean>
-	<bean id="storeInfoDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface" value="com.zaijiadd.app.user.dao.StoreInfoDAO" />
-		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
-	</bean>
-	
-	<!-- productInfo -->
-	<bean id="productInfoDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface" value="com.zaijiadd.app.product.dao.ProductInfoDAO" />
-		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
-	</bean>
-	
-	<!-- orderInfo -->
-	<bean id="orderInfoDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface" value="com.zaijiadd.app.order.dao.OrderInfoDAO" />
-		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
-	</bean>
-	
-	<bean id="systemParamsDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface" value="com.zaijiadd.app.system.dao.SystemParamsDAO" />
-		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
-	</bean>
-	
-	<bean id="tradeLogDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface" value="com.zaijiadd.app.system.dao.TradeLogDAO" />
-		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
-	</bean>
-	
-	<bean id="userProductDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface" value="com.zaijiadd.app.user.dao.UserProductDAO" />
-		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
-	</bean>
-	
 	<bean id="yjsReqMsgDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="com.zaijiadd.app.dataquery.dao.YjsReqMsgDao" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>

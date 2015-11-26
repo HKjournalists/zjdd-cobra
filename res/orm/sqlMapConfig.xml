@@ -19,27 +19,10 @@
     </settings>
 
     <typeAliases>
-    	<typeAlias type="com.zaijiadd.app.user.dto.UserReceiveInfoDTO" alias="userReceiveInfoDto"/>
-    	<typeAlias type="com.zaijiadd.app.user.dto.StoreInfoDTO" alias="storeInfoDto"/>
-    	<typeAlias type="com.zaijiadd.app.product.entity.ProductInfoEntity" alias="productInfoEntity"/>
-    	<typeAlias type="com.zaijiadd.app.order.entity.OrderInfoEntity" alias="orderInfoEntity"/>
-    	<typeAlias type="com.zaijiadd.app.product.dto.ProductGoodsDTO" alias="productGoodsDto"/>
-    	<typeAlias type="com.zaijiadd.app.user.entity.UserProductEntity" alias="userProductEntity"/>
-    	
     	<typeAlias type="com.zaijiadd.app.dataquery.entity.YjsReqMsg" alias="yjsReqMsg"/>
     </typeAliases>
 
     <mappers>
-    	<mapper resource="com/zaijiadd/app/user/dao/userInfoMapper.xml"/>
-    	<mapper resource="com/zaijiadd/app/user/dao/userStoreMapper.xml"/>
-    	<mapper resource="com/zaijiadd/app/user/dao/userReceiveInfoMapper.xml"/>
-    	<mapper resource="com/zaijiadd/app/user/dao/storeInfoMapper.xml"/>
-    	<mapper resource="com/zaijiadd/app/product/dao/productInfoMapper.xml"/>
-    	<mapper resource="com/zaijiadd/app/order/dao/orderInfoMapper.xml"/>
-    	<mapper resource="com/zaijiadd/app/system/dao/systemParamsMapper.xml"/>
-    	<mapper resource="com/zaijiadd/app/system/dao/tradeLogMapper.xml"/>
-    	<mapper resource="com/zaijiadd/app/user/dao/userProductMapper.xml"/>
-    	
     	<mapper resource="com/zaijiadd/app/dataquery/dao/YjsReqMsgMapper.xml"/>
     </mappers>
 

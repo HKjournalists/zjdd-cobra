@@ -21,12 +21,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
-import com.zaijiadd.app.common.controller.BaseController;
 import com.zaijiadd.app.common.utils.ContainerUtils;
 import com.zaijiadd.app.common.utils.ParseUtils;
-import com.zaijiadd.app.dataquery.schedule.ScheduleTask;
 import com.zaijiadd.app.dataquery.service.DataQueryService;
-import com.zaijiadd.app.external.dao.ExternalDataDAO;
 
 @RequestMapping ( "/query" )
 @Controller
@@ -34,7 +31,7 @@ public class DataQueryController {
 
 	@Autowired
 	private DataQueryService service;
-	
+
 	@RequestMapping ( value = "/dataList", method = RequestMethod.POST )
 	@ResponseBody
 	public Map<String, Object> dataList( HttpServletRequest request ) {
@@ -101,13 +98,14 @@ public class DataQueryController {
 	@ResponseBody
 	public Map<String, Object> dataUpdate( HttpServletRequest request )
 			throws UnsupportedEncodingException {
-		
+
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
 
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put( "id", jsonRequest.getString( "id" ) );
-		param.put( "name", URLDecoder.decode( ( jsonRequest.getString( "name" ) == null ? "" : jsonRequest.getString( "name" ) ),
-				"UTF-8" ) );
+		param.put( "name", URLDecoder.decode(
+				( jsonRequest.getString( "name" ) == null ? "" : jsonRequest
+						.getString( "name" ) ), "UTF-8" ) );
 		param.put( "phone", jsonRequest.getString( "phone" ) );
 		param.put( "wx", jsonRequest.getString( "wx" ) );
 		param.put( "qq", jsonRequest.getString( "qq" ) );
@@ -116,19 +114,20 @@ public class DataQueryController {
 		param.put( "lb", jsonRequest.getString( "lb" ) );
 		param.put( "dtlsts", jsonRequest.getString( "dtlsts" ) );
 		param.put( "remark", URLDecoder.decode(
-				( jsonRequest.getString( "remark" ) == null ? "" : jsonRequest.getString( "remark" ) ), "UTF-8" ) );
+				( jsonRequest.getString( "remark" ) == null ? "" : jsonRequest
+						.getString( "remark" ) ), "UTF-8" ) );
 		param.put( "cgroup", jsonRequest.getString( "cgroup" ) );
-		
+
 		service.updReqMsg( param );
-		
+
 		return ContainerUtils.buildResSuccessMap( param );
-		
+
 	}
 
 	@RequestMapping ( value = "/groupList", method = RequestMethod.POST )
 	@ResponseBody
 	public Map<String, Object> groupList( HttpServletRequest request ) {
-		
+
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
 
 		List<Map<String, Object>> resData = new ArrayList<Map<String, Object>>();
@@ -155,7 +154,7 @@ public class DataQueryController {
 	@RequestMapping ( value = "/userList", method = RequestMethod.POST )
 	@ResponseBody
 	public Map<String, Object> userList( HttpServletRequest request ) {
-		
+
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
 
 		List<Map<String, Object>> resData = new ArrayList<Map<String, Object>>();
@@ -175,7 +174,7 @@ public class DataQueryController {
 	@RequestMapping ( value = "/dispatchGroupWork", method = RequestMethod.POST )
 	@ResponseBody
 	public Map<String, Object> dispatchGroupWork( HttpServletRequest request ) {
-		
+
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
 
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -183,13 +182,13 @@ public class DataQueryController {
 		param.put( "orgid", jsonRequest.getString( "orgid" ) );
 		service.dispatchGroupWork( param );
 		return ContainerUtils.buildResSuccessMap( param );
-		
+
 	}
 
 	@RequestMapping ( value = "/dispatchPersonWork", method = RequestMethod.POST )
 	@ResponseBody
 	public Map<String, Object> dispatchPersonWork( HttpServletRequest request ) {
-		
+
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
 
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -254,14 +253,13 @@ public class DataQueryController {
 		return ContainerUtils.buildResSuccessMap( param );
 
 	}
-	
+
 	@RequestMapping ( value = "/statusType", method = RequestMethod.POST )
 	@ResponseBody
 	public Map<String, Object> statusType( HttpServletRequest request ) {
 
-
 		Map<String, Object> param = new HashMap<String, Object>();
-		
+
 		param = service.getStatusDict();
 
 		return ContainerUtils.buildResSuccessMap( param );
