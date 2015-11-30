@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.zaijiadd.app.dataquery.dao.YjsReqMsgDao;
-import com.zaijiadd.app.dataquery.entity.AllotLogEntity;
+import com.zaijiadd.app.dataquery.dto.YjsReqMsgDTO;
 import com.zaijiadd.app.dataquery.service.DataQueryService;
 
 public class DataQueryServiceImpl implements DataQueryService {
@@ -99,6 +99,14 @@ public class DataQueryServiceImpl implements DataQueryService {
 		
 		return res;
 	
+	}
+	
+	@Override
+	public Boolean addMsg( YjsReqMsgDTO dto ) {
+		
+		yjsReqMsgDao.insertYjsReqMsg( dto );
+		
+		return true;
 	}
 
 }

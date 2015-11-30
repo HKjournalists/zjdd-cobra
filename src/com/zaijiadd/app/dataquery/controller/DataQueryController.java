@@ -12,8 +12,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,10 +21,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 import com.zaijiadd.app.common.utils.ContainerUtils;
 import com.zaijiadd.app.common.utils.ParseUtils;
+import com.zaijiadd.app.dataquery.dto.YjsReqMsgDTO;
 import com.zaijiadd.app.dataquery.entity.AllotLogEntity;
 import com.zaijiadd.app.dataquery.service.AllotLogService;
 import com.zaijiadd.app.dataquery.service.DataChangeLogService;
 import com.zaijiadd.app.dataquery.service.DataQueryService;
+import com.zaijiadd.app.dataquery.utils.DataTransUtils;
+import com.zaijiadd.app.user.dto.CallingLogDTO;
 
 @RequestMapping ( "/query" )
 @Controller
@@ -126,6 +127,8 @@ public class DataQueryController {
 				( jsonRequest.getString( "remark" ) == null ? "" : jsonRequest
 						.getString( "remark" ) ), "UTF-8" ) );
 		param.put( "cgroup", jsonRequest.getString( "cgroup" ) );
+		param.put( "provinceId", jsonRequest.getInteger( "provinceId" ) );
+		param.put( "cityId", jsonRequest.getInteger( "cityId" ) );
 
 		service.updReqMsg( param );
 		
@@ -351,6 +354,48 @@ public class DataQueryController {
 		List<Map<String, Object>> res = dataChangeLogService.queryStatusChangeLog( wId );
 		
 		param.put( "statusLogList", res );
+
+		return ContainerUtils.buildResSuccessMap( param );
+
+	}
+	
+	@RequestMapping ( value = "/callingLog", method = RequestMethod.POST )
+	@ResponseBody
+	public Map<String, Object> callingLog( HttpServletRequest request ) {
+
+		Map<String, Object> param = new HashMap<String, Object>();
+
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
+		Integer wId = jsonRequest.getInteger( "wId" );
+		
+		List<CallingLogDTO> res = dataChangeLogService.queryCallingLog( wId );
+		
+		param.put( "callingLog", res );
+
+		return ContainerUtils.buildResSuccessMap( param );
+
+	}
+	
+	@RequestMapping ( value = "/addMsg", method = RequestMethod.POST )
+	@ResponseBody
+	public Map<String, Object> addMsg( HttpServletRequest request ) {
+
+		Map<String, Object> param = new HashMap<String, Object>();
+
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
+		
+		YjsReqMsgDTO yjsReqMsgDto = DataTransUtils.transViewmodelToDtoByYjsReqMsg( jsonRequest );
+		
+		if ( yjsReqMsgDto.getCcity() == null ) {
+			yjsReqMsgDto.setCcity( 21 );
+		}
+		
+		service.addMsg( yjsReqMsgDto );
+		
+		String remark = yjsReqMsgDto.getRemark();
+		if ( remark != null && !remark.trim().equals( "" ) ) {
+			dataChangeLogService.addRemarkChangeLog( jsonRequest.getInteger( "userId" ), remark, yjsReqMsgDto.getMsgId() );
+		}
 
 		return ContainerUtils.buildResSuccessMap( param );
 

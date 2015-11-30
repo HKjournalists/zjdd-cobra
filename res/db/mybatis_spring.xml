@@ -50,5 +50,10 @@
 		<property name="mapperInterface" value="com.zaijiadd.app.dataquery.dao.DataChangeLogDAO" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
 	</bean>
+	
+	<bean id="systemAreaDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.zaijiadd.app.system.dao.SystemAreaDAO" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
 
 </beans>
