@@ -5,6 +5,8 @@
 
 package com.zaijiadd.app.applyflow.dao;
 
+import java.util.Map;
+
 import com.zaijiadd.app.applyflow.entity.InviteUserEntity;
 
 /**
@@ -16,10 +18,25 @@ import com.zaijiadd.app.applyflow.entity.InviteUserEntity;
 public interface ApplyFlowDao {
 
 	/**
-	 * (用一句话描述方法的主要功能)
+	 * 添加邀约人
 	 * @param inviteUserEntity
 	 * @return
 	 */
 
 	public Integer addInviteUser(InviteUserEntity inviteUserEntity);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param inviteUserEntity
+	 */
+
+	public void updateInviteUser(InviteUserEntity inviteUserEntity);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	public InviteUserEntity queryInviteUser(Map<String, Object> param);
 }

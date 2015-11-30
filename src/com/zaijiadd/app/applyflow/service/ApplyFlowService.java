@@ -5,6 +5,8 @@
 
 package com.zaijiadd.app.applyflow.service;
 
+import java.util.Map;
+
 import com.zaijiadd.app.applyflow.entity.InviteUserEntity;
 
 /**
@@ -16,10 +18,27 @@ import com.zaijiadd.app.applyflow.entity.InviteUserEntity;
 public interface ApplyFlowService {
 
 	/**
-	 * (用一句话描述方法的主要功能)
+	 * 添加邀约人
 	 * @param inviteUserEntity
 	 * @return
 	 */
 
 	Integer addInviteUser(InviteUserEntity inviteUserEntity);
+
+	/**
+	 * 更新邀约人信息
+	 * @param inviteUserEntity
+	 * @return
+	 */
+
+	Integer updateInviteUser(InviteUserEntity inviteUserEntity);
+
+	/**
+	 * 查询邀约人信息，根据手机号和姓名
+	 * @param inviteUserEntity
+	 * @return
+	 */
+
+	InviteUserEntity queryInviteUser(Map<String, Object> param);
+
 }

@@ -5,6 +5,8 @@
 
 package com.zaijiadd.app.applyflow.service.impl;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,25 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	@Override
 	public Integer addInviteUser(InviteUserEntity inviteUserEntity) {
 		return applyFlowDao.addInviteUser(inviteUserEntity);
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#updateInviteUser(com.zaijiadd.app.applyflow.entity.InviteUserEntity)
+	 */
+
+	@Override
+	public Integer updateInviteUser(InviteUserEntity inviteUserEntity) {
+		applyFlowDao.updateInviteUser(inviteUserEntity);
+		return null;
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#queryInviteUser(java.util.Map)
+	 */
+
+	@Override
+	public InviteUserEntity queryInviteUser(Map<String, Object> param) {
+		return applyFlowDao.queryInviteUser(param);
 	}
 
 }
