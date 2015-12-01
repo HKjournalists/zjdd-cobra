@@ -27,6 +27,8 @@
     	<typeAlias type="com.zaijiadd.app.dataquery.dto.YjsReqMsgDTO" alias="yjsReqMsgDto"/>
 
     	<typeAlias type="com.zaijiadd.app.applyflow.entity.InviteUserEntity" alias="inviteUserEntity"/>
+    	<typeAlias type="com.zaijiadd.app.applyflow.entity.StoreImg" alias="storeImg"/>
+    	<typeAlias type="com.zaijiadd.app.applyflow.entity.StoreInfo" alias="storeInfo"/>
     </typeAliases>
 
     <mappers>
@@ -37,6 +39,8 @@
     	<mapper resource="com/zaijiadd/app/dataquery/dao/dataChangeLogMapper.xml"/>
     	
     	<mapper resource="com/zaijiadd/app/applyflow/dao/InviteUserMapper.xml"/>
+    	<mapper resource="com/zaijiadd/app/applyflow/dao/StoreImgMapper.xml"/>
+    	<mapper resource="com/zaijiadd/app/applyflow/dao/StoreInfoMapper.xml"/>
     </mappers>
 	
 	
