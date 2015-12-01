@@ -5,8 +5,10 @@
 
 package com.zaijiadd.app.applyflow.service;
 
+import java.util.List;
 import java.util.Map;
 
+import com.zaijiadd.app.applyflow.entity.ApplyStore;
 import com.zaijiadd.app.applyflow.entity.InviteUserEntity;
 
 /**
@@ -40,5 +42,29 @@ public interface ApplyFlowService {
 	 */
 
 	InviteUserEntity queryInviteUser(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStore
+	 * @return
+	 */
+
+	Integer addApplyStore(ApplyStore applyStore);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	InviteUserEntity queryAllApplyStore(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	List<Map<String, Object>> queryInviteUserLike(Map<String, Object> param);
 
 }

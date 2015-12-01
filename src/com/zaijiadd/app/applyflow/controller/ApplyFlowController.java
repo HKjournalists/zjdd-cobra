@@ -6,6 +6,7 @@
 package com.zaijiadd.app.applyflow.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,9 +18,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.zaijiadd.app.applyflow.entity.ApplyStore;
 import com.zaijiadd.app.applyflow.entity.InviteUserEntity;
 import com.zaijiadd.app.applyflow.service.ApplyFlowService;
 import com.zaijiadd.app.common.utils.ContainerUtils;
+import com.zaijiadd.app.common.utils.DateUtils;
 import com.zaijiadd.app.common.utils.ParseUtils;
 
 /**
@@ -46,6 +49,7 @@ public class ApplyFlowController {
 		Map<String, Object> param = new HashMap<String, Object>();
 		InviteUserEntity inviteUserEntity = jsonToInviteUserVO(jsonRequest);
 		Integer inviteUserId = applyFlowService.addInviteUser(inviteUserEntity);
+		param.put("inviteUserId", inviteUserId);
 		return ContainerUtils.buildResSuccessMap(param);
 
 	}
@@ -70,7 +74,26 @@ public class ApplyFlowController {
 	}
 
 	/**
-	 * 查询用户所有的
+	 * 根据inviteUserId查询详情
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryInviteUserById", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> queryInviteUserById(HttpServletRequest request) {
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("inviteUserid", jsonRequest.getString("inviteUserid"));
+		InviteUserEntity inviteUserEntity = applyFlowService.queryInviteUser(param);
+		String visitTime = inviteUserEntity.getVisitTime();
+		inviteUserEntity.setVisitTime(DateUtils.getDate(visitTime));
+		Map<String, Object> entityToMap = ContainerUtils.entityToMap(inviteUserEntity);
+		return ContainerUtils.buildResSuccessMap(entityToMap);
+
+	}
+
+	/**
+	 * 查询用户所有的,分页
 	 * @param request
 	 * @return
 	 */
@@ -79,10 +102,38 @@ public class ApplyFlowController {
 	public Map<String, Object> queryAllInviteUser(HttpServletRequest request) {
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
 		Map<String, Object> param = new HashMap<String, Object>();
+		String page = jsonRequest.getString("page");// 当前页
+		Integer pageCount = jsonRequest.getInteger("pageCount");// 每页的数量
+		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
+		param.put("end", pageCount);
 		param.put("yjsUserId", jsonRequest.getString("yjsUserId"));
 		InviteUserEntity inviteUserEntity = applyFlowService.queryInviteUser(param);
+		String visitTime = inviteUserEntity.getVisitTime();
+		inviteUserEntity.setVisitTime(DateUtils.getDate(visitTime));
 		Map<String, Object> entityToMap = ContainerUtils.entityToMap(inviteUserEntity);
 		return ContainerUtils.buildResSuccessMap(entityToMap);
+
+	}
+
+	/**
+	 * 模糊查询,分页
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryInviteUserLike", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> queryInviteUserLike(HttpServletRequest request) {
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		Map<String, Object> param = new HashMap<String, Object>();
+		String page = jsonRequest.getString("page");// 当前页
+		Integer pageCount = jsonRequest.getInteger("pageCount");// 每页的数量
+		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
+		param.put("end", pageCount);
+		param.put("yjsUserId", jsonRequest.getString("yjsUserId"));
+		param.put("inviteuserName", jsonRequest.getString("inviteuserName"));
+		List<Map<String, Object>> inviteUseMap = applyFlowService.queryInviteUserLike(param);
+		param.put("result", inviteUseMap);
+		return ContainerUtils.buildResSuccessMap(param);
 
 	}
 
@@ -111,5 +162,49 @@ public class ApplyFlowController {
 	private InviteUserEntity jsonToInviteUserVO(JSONObject jsonRequest) {
 		InviteUserEntity inviteUserEntity = jsonRequest.parseObject(jsonRequest.toJSONString(), InviteUserEntity.class);
 		return inviteUserEntity;
+	}
+
+	/**
+	 * 增加开店申请
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/addApplyStore", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> addApplyStore(HttpServletRequest request) {
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		Map<String, Object> param = new HashMap<String, Object>();
+		ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
+		Integer inviteUserId = applyFlowService.addApplyStore(applyStore);
+		return ContainerUtils.buildResSuccessMap(param);
+
+	}
+
+	/**
+	 * 查询用户所有的开店权
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryAllApplyStore", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> queryAllApplyStore(HttpServletRequest request) {
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("yjsUserId", jsonRequest.getString("yjsUserId"));
+		InviteUserEntity inviteUserEntity = applyFlowService.queryAllApplyStore(param);
+		Map<String, Object> entityToMap = ContainerUtils.entityToMap(inviteUserEntity);
+		return ContainerUtils.buildResSuccessMap(entityToMap);
+
+	}
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param jsonRequest
+	 * @return
+	 */
+
+	private ApplyStore jsonToaddApplyStore(JSONObject jsonRequest) {
+		ApplyStore applyStore = jsonRequest.parseObject(jsonRequest.toJSONString(), ApplyStore.class);
+		return applyStore;
 	}
 }

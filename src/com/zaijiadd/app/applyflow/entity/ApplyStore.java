@@ -1,0 +1,255 @@
+package com.zaijiadd.app.applyflow.entity;
+
+import java.util.Date;
+
+public class ApplyStore {
+    private Integer applyStoreId;
+
+    private Integer applyType;
+
+    private Integer applyPersonType;
+
+    private String capital;
+
+    private String city;
+
+    private String district;
+
+    private Integer agencyType;
+
+    private Date agencyTime;
+
+    private Integer dealershipNum;
+
+    private String applyName;
+
+    private String personNum;
+
+    private String phone;
+
+    private String postAddr;
+
+    private String maiAddr;
+
+    private String urgencyPerson;
+
+    private String urgencyPhone;
+
+    private String companyname;
+
+    private Integer payWay;
+
+    private Integer paymoneyType;
+
+    private String paidMoney;
+
+    private String needPaymoney;
+
+    private Integer yjsUserId;
+
+    private Integer financeCheck;
+
+    private Integer managersCheck;
+
+    private Integer applyStatus;
+
+    public Integer getApplyStoreId() {
+        return applyStoreId;
+    }
+
+    public void setApplyStoreId(Integer applyStoreId) {
+        this.applyStoreId = applyStoreId;
+    }
+
+    public Integer getApplyType() {
+        return applyType;
+    }
+
+    public void setApplyType(Integer applyType) {
+        this.applyType = applyType;
+    }
+
+    public Integer getApplyPersonType() {
+        return applyPersonType;
+    }
+
+    public void setApplyPersonType(Integer applyPersonType) {
+        this.applyPersonType = applyPersonType;
+    }
+
+    public String getCapital() {
+        return capital;
+    }
+
+    public void setCapital(String capital) {
+        this.capital = capital;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
+    }
+
+    public Integer getAgencyType() {
+        return agencyType;
+    }
+
+    public void setAgencyType(Integer agencyType) {
+        this.agencyType = agencyType;
+    }
+
+    public Date getAgencyTime() {
+        return agencyTime;
+    }
+
+    public void setAgencyTime(Date agencyTime) {
+        this.agencyTime = agencyTime;
+    }
+
+    public Integer getDealershipNum() {
+        return dealershipNum;
+    }
+
+    public void setDealershipNum(Integer dealershipNum) {
+        this.dealershipNum = dealershipNum;
+    }
+
+    public String getApplyName() {
+        return applyName;
+    }
+
+    public void setApplyName(String applyName) {
+        this.applyName = applyName;
+    }
+
+    public String getPersonNum() {
+        return personNum;
+    }
+
+    public void setPersonNum(String personNum) {
+        this.personNum = personNum;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getPostAddr() {
+        return postAddr;
+    }
+
+    public void setPostAddr(String postAddr) {
+        this.postAddr = postAddr;
+    }
+
+    public String getMaiAddr() {
+        return maiAddr;
+    }
+
+    public void setMaiAddr(String maiAddr) {
+        this.maiAddr = maiAddr;
+    }
+
+    public String getUrgencyPerson() {
+        return urgencyPerson;
+    }
+
+    public void setUrgencyPerson(String urgencyPerson) {
+        this.urgencyPerson = urgencyPerson;
+    }
+
+    public String getUrgencyPhone() {
+        return urgencyPhone;
+    }
+
+    public void setUrgencyPhone(String urgencyPhone) {
+        this.urgencyPhone = urgencyPhone;
+    }
+
+    public String getCompanyname() {
+        return companyname;
+    }
+
+    public void setCompanyname(String companyname) {
+        this.companyname = companyname;
+    }
+
+    public Integer getPayWay() {
+        return payWay;
+    }
+
+    public void setPayWay(Integer payWay) {
+        this.payWay = payWay;
+    }
+
+    public Integer getPaymoneyType() {
+        return paymoneyType;
+    }
+
+    public void setPaymoneyType(Integer paymoneyType) {
+        this.paymoneyType = paymoneyType;
+    }
+
+    public String getPaidMoney() {
+        return paidMoney;
+    }
+
+    public void setPaidMoney(String paidMoney) {
+        this.paidMoney = paidMoney;
+    }
+
+    public String getNeedPaymoney() {
+        return needPaymoney;
+    }
+
+    public void setNeedPaymoney(String needPaymoney) {
+        this.needPaymoney = needPaymoney;
+    }
+
+    public Integer getYjsUserId() {
+        return yjsUserId;
+    }
+
+    public void setYjsUserId(Integer yjsUserId) {
+        this.yjsUserId = yjsUserId;
+    }
+
+    public Integer getFinanceCheck() {
+        return financeCheck;
+    }
+
+    public void setFinanceCheck(Integer financeCheck) {
+        this.financeCheck = financeCheck;
+    }
+
+    public Integer getManagersCheck() {
+        return managersCheck;
+    }
+
+    public void setManagersCheck(Integer managersCheck) {
+        this.managersCheck = managersCheck;
+    }
+
+    public Integer getApplyStatus() {
+        return applyStatus;
+    }
+
+    public void setApplyStatus(Integer applyStatus) {
+        this.applyStatus = applyStatus;
+    }
+}

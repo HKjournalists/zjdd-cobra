@@ -5,12 +5,14 @@
 
 package com.zaijiadd.app.applyflow.service.impl;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zaijiadd.app.applyflow.dao.ApplyFlowDao;
+import com.zaijiadd.app.applyflow.entity.ApplyStore;
 import com.zaijiadd.app.applyflow.entity.InviteUserEntity;
 import com.zaijiadd.app.applyflow.service.ApplyFlowService;
 
@@ -50,6 +52,35 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	@Override
 	public InviteUserEntity queryInviteUser(Map<String, Object> param) {
 		return applyFlowDao.queryInviteUser(param);
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#addApplyStore(com.zaijiadd.app.applyflow.entity.ApplyStore)
+	 */
+
+	@Override
+	public Integer addApplyStore(ApplyStore applyStore) {
+		// TODO 该方法尚未实现
+		return null;
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#queryAllApplyStore(java.util.Map)
+	 */
+
+	@Override
+	public InviteUserEntity queryAllApplyStore(Map<String, Object> param) {
+		// TODO 该方法尚未实现
+		return null;
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#queryInviteUserLike(java.util.Map)
+	 */
+
+	@Override
+	public List<Map<String, Object>> queryInviteUserLike(Map<String, Object> param) {
+		return applyFlowDao.queryInviteUserLike(param);
 	}
 
 }

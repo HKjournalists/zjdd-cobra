@@ -5,8 +5,6 @@
 
 package com.zaijiadd.app.applyflow.entity;
 
-import java.util.Date;
-
 import com.alibaba.fastjson.annotation.JSONField;
 
 /**
@@ -21,13 +19,13 @@ public class InviteUserEntity {
 	private String inviteuserName;
 	private String inviteuserMobile;
 	@JSONField(format = "yyyy-MM-dd ")
-	private Date visitTime;// 预计到访时间
+	private String visitTime;// 预计到访时间
 	private String referrer;// 推荐人
 	private int applyRole;// 申请角色 1是经销商 2是小店
 	private Integer userState;// 1已邀约 2已到访
 	private String remark;
-	private Date createDate;
-	private Date updatedDate;
+	private String createDate;
+	private String updatedDate;
 	private int yjsUserId;// 用户id
 	private String personNumber;// 身份证
 
@@ -55,12 +53,20 @@ public class InviteUserEntity {
 		this.inviteuserMobile = inviteuserMobile;
 	}
 
-	public Date getVisitTime() {
+	public String getVisitTime() {
 		return visitTime;
 	}
 
-	public void setVisitTime(Date visitTime) {
+	public void setVisitTime(String visitTime) {
 		this.visitTime = visitTime;
+	}
+
+	public void setCreateDate(String createDate) {
+		this.createDate = createDate;
+	}
+
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
 	}
 
 	public String getReferrer() {
@@ -87,20 +93,12 @@ public class InviteUserEntity {
 		this.userState = userState;
 	}
 
-	public Date getCreateDate() {
+	public String getCreateDate() {
 		return createDate;
 	}
 
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
-
-	public Date getUpdatedDate() {
+	public String getUpdatedDate() {
 		return updatedDate;
-	}
-
-	public void setUpdatedDate(Date updatedDate) {
-		this.updatedDate = updatedDate;
 	}
 
 	public int getYjsUserId() {
@@ -117,6 +115,14 @@ public class InviteUserEntity {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public String getPersonNumber() {
+		return personNumber;
+	}
+
+	public void setPersonNumber(String personNumber) {
+		this.personNumber = personNumber;
 	}
 
 }

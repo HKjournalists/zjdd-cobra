@@ -15,13 +15,16 @@
 		<result column="yjs_user_id" property="yjsUserId"/>
 		<result column="person_number" property="personNumber"/>
 	</resultMap>
-	
-	<insert id="addInviteUser" parameterType="inviteUserEntity" useGeneratedKeys="true" keyProperty="inviteuser_id">
+	<!-- 提取公用的sql片段 -->
+	<sql id="inviteUserEntityLike">
+		inviteuser_id as inviteUserid, inviteuser_name as inviteuserName, apply_role as applyRole, visit_time as visitTime
+	</sql>
+	<insert id="addInviteUser" parameterType="inviteUserEntity" useGeneratedKeys="true" keyProperty="inviteUserid">
 		insert into
 			cobra_invite_user
-		(inviteuser_id,inviteuser_name,inviteuser_mobile,visit_time,referrer,apply_role,user_state,remark,created_date,yjsUserId,personNumber)	
+		(inviteuser_name,inviteuser_mobile,visit_time,referrer,apply_role,user_state,remark,person_number,yjs_user_id,created_date)	
 		values
-		( #{inviteUserid}, #{inviteuserName}, #{inviteuserMobile}, #{visitTime}, #{referrer}, #{applyRole},#{userState},#{remark},now(),yjs_user_id,person_number)
+		(  #{inviteuserName}, #{inviteuserMobile}, #{visitTime}, #{referrer}, #{applyRole},#{userState},#{remark},#{personNumber},#{yjsUserId},now())
 	</insert>
 	
 
@@ -37,6 +40,21 @@
 			<if test="yjsUserId != null">
 				and yjs_user_id = #{yjsUserId}
 			</if>
+			limit #{start,jdbcType=INTEGER}, #{end}
+		</where>
+	</select>
+	
+	
+	<select id="queryInviteUserLike" parameterType="map" resultType="java.util.HashMap">
+		select <include refid="inviteUserEntityLike"/> from cobra_invite_user 
+		<where>
+			<if test="yjsUserId != null">
+			  yjs_user_id = #{yjsUserId}
+			</if>
+			<if test="inviteuserName != null">
+				and  inviteuser_name like '%${inviteuserName}%'
+			</if>
+			limit #{start,jdbcType=INTEGER}, #{end}
 		</where>
 	</select>
 	
