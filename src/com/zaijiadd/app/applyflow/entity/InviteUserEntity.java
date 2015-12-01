@@ -28,6 +28,7 @@ public class InviteUserEntity {
 	private String updatedDate;
 	private int yjsUserId;// 用户id
 	private String personNumber;// 身份证
+	private int fuctionSate;// 功能
 
 	public Integer getInviteUserid() {
 		return inviteUserid;
@@ -123,6 +124,14 @@ public class InviteUserEntity {
 
 	public void setPersonNumber(String personNumber) {
 		this.personNumber = personNumber;
+	}
+
+	public int getFuctionSate() {
+		return fuctionSate;
+	}
+
+	public void setFuctionSate(int fuctionSate) {
+		this.fuctionSate = fuctionSate;
 	}
 
 }

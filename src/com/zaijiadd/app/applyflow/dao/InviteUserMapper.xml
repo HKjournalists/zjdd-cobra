@@ -14,17 +14,18 @@
 		<result column="updated_date" property="updatedDate"/>
 		<result column="yjs_user_id" property="yjsUserId"/>
 		<result column="person_number" property="personNumber"/>
+		<result column="fuction_sate" property="fuctionSate"/>
 	</resultMap>
 	<!-- 提取公用的sql片段 -->
 	<sql id="inviteUserEntityLike">
-		inviteuser_id as inviteUserid, inviteuser_name as inviteuserName, apply_role as applyRole, visit_time as visitTime
+		inviteuser_id as inviteUserid, inviteuser_name as inviteuserName, apply_role as applyRole, visit_time as visitTime,fuction_sate as fuctionSate
 	</sql>
 	<insert id="addInviteUser" parameterType="inviteUserEntity" useGeneratedKeys="true" keyProperty="inviteUserid">
 		insert into
 			cobra_invite_user
-		(inviteuser_name,inviteuser_mobile,visit_time,referrer,apply_role,user_state,remark,person_number,yjs_user_id,created_date)	
+		(inviteuser_name,inviteuser_mobile,visit_time,referrer,apply_role,user_state,remark,person_number,yjs_user_id,created_date,fuction_sate)	
 		values
-		(  #{inviteuserName}, #{inviteuserMobile}, #{visitTime}, #{referrer}, #{applyRole},#{userState},#{remark},#{personNumber},#{yjsUserId},now())
+		(  #{inviteuserName}, #{inviteuserMobile}, #{visitTime}, #{referrer}, #{applyRole},#{userState},#{remark},#{personNumber},#{yjsUserId},now(),fuctionSate)
 	</insert>
 	
 
@@ -39,6 +40,9 @@
 			</if>
 			<if test="yjsUserId != null">
 				and yjs_user_id = #{yjsUserId}
+			</if>
+			<if test="fuctionSate != null">
+				and fuction_sate = #{fuctionSate}
 			</if>
 			limit #{start,jdbcType=INTEGER}, #{end}
 		</where>
@@ -56,6 +60,9 @@
 			<if test="yjsUserId != null">
 				and yjs_user_id = #{yjsUserId}
 			</if>
+			<if test="fuctionSate != null">
+				and fuction_sate = #{fuctionSate}
+			</if>
 			limit #{start,jdbcType=INTEGER}, #{end}
 		</where>
 	</select>
@@ -68,6 +75,9 @@
 			</if>
 			<if test="inviteuserName != null">
 				and  inviteuser_name like '%${inviteuserName}%'
+			</if>
+			<if test="fuctionSate != null">
+				and fuction_sate = #{fuctionSate}
 			</if>
 			limit #{start,jdbcType=INTEGER}, #{end}
 		</where>

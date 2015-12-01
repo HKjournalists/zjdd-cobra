@@ -23,6 +23,10 @@
     	<typeAlias type="com.zaijiadd.app.user.entity.UserInfoEntity" alias="userInfoEntity"/>
     	<typeAlias type="com.zaijiadd.app.user.entity.UserCallingDetailEntity" alias="userCallingDetailEntity"/>
     	<typeAlias type="com.zaijiadd.app.dataquery.entity.AllotLogEntity" alias="allotLogEntity"/>
+    	<typeAlias type="com.zaijiadd.app.user.dto.CallingLogDTO" alias="callingLogDto"/>
+    	<typeAlias type="com.zaijiadd.app.dataquery.dto.YjsReqMsgDTO" alias="yjsReqMsgDto"/>
+
+    	<typeAlias type="com.zaijiadd.app.applyflow.entity.InviteUserEntity" alias="inviteUserEntity"/>
     </typeAliases>
 
     <mappers>

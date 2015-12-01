@@ -38,7 +38,25 @@ public class ApplyFlowController {
 	private ApplyFlowService applyFlowService;
 
 	/**
-	 * 增加邀约记录
+	 * 增加用户信息
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/addInviteUserMsg", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> addInviteUserMsg(HttpServletRequest request) {
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		Map<String, Object> param = new HashMap<String, Object>();
+		InviteUserEntity inviteUserEntity = jsonToInviteUserVO(jsonRequest);
+		inviteUserEntity.setFuctionSate(1);// 用户信息
+		Integer inviteUserId = applyFlowService.addInviteUser(inviteUserEntity);
+		param.put("inviteUserId", inviteUserId);
+		return ContainerUtils.buildResSuccessMap(param);
+
+	}
+
+	/**
+	 * 增加邀约
 	 * @param request
 	 * @return
 	 */
@@ -48,6 +66,7 @@ public class ApplyFlowController {
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
 		Map<String, Object> param = new HashMap<String, Object>();
 		InviteUserEntity inviteUserEntity = jsonToInviteUserVO(jsonRequest);
+		inviteUserEntity.setFuctionSate(2);// 邀约
 		Integer inviteUserId = applyFlowService.addInviteUser(inviteUserEntity);
 		param.put("inviteUserId", inviteUserId);
 		return ContainerUtils.buildResSuccessMap(param);
@@ -74,16 +93,17 @@ public class ApplyFlowController {
 	}
 
 	/**
-	 * 根据inviteUserId查询详情
+	 * 查询用户信息详情
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/queryInviteUserById", method = RequestMethod.POST)
+	@RequestMapping(value = "/queryInviteUserMsgById", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> queryInviteUserById(HttpServletRequest request) {
+	public Map<String, Object> queryInviteUserMsgById(HttpServletRequest request) {
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("inviteUserid", jsonRequest.getString("inviteUserid"));
+		param.put("fuctionSate", "1");
 		InviteUserEntity inviteUserEntity = applyFlowService.queryInviteUser(param);
 		String visitTime = inviteUserEntity.getVisitTime();
 		inviteUserEntity.setVisitTime(DateUtils.getDate(visitTime));
@@ -93,7 +113,55 @@ public class ApplyFlowController {
 	}
 
 	/**
-	 * 查询用户所有的,分页
+	 * 查询邀约详情
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryInviteUserById", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> queryInviteUserById(HttpServletRequest request) {
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("inviteUserid", jsonRequest.getString("inviteUserid"));
+		param.put("fuctionSate", "2");
+		InviteUserEntity inviteUserEntity = applyFlowService.queryInviteUser(param);
+		String visitTime = inviteUserEntity.getVisitTime();
+		inviteUserEntity.setVisitTime(DateUtils.getDate(visitTime));
+		Map<String, Object> entityToMap = ContainerUtils.entityToMap(inviteUserEntity);
+		return ContainerUtils.buildResSuccessMap(entityToMap);
+
+	}
+
+	/**
+	 * 查询所有用户信息,分页
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryAllInviteUserMsg", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> queryAllInviteUserMsg(HttpServletRequest request) {
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		Map<String, Object> param = new HashMap<String, Object>();
+		String page = jsonRequest.getString("page");// 当前页
+		Integer pageCount = jsonRequest.getInteger("pageCount");// 每页的数量
+		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
+		param.put("end", pageCount);
+		param.put("yjsUserId", jsonRequest.getString("yjsUserId"));
+		param.put("fuctionSate", "1");
+		List<Map<String, Object>> inviteUserMap = applyFlowService.queryInviteUserMap(param);
+		for (Map<String, Object> map : inviteUserMap) {
+		}
+		param.put("result", inviteUserMap);
+		// String visitTime = inviteUserEntity.getVisitTime();
+		// inviteUserEntity.setVisitTime(DateUtils.getDate(visitTime));
+		// Map<String, Object> entityToMap =
+		// ContainerUtils.entityToMap(inviteUserEntity);
+		return ContainerUtils.buildResSuccessMap(param);
+
+	}
+
+	/**
+	 * 查询所有邀约,分页
 	 * @param request
 	 * @return
 	 */
@@ -107,9 +175,9 @@ public class ApplyFlowController {
 		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
 		param.put("end", pageCount);
 		param.put("yjsUserId", jsonRequest.getString("yjsUserId"));
+		param.put("fuctionSate", "2");
 		List<Map<String, Object>> inviteUserMap = applyFlowService.queryInviteUserMap(param);
 		for (Map<String, Object> map : inviteUserMap) {
-
 		}
 		param.put("result", inviteUserMap);
 		// String visitTime = inviteUserEntity.getVisitTime();
@@ -121,7 +189,30 @@ public class ApplyFlowController {
 	}
 
 	/**
-	 * 模糊查询,分页
+	 * 用户信息模糊查询,分页
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryInviteUserMsgLike", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> queryInviteUserMsgLike(HttpServletRequest request) {
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		Map<String, Object> param = new HashMap<String, Object>();
+		String page = jsonRequest.getString("page");// 当前页
+		Integer pageCount = jsonRequest.getInteger("pageCount");// 每页的数量
+		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
+		param.put("end", pageCount);
+		param.put("yjsUserId", jsonRequest.getString("yjsUserId"));
+		param.put("inviteuserName", jsonRequest.getString("inviteuserName"));
+		param.put("fuctionSate", "1");
+		List<Map<String, Object>> inviteUseMap = applyFlowService.queryInviteUserLike(param);
+		param.put("result", inviteUseMap);
+		return ContainerUtils.buildResSuccessMap(param);
+
+	}
+
+	/**
+	 * 邀约模糊查询,分页
 	 * @param request
 	 * @return
 	 */
@@ -136,6 +227,7 @@ public class ApplyFlowController {
 		param.put("end", pageCount);
 		param.put("yjsUserId", jsonRequest.getString("yjsUserId"));
 		param.put("inviteuserName", jsonRequest.getString("inviteuserName"));
+		param.put("fuctionSate", "2");
 		List<Map<String, Object>> inviteUseMap = applyFlowService.queryInviteUserLike(param);
 		param.put("result", inviteUseMap);
 		return ContainerUtils.buildResSuccessMap(param);
