@@ -25,11 +25,11 @@
 			cobra_invite_user
 		(inviteuser_name,inviteuser_mobile,visit_time,referrer,apply_role,user_state,remark,person_number,yjs_user_id,created_date,fuction_sate)	
 		values
-		(  #{inviteuserName}, #{inviteuserMobile}, #{visitTime}, #{referrer}, #{applyRole},#{userState},#{remark},#{personNumber},#{yjsUserId},now(),fuctionSate)
+		(  #{inviteuserName}, #{inviteuserMobile}, #{visitTime}, #{referrer}, #{applyRole},#{userState},#{remark},#{personNumber},#{yjsUserId},now(),#{fuctionSate})
 	</insert>
 	
 
-	<select id="queryInviteUser" parameterType="map" resultMap="inviteUserEntity">
+	<select id="queryInviteUser" parameterType="map" resultMap="BaseResultMap">
 		select * from cobra_invite_user 
 		<where>
 			<if test="inviteuserName != null and inviteuserName !=''">
