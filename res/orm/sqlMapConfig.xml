@@ -23,6 +23,8 @@
     	<typeAlias type="com.zaijiadd.app.user.entity.UserInfoEntity" alias="userInfoEntity"/>
     	<typeAlias type="com.zaijiadd.app.user.entity.UserCallingDetailEntity" alias="userCallingDetailEntity"/>
     	<typeAlias type="com.zaijiadd.app.dataquery.entity.AllotLogEntity" alias="allotLogEntity"/>
+    	<typeAlias type="com.zaijiadd.app.user.dto.CallingLogDTO" alias="callingLogDto"/>
+    	<typeAlias type="com.zaijiadd.app.dataquery.dto.YjsReqMsgDTO" alias="yjsReqMsgDto"/>
     </typeAliases>
 
     <mappers>
@@ -31,6 +33,7 @@
     	<mapper resource="com/zaijiadd/app/user/dao/userInfoMapper.xml"/>
     	<mapper resource="com/zaijiadd/app/user/dao/userCallingDetailMapper.xml"/>
     	<mapper resource="com/zaijiadd/app/dataquery/dao/dataChangeLogMapper.xml"/>
+    	<mapper resource="com/zaijiadd/app/system/dao/systemAreaMapper.xml"/>
     </mappers>
 
 </configuration> 

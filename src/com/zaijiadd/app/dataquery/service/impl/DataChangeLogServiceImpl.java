@@ -8,11 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.zaijiadd.app.dataquery.dao.DataChangeLogDAO;
 import com.zaijiadd.app.dataquery.service.DataChangeLogService;
+import com.zaijiadd.app.user.dao.UserCallingDetailDAO;
+import com.zaijiadd.app.user.dto.CallingLogDTO;
 
 public class DataChangeLogServiceImpl implements DataChangeLogService {
 
 	@Autowired
 	private DataChangeLogDAO dataChangeLogDao;
+	
+	@Autowired
+	private UserCallingDetailDAO userCallingDetailDao;
 	
 	@Override
 	public Boolean addRemarkChangeLog( Integer userId, String remark, Integer wId ) {
@@ -60,6 +65,13 @@ public class DataChangeLogServiceImpl implements DataChangeLogService {
 	public List<Map<String, Object>> queryStatusChangeLog( Integer wId ) {
 		
 		return dataChangeLogDao.queryStatusChangeLog( wId );
+		
+	}
+
+	@Override
+	public List<CallingLogDTO> queryCallingLog( Integer wId ) {
+		
+		return userCallingDetailDao.queryCallingLog( wId );
 		
 	}
 

@@ -92,6 +92,12 @@
 		<if test="remark!= null and remark !='' ">
 		,remark = #{remark,jdbcType=VARCHAR}
 		</if>
+		<if test="cityId!= null and cityId !='' ">
+		,city_id = #{cityId,jdbcType=VARCHAR}
+		</if>
+		<if test="provinceId!= null and provinceId !='' ">
+		,province_id = #{provinceId,jdbcType=VARCHAR}
+		</if>
 		where msgid = #{id,jdbcType=INTEGER}
 	</update>
 	<select id="groupList" resultType="java.util.HashMap"
@@ -173,5 +179,22 @@
 		select status_name statusName, status_value statusValue from status_type
 		where status = 1
 	</select>
+	
+	<update id="updatePhoneInfo" parameterType="java.util.Map">
+		update 
+			yjs_req_msg
+		set
+			phncnt = phncnt + 1,
+			lastphntim = #{callDate}
+		where
+			msgid = #{msgId}
+	</update>
+	
+	<insert id="insertYjsReqMsg" parameterType="yjsReqMsgDto" useGeneratedKeys="true" keyProperty="msgId">
+		insert into yjs_req_msg
+		( channel_id, protim, city_id, operator_user_id, province_id, name, phone, wx, qq, custype, remark, status_type, ccity )
+		values
+		( #{channelId}, now(), #{cityId}, #{operatorUserId}, #{provinceId}, #{realname}, #{mobile}, #{wechat}, #{qq}, #{coType}, #{remark}, 0, #{ccity} )
+	</insert>
 	
 </mapper>

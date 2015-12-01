@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zaijiadd.app.system.dao.SystemAreaDAO">
+
+	<insert id="insertProviceInfo" parameterType="java.util.Map">
+		insert into system_province_info
+		( system_province_id, province_name, created_date )
+		values
+		( #{provinceId}, #{provinceName}, now() )
+	</insert>
+	
+	<insert id="insertCityInfo" parameterType="java.util.Map">
+		insert into system_city_info
+		( system_city_id, city_name, province_id, created_date )
+		values
+		( #{cityId}, #{cityName}, #{provinceId}, now() )
+	</insert>
+	
+	<select id="getBaseChannelInfo" parameterType="java.lang.Integer" resultType="java.util.Map">
+		select channel_id channelId, channel_name channelName from cobra_channel_info
+		where pre_channel_id = #{pre}
+	</select>
+	
+</mapper>

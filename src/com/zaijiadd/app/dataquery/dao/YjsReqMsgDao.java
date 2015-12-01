@@ -3,6 +3,8 @@ package com.zaijiadd.app.dataquery.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.zaijiadd.app.dataquery.dto.YjsReqMsgDTO;
+
 public interface YjsReqMsgDao {
     
     /**条件查询信息*/
@@ -37,5 +39,9 @@ public interface YjsReqMsgDao {
     public Map<String,Object> timeInfo(Map<String,Object> param);
     
     public List<Map<String, Object>> getStatusType();
+    
+    public void updatePhoneInfo( Map<String, Object> params );
+    
+    public void insertYjsReqMsg( YjsReqMsgDTO dto );
     
 }
