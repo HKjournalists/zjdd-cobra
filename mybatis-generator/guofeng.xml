@@ -2,14 +2,14 @@
 <!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
 	<!-- oracle lib location -->
-	<classPathEntry location="/Users/guofeng/git/zjdd-cobra/mybatis-generator/mysql-connector-java-5.1.29.jar" />
+	<classPathEntry location="C:\Users\admin\git\zjdd-cobra\mybatis-generator\mysql-connector-java-5.1.29.jar" />
 	<context id="DB2Tables" targetRuntime="MyBatis3">
 		<commentGenerator>
 			<property name="suppressAllComments" value="true" />
 		</commentGenerator>
 		<!-- oracle URL、username、password -->
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://192.168.15.171:3306/cobra" userId="root" password="123456">
+			connectionURL="jdbc:mysql://localhost:3306/cobra" userId="root" password="123456">
 		</jdbcConnection>
 		<javaTypeResolver>
 			<property name="forceBigDecimals" value="false" />
@@ -34,8 +34,10 @@
 		<table tableName="permissiongroup" domainObjectName="Permissiongroup" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
 		<table tableName="pg_module" domainObjectName="Pgmodule" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
 -->
-		<table tableName="store_info" domainObjectName="StoreInfo" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
-		<table tableName="store_img" domainObjectName="StoreImg" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+		<table tableName="province" domainObjectName="Province" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+		<table tableName="city" domainObjectName="City" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+		<table tableName="country" domainObjectName="Country" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+		<table tableName="town" domainObjectName="Town" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
 
 	</context>
 </generatorConfiguration>
