@@ -57,7 +57,7 @@ public interface ApplyFlowService {
 	 * @return
 	 */
 
-	ApplyStore queryAllApplyStore(Map<String, Object> param);
+	List<Map<String, Object>> queryAllApplyStore(Map<String, Object> param);
 
 	/**
 	 * (用一句话描述方法的主要功能)
@@ -74,5 +74,44 @@ public interface ApplyFlowService {
 	 */
 
 	List<Map<String, Object>> queryInviteUserMap(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStore
+	 * @return
+	 */
+
+	Integer updateApplyStore(ApplyStore applyStore);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	Map<String, Object> queryApplyStoreDetails(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param dealershipNum
+	 */
+
+	void getCityDealershipMoney(Integer dealershipNum);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param inviteUserId
+	 * @param applyStore
+	 */
+
+	void insertApplyRoleRelation(Integer inviteUserId, ApplyStore applyStore);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStore
+	 * @return
+	 */
+
+	Integer approveApplyStore(ApplyStore applyStore);
 
 }

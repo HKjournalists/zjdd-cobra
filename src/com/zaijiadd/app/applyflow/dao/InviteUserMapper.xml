@@ -18,7 +18,10 @@
 	</resultMap>
 	<!-- 提取公用的sql片段 -->
 	<sql id="inviteUserEntityLike">
-		inviteuser_id as inviteUserid, inviteuser_name as inviteuserName, apply_role as applyRole, visit_time as visitTime,fuction_sate as fuctionSate
+		inviteuser_id as inviteUserid, inviteuser_name as inviteuserName, apply_role as applyRole, visit_time as visitTime,fuction_sate as fuctionSate,created_date as createDate
+	</sql>
+	<sql id="queryAllInviteUser">
+		inviteuser_id as inviteUserid,inviteuser_name as inviteuserName ,inviteuser_mobile as inviteuserMobile,visit_time as visitTime,referrer as referrer,apply_role as applyRole,user_state as userState,remark as remark,person_number as personNumber,yjs_user_id as yjsUserId,created_date as createDate,updated_date as updatedDate,fuction_sate as fuctionSate
 	</sql>
 	<insert id="addInviteUser" parameterType="inviteUserEntity" useGeneratedKeys="true" keyProperty="inviteUserid">
 		insert into
@@ -44,12 +47,13 @@
 			<if test="fuctionSate != null">
 				and fuction_sate = #{fuctionSate}
 			</if>
+			order by created_date desc
 			limit #{start,jdbcType=INTEGER}, #{end}
 		</where>
 	</select>
 	
 	<select id="queryInviteUserMap" parameterType="map" resultType="java.util.HashMap">
-		select * from cobra_invite_user 
+		select <include refid="inviteUserEntityLike"/> from cobra_invite_user 
 		<where>
 			<if test="inviteuserName != null and inviteuserName !=''">
 				inviteuser_name = #{inviteuserName}
@@ -63,6 +67,7 @@
 			<if test="fuctionSate != null">
 				and fuction_sate = #{fuctionSate}
 			</if>
+			order by createDate desc
 			limit #{start,jdbcType=INTEGER}, #{end}
 		</where>
 	</select>
@@ -79,6 +84,7 @@
 			<if test="fuctionSate != null">
 				and fuction_sate = #{fuctionSate}
 			</if>
+			order by createDate desc
 			limit #{start,jdbcType=INTEGER}, #{end}
 		</where>
 	</select>
