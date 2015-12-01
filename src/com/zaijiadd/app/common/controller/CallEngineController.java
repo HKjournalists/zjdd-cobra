@@ -1,6 +1,7 @@
 package com.zaijiadd.app.common.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -68,6 +69,14 @@ public class CallEngineController {
 
 		Map<String, Object> resData = new HashMap<String, Object>();
 		
+		String cdrData = request.getParameter( "cdr" );
+		JSONObject jsonData = new JSONObject();
+		try {
+			jsonData = JSONObject.parseObject( cdrData );
+		} catch ( Exception e ) {
+			e.printStackTrace();
+		}
+		
 		Map requestParams = request.getParameterMap();
 		for ( Iterator iter = requestParams.keySet().iterator(); iter.hasNext(); ) {
 			String name = ( String ) iter.next();
@@ -80,6 +89,7 @@ public class CallEngineController {
 			// 乱码解决，这段代码在出现乱码时使用。如果mysign和sign不相等也可以使用这段代码转化
 			try {
 				valueStr = new String( valueStr.getBytes( "ISO-8859-1" ), "gbk" );
+				valueStr = URLDecoder.decode( valueStr );
 			} catch ( UnsupportedEncodingException e ) {
 				e.printStackTrace();
 			}
@@ -87,8 +97,18 @@ public class CallEngineController {
 		}
 		
 		JSONObject json = new JSONObject( resData );
+		try {
+			JSONObject data = json.getJSONObject( "cdr" );
+			
+		} catch ( Exception e ) {
+			
+		}
 		
 		System.out.println( json );
+		
+		System.out.println( jsonData );
+		
+		callEngineService.handleCallback( jsonData );
 		
 		return ContainerUtils.buildResSuccessMap( resData );
 

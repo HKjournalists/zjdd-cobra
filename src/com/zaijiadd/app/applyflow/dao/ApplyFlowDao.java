@@ -48,4 +48,12 @@ public interface ApplyFlowDao {
 	 */
 
 	public List<Map<String, Object>> queryInviteUserLike(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	public List<Map<String, Object>> queryInviteUserMap(Map<String, Object> param);
 }

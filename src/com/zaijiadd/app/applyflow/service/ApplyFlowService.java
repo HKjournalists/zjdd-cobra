@@ -57,7 +57,7 @@ public interface ApplyFlowService {
 	 * @return
 	 */
 
-	InviteUserEntity queryAllApplyStore(Map<String, Object> param);
+	ApplyStore queryAllApplyStore(Map<String, Object> param);
 
 	/**
 	 * (用一句话描述方法的主要功能)
@@ -66,5 +66,13 @@ public interface ApplyFlowService {
 	 */
 
 	List<Map<String, Object>> queryInviteUserLike(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	List<Map<String, Object>> queryInviteUserMap(Map<String, Object> param);
 
 }

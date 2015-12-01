@@ -69,7 +69,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	 */
 
 	@Override
-	public InviteUserEntity queryAllApplyStore(Map<String, Object> param) {
+	public ApplyStore queryAllApplyStore(Map<String, Object> param) {
 		// TODO 该方法尚未实现
 		return null;
 	}
@@ -81,6 +81,15 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	@Override
 	public List<Map<String, Object>> queryInviteUserLike(Map<String, Object> param) {
 		return applyFlowDao.queryInviteUserLike(param);
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#queryInviteUserMap(java.util.Map)
+	 */
+
+	@Override
+	public List<Map<String, Object>> queryInviteUserMap(Map<String, Object> param) {
+		return applyFlowDao.queryInviteUserMap(param);
 	}
 
 }

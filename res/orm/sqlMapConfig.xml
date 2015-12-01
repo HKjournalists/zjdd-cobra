@@ -23,8 +23,6 @@
     	<typeAlias type="com.zaijiadd.app.user.entity.UserInfoEntity" alias="userInfoEntity"/>
     	<typeAlias type="com.zaijiadd.app.user.entity.UserCallingDetailEntity" alias="userCallingDetailEntity"/>
     	<typeAlias type="com.zaijiadd.app.dataquery.entity.AllotLogEntity" alias="allotLogEntity"/>
-    	
-    	<typeAlias type="com.zaijiadd.app.applyflow.entity.InviteUserEntity" alias="inviteUserEntity"/>
     </typeAliases>
 
     <mappers>
@@ -36,5 +34,6 @@
     	
     	<mapper resource="com/zaijiadd/app/applyflow/dao/InviteUserMapper.xml"/>
     </mappers>
-
+	
+	
 </configuration> 

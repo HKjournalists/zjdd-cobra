@@ -50,7 +50,6 @@
 		<property name="mapperInterface" value="com.zaijiadd.app.dataquery.dao.DataChangeLogDAO" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
 	</bean>
-	
 	<bean id="applyFlowDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="com.zaijiadd.app.applyflow.dao.ApplyFlowDao" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>

@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class UserCallingDetailEntity {
 	
+	private Integer userCallingDetailId;
 	private Integer userId;
 	private Integer msgId;
 	private Date beginDate;
@@ -12,6 +13,7 @@ public class UserCallingDetailEntity {
 	private String srcMobile;
 	private String destMobile;
 	private Integer status;
+	private String recordUrl;
 	
 	public Integer getUserId() {
 		return userId;
@@ -60,6 +62,18 @@ public class UserCallingDetailEntity {
 	}
 	public void setSrcMobile( String srcMobile ) {
 		this.srcMobile = srcMobile;
+	}
+	public Integer getUserCallingDetailId() {
+		return userCallingDetailId;
+	}
+	public void setUserCallingDetailId( Integer userCallingDetailId ) {
+		this.userCallingDetailId = userCallingDetailId;
+	}
+	public String getRecordUrl() {
+		return recordUrl;
+	}
+	public void setRecordUrl( String recordUrl ) {
+		this.recordUrl = recordUrl;
 	}
 
 }

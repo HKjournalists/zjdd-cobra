@@ -28,7 +28,7 @@
 	</insert>
 	
 
-	<select id="queryInviteUser" parameterType="map" resultMap="BaseResultMap">
+	<select id="queryInviteUser" parameterType="map" resultMap="inviteUserEntity">
 		select * from cobra_invite_user 
 		<where>
 			<if test="inviteuserName != null and inviteuserName !=''">
@@ -44,6 +44,21 @@
 		</where>
 	</select>
 	
+	<select id="queryInviteUserMap" parameterType="map" resultType="java.util.HashMap">
+		select * from cobra_invite_user 
+		<where>
+			<if test="inviteuserName != null and inviteuserName !=''">
+				inviteuser_name = #{inviteuserName}
+			</if>
+			<if test="inviteuserMobile != null">
+				and inviteuser_mobile = #{inviteuserMobile}
+			</if>
+			<if test="yjsUserId != null">
+				and yjs_user_id = #{yjsUserId}
+			</if>
+			limit #{start,jdbcType=INTEGER}, #{end}
+		</where>
+	</select>
 	
 	<select id="queryInviteUserLike" parameterType="map" resultType="java.util.HashMap">
 		select <include refid="inviteUserEntityLike"/> from cobra_invite_user 

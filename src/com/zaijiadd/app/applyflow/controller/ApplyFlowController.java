@@ -107,11 +107,16 @@ public class ApplyFlowController {
 		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
 		param.put("end", pageCount);
 		param.put("yjsUserId", jsonRequest.getString("yjsUserId"));
-		InviteUserEntity inviteUserEntity = applyFlowService.queryInviteUser(param);
-		String visitTime = inviteUserEntity.getVisitTime();
-		inviteUserEntity.setVisitTime(DateUtils.getDate(visitTime));
-		Map<String, Object> entityToMap = ContainerUtils.entityToMap(inviteUserEntity);
-		return ContainerUtils.buildResSuccessMap(entityToMap);
+		List<Map<String, Object>> inviteUserMap = applyFlowService.queryInviteUserMap(param);
+		for (Map<String, Object> map : inviteUserMap) {
+
+		}
+		param.put("result", inviteUserMap);
+		// String visitTime = inviteUserEntity.getVisitTime();
+		// inviteUserEntity.setVisitTime(DateUtils.getDate(visitTime));
+		// Map<String, Object> entityToMap =
+		// ContainerUtils.entityToMap(inviteUserEntity);
+		return ContainerUtils.buildResSuccessMap(param);
 
 	}
 
@@ -191,8 +196,8 @@ public class ApplyFlowController {
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("yjsUserId", jsonRequest.getString("yjsUserId"));
-		InviteUserEntity inviteUserEntity = applyFlowService.queryAllApplyStore(param);
-		Map<String, Object> entityToMap = ContainerUtils.entityToMap(inviteUserEntity);
+		ApplyStore applyStore = applyFlowService.queryAllApplyStore(param);
+		Map<String, Object> entityToMap = ContainerUtils.entityToMap(applyStore);
 		return ContainerUtils.buildResSuccessMap(entityToMap);
 
 	}

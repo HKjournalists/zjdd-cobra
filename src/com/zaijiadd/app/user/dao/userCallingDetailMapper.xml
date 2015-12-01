@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.zaijiadd.app.user.dao.UserCallingDetailDAO">
 
-	<insert id="insertUserCallingDetail" parameterType="userCallingDetailEntity" useGeneratedKeys="true" keyProperty="user_calling_detail_id">
+	<insert id="insertUserCallingDetail" parameterType="userCallingDetailEntity" useGeneratedKeys="true" keyProperty="userCallingDetailId">
 		insert into
 			user_calling_detail
 		( user_id, msg_id, src_mobile, dest_mobile, status, created_date )	
@@ -17,5 +17,54 @@
 		where
 			user_calling_detail_id = #{userCallingDetailId}
 	</update>
+	
+	<select id="getUserCallingDetailIdByCondision" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select user_calling_detail_id
+		from user_calling_detail
+		where src_mobile = #{srcMobile}
+		and dest_mobile = #{destMobile}
+		and status = 2
+		order by created_date desc
+		limit 1
+	</select>
+	
+	<update id="updateCallingDetailAferCalling" parameterType="userCallingDetailEntity">
+		update
+			user_calling_detail
+		set status = #{status}, record_url = #{recordUrl}, begin_date = #{beginDate}, end_date = #{endDate}, holding_time = #{holdingTime}
+		where
+			user_calling_detail_id = #{userCallingDetailId}
+	</update>
+	
+	<insert id="insertUserCallingLog" parameterType="java.util.Map">
+		insert into user_calling_log
+		( user_calling_detail_id, response_data, created_date )
+		values
+		( #{userCallingDetailId}, #{responseData}, now() )
+	</insert>
+	
+	<select id="getMsgIdByCallingDetailId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		select msg_id from user_calling_detail
+		where
+		user_calling_detail_id = #{userCallingDetailId}
+	</select>
+	
+	<select id="queryCallingLog" parameterType="java.lang.Integer" resultType="callingLogDto">
+		select 
+			b.realname realname, 
+			begin_date beginDate,
+			holding_time holdingTime,
+			record_url recordUrl
+		from
+			user_calling_detail a
+		inner join
+			yjs_user b
+		on
+			a.user_id = b.user_id
+		where
+			msg_id = #{wId}
+		and
+			status = 3
+	</select>
 
 </mapper>

@@ -61,5 +61,12 @@ public class CallEngineEc2ServiceImpl implements CallEngineEc2Service {
 		return false;
 		
 	}
-
+	
+	public static void main( String[] args ) {
+		
+		CallEngineEc2ServiceImpl e = new CallEngineEc2ServiceImpl();
+		e.dialEc2( 8080, "13611920055" );
+		
+	}
+	
 }

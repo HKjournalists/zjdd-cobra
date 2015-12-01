@@ -3,7 +3,7 @@ package com.zaijiadd.app.dataquery.service;
 import java.util.List;
 import java.util.Map;
 
-import com.zaijiadd.app.dataquery.entity.YjsReqMsg;
+import com.zaijiadd.app.dataquery.dto.YjsReqMsgDTO;
 
 public interface DataQueryService {
 	
@@ -36,6 +36,8 @@ public interface DataQueryService {
 	public Map<String, Object> timeInfo(Map<String, Object> param);
 	
 	public Map<String, Object> getStatusDict();
+	
+	public Boolean addMsg( YjsReqMsgDTO dto );
 	
 //	List<Map<String, Object>> externalDataImport( Map<String, Object> param );
 	
