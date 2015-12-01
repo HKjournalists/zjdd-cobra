@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.zaijiadd.app.applyflow.dao.StoreInfoMapper" >
+<mapper namespace="com.zaijiadd.app.applyflow.dao.StoreInfoDao" >
   <resultMap id="BaseResultMap" type="com.zaijiadd.app.applyflow.entity.StoreInfo" >
     <id column="store_id" property="storeId" jdbcType="BIGINT" />
     <result column="capital" property="capital" jdbcType="VARCHAR" />

@@ -1,8 +1,12 @@
 package com.zaijiadd.app.applyflow.dao;
 
+import org.springframework.stereotype.Repository;
+
 import com.zaijiadd.app.applyflow.entity.StoreInfo;
 
-public interface StoreInfoMapper {
+@Repository
+public interface StoreInfoDao {
+	
     int deleteByPrimaryKey(Long storeId);
 
     int insert(StoreInfo record);

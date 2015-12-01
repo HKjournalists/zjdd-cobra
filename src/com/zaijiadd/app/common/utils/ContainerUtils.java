@@ -96,6 +96,17 @@ public class ContainerUtils {
 		
 	}
 	
+
+	public static Map<String, Object> buildResFailMap() {
+		
+		Map<String, Object> res = new HashMap<String, Object>();
+		res.put( "flag", ConstantsForResponse.RESPONSE_CODE_FAIL );
+		res.put( "msg", ConstantsForResponse.RESPONSE_MESSAGE_FAIL );
+		
+		return res;
+		
+	}
+	
 	public static Map<String, Object> buildResMap( Map data, Integer flag, String msg, String responseCode ) {
 		
 		Map<String, Object> res = new HashMap<String, Object>();

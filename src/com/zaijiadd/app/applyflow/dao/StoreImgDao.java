@@ -2,7 +2,8 @@ package com.zaijiadd.app.applyflow.dao;
 
 import com.zaijiadd.app.applyflow.entity.StoreImg;
 
-public interface StoreImgMapper {
+public interface StoreImgDao {
+	
     int deleteByPrimaryKey(Long imgId);
 
     int insert(StoreImg record);

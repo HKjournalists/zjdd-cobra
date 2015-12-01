@@ -26,7 +26,7 @@ import com.zaijiadd.app.utils.constants.ConstantsForAccount;
 public class UploadController { 
 	
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public Map<String, Object> addUser(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request){
+	public Map<String, Object> upload(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request){
 		String path = request.getSession().getServletContext().getRealPath("upload"); 
 		List<String> fileUrlList = new ArrayList<>();
 		Map<String, Object> param = new HashMap<String, Object>();
