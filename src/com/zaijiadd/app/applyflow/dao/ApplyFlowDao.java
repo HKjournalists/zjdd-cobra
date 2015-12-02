@@ -8,7 +8,6 @@ package com.zaijiadd.app.applyflow.dao;
 import java.util.List;
 import java.util.Map;
 
-import com.zaijiadd.app.applyflow.entity.ApplyRoleRelation;
 import com.zaijiadd.app.applyflow.entity.ApplyStore;
 import com.zaijiadd.app.applyflow.entity.InviteUserEntity;
 
@@ -61,13 +60,6 @@ public interface ApplyFlowDao {
 
 	/**
 	 * (用一句话描述方法的主要功能)
-	 * @param applyRoleRelation
-	 */
-
-	public void insertApplyRoleRelation(ApplyRoleRelation applyRoleRelation);
-
-	/**
-	 * (用一句话描述方法的主要功能)
 	 * @param applyStore
 	 * @return
 	 */
@@ -89,5 +81,45 @@ public interface ApplyFlowDao {
 	 */
 
 	public Integer updateApplyStore(ApplyStore applyStore);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	public List<Map<String, Object>> queryAllApplyStoreSate(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStoreId
+	 * @return
+	 */
+
+	public Map<String, Object> queryApplyStoreDetails(Integer applyStoreId);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	public List<Map<String, Object>> queryFinanceApproveStoreTry(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	public List<Map<String, Object>> queryManagersApproveStoreTry(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	public List<Map<String, Object>> queryApproveMsg(Map<String, Object> param);
 
 }

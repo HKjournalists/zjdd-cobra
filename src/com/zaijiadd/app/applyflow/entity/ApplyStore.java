@@ -55,6 +55,45 @@ public class ApplyStore {
 
 	private Integer applyStatus;
 	private Integer whoCheck;
+	private Integer agencyYear;
+
+	private Integer storeNumm;
+
+	private Integer bankNumone;
+
+	private Integer bankNumtwo;
+
+	public Integer getAgencyYear() {
+		return agencyYear;
+	}
+
+	public void setAgencyYear(Integer agencyYear) {
+		this.agencyYear = agencyYear;
+	}
+
+	public Integer getStoreNumm() {
+		return storeNumm;
+	}
+
+	public void setStoreNumm(Integer storeNumm) {
+		this.storeNumm = storeNumm;
+	}
+
+	public Integer getBankNumone() {
+		return bankNumone;
+	}
+
+	public void setBankNumone(Integer bankNumone) {
+		this.bankNumone = bankNumone;
+	}
+
+	public Integer getBankNumtwo() {
+		return bankNumtwo;
+	}
+
+	public void setBankNumtwo(Integer bankNumtwo) {
+		this.bankNumtwo = bankNumtwo;
+	}
 
 	public Integer getApplyStoreId() {
 		return applyStoreId;

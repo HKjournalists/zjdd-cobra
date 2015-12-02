@@ -27,7 +27,11 @@
     <result column="finance_check" property="financeCheck" jdbcType="INTEGER" />
     <result column="managers_check" property="managersCheck" jdbcType="INTEGER" />
     <result column="apply_status" property="applyStatus" jdbcType="INTEGER" />
-     <result column="who_check" property="whoCheck" jdbcType="INTEGER" />
+    <result column="who_check" property="whoCheck" jdbcType="INTEGER" />
+     <result column="agency_year" property="agencyYear" jdbcType="INTEGER" />
+    <result column="store_numm" property="storeNumm" jdbcType="INTEGER" />
+    <result column="bank_numOne" property="bankNumone" jdbcType="INTEGER" />
+    <result column="bank_numTwo" property="bankNumtwo" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     apply_store_id as applyStoreId, apply_type as applyType, apply_person_type as applyPersonType, 
@@ -37,25 +41,96 @@
     urgency_person as urgency_person, urgency_phone as urgency_phone, CompanyName as CompanyName, pay_way as pay_way,
      paymoney_type as paymoney_type, paid_money as paid_money, need_paymoney as need_paymoney,  
     yjs_user_id as yjsUserId, finance_check as financeCheck, managers_check as managersCheck, apply_status as applyStatus,
-    who_check as whoCheck
+    who_check as whoCheck, agency_year as agencyYear, store_numm as storeNumm, bank_numOne bankNumone, bank_numTwo bankNumtwo
   </sql>
-  <select id="queryAllApplyStore" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    from cobra_apply_store
-    where yjs_user_id = #{yjsUserId,jdbcType=INTEGER}
+   <!-- 查询订单状态 -->
+   <sql id="Base_Column_order_state_List" >
+    apply_store_id as applyStoreId, apply_type as applyType, agency_time as agencyTime, apply_name as applyName, 
+     paymoney_type as paymoney_type,  apply_status as applyStatus,who_check as whoCheck
+  </sql>
+   <!-- 查询财务的order-->
+   <sql id="Base_Column_approve_finance_state_List" >
+     apply_store_id as applyStoreId, apply_type as applyType, agency_time as agencyTime, apply_name as applyName, 
+     paymoney_type as paymoney_type,need_paymoney as needPaymoney,who_check as whoCheck
+  </sql>
+  
+   <!-- 查询 managers order -->
+   <sql id="Base_Column_approve_managers_state_List" >
+    apply_store_id as applyStoreId, apply_type as applyType, agency_time as agencyTime, apply_name as applyName, 
+     paymoney_type as paymoney_type,  apply_status as applyStatus,who_check as whoCheck
+  </sql>
+     <!-- 查询订单状态 -->
+  <select id="queryAllApplyStoreSate" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
+    	<where>
+			<if test="yjsUserId != null and yjsUserId !=''">
+				yjs_user_id = #{yjsUserId}
+			</if>
+			<if test="applyStatus != null">
+				and apply_status = #{applyStatus}
+			</if>
+			order by created_date desc
+			limit #{start,jdbcType=INTEGER}, #{end}
+		</where>
   </select>
+   
+    <!-- 查询待审批的 -->
+   <select id="queryApproveStoreSate" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select <include refid="Base_Column_state_List" /> from cobra_apply_store
+    	<where>
+			<if test="yjsUserId != null and yjsUserId !=''">
+				yjs_user_id = #{yjsUserId}
+			</if>
+			<if test="applyStatus != null">
+				and apply_status = #{applyStatus}
+			</if>
+			order by created_date desc
+			limit #{start,jdbcType=INTEGER}, #{end}
+		</where>
+  </select>
+  
+    <!-- 查询给主管审批的 managers-->
+  <select id="queryManagersApproveStoreTry" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    select <include refid="Base_Column_approve_managers_state_List" /> from cobra_apply_store
+    	<where>
+			<if test="whoCheck != null and whoCheck !=''">
+				who_check = #{whoCheck}
+			</if>
+			<if test="applyStatus != null">
+				and apply_status = #{applyStatus}
+			</if>
+			order by created_date desc
+			limit #{start,jdbcType=INTEGER}, #{end}
+		</where>
+  </select>
+  <!-- 查询财务待审批的 -->
+  <select id="queryFinanceApproveStoreTry" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    select <include refid="Base_Column_state_List" /> from cobra_apply_store
+    	<where>
+			<if test="whoCheck != null and whoCheck !=''">
+				who_check = #{whoCheck}
+			</if>
+			<if test="applyStatus != null">
+				and apply_status = #{applyStatus}
+			</if>
+			order by created_date desc
+			limit #{start,jdbcType=INTEGER}, #{end}
+		</where>
+  </select>
+  
+   <!-- 查询单子详情-->
    <select id="queryApplyStoreDetails" resultMap="java.util.HashMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from cobra_apply_store
     where apply_store_id = #{applyStoreId,jdbcType=INTEGER}
   </select>
+  
+  <!-- 增加单子-->
   <insert id="addApplyStore" parameterType="com.zaijiadd.app.applyflow.entity.ApplyStore" >
   	<selectKey keyProperty="personId" order="AFTER" resultType="int">
 			select LAST_INSERT_ID()
 	</selectKey>
-	
     insert into cobra_apply_store (apply_type, apply_person_type, 
       capital, city, district, 
       agency_type, agency_time, dealership_num, 

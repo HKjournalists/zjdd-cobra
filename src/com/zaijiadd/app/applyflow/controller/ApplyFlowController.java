@@ -19,13 +19,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
-import com.zaijiadd.app.applyflow.entity.ApplyRoleRelation;
 import com.zaijiadd.app.applyflow.entity.ApplyStore;
 import com.zaijiadd.app.applyflow.entity.InviteUserEntity;
 import com.zaijiadd.app.applyflow.service.ApplyFlowService;
 import com.zaijiadd.app.common.utils.ContainerUtils;
 import com.zaijiadd.app.common.utils.DateUtils;
 import com.zaijiadd.app.common.utils.ParseUtils;
+import com.zaijiadd.app.utils.constants.ConstantStorePower;
+import com.zaijiadd.app.utils.constants.ConstantsRole;
 
 /**
  * 流程申请
@@ -272,7 +273,7 @@ public class ApplyFlowController {
 	}
 
 	/**
-	 * 增加开店申请
+	 * 增加开店申请单
 	 * @param request
 	 * @return
 	 */
@@ -288,32 +289,184 @@ public class ApplyFlowController {
 	}
 
 	/**
-	 * 审批
+	 * 查询用户开店权限详细信息
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/approveApplyStore", method = RequestMethod.POST)
+	@RequestMapping(value = "/queryApplyStoreDetails", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> approveApplyStore(HttpServletRequest request) {
+	public Map<String, Object> queryApplyStoreDetails(HttpServletRequest request) {
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
 		Map<String, Object> param = new HashMap<String, Object>();
-		ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
-		Integer addApplyStoreId = applyFlowService.approveApplyStore(applyStore);
-		applyFlowService.insertApplyRoleRelation(addApplyStoreId, applyStore);
+		Integer applyStoreId = jsonRequest.getInteger("applyStoreId");
+		Map<String, Object> applyStoreMap = applyFlowService.queryApplyStoreDetails(applyStoreId);
+		param.put("result", applyStoreMap);
 		return ContainerUtils.buildResSuccessMap(param);
-
 	}
 
 	/**
-	 * (用一句话描述方法的主要功能)
-	 * @param jsonRequest
+	 * 查询订单状态--申请成功
+	 * @param request
 	 * @return
 	 */
+	@RequestMapping(value = "/queryAllApplyStoreSateSucc", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> queryAllApplyStoreSateSucc(HttpServletRequest request) {
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		Map<String, Object> param = new HashMap<String, Object>();
+		String page = jsonRequest.getString("page");// 当前页
+		Integer pageCount = jsonRequest.getInteger("pageCount");// 每页的数量
+		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
+		param.put("end", pageCount);
 
-	private ApplyRoleRelation jsonToaApplyRoleRelation(JSONObject jsonRequest) {
-		ApplyRoleRelation applyRoleRelation = jsonRequest.parseObject(jsonRequest.toJSONString(),
-				ApplyRoleRelation.class);
-		return applyRoleRelation;
+		param.put("yjsUserId", jsonRequest.getString("userId"));
+		param.put("applyStatus", ConstantStorePower.apply_state_succ);
+		List<Map<String, Object>> applyStoreOrderMap = applyFlowService.queryAllApplyStoreSate(param);
+		param.put("result", applyStoreOrderMap);
+		return ContainerUtils.buildResSuccessMap(param);
+	}
+
+	/**
+	 * 查询订单状态--申请中
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryAllApplyStoreSateIn", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> queryAllApplyStoreSateIn(HttpServletRequest request) {
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		Map<String, Object> param = new HashMap<String, Object>();
+		String page = jsonRequest.getString("page");// 当前页
+		Integer pageCount = jsonRequest.getInteger("pageCount");// 每页的数量
+		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
+		param.put("end", pageCount);
+
+		param.put("yjsUserId", jsonRequest.getString("userId"));
+		param.put("applyState", ConstantStorePower.apply_state_ready);
+		List<Map<String, Object>> applyStoreOrderMap = applyFlowService.queryAllApplyStoreSate(param);
+		param.put("result", applyStoreOrderMap);
+		return ContainerUtils.buildResSuccessMap(param);
+	}
+
+	/**
+	 * 查询订单状态--失败
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryAllApplyStoreSateFail", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> queryAllApplyStoreSateFail(HttpServletRequest request) {
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		Map<String, Object> param = new HashMap<String, Object>();
+		String page = jsonRequest.getString("page");// 当前页
+		Integer pageCount = jsonRequest.getInteger("pageCount");// 每页的数量
+		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
+		param.put("end", pageCount);
+
+		param.put("yjsUserId", jsonRequest.getString("userId"));
+		param.put("applyState", ConstantStorePower.apply_state_fail);
+		List<Map<String, Object>> applyStoreOrderMap = applyFlowService.queryAllApplyStoreSate(param);
+		param.put("result", applyStoreOrderMap);
+		return ContainerUtils.buildResSuccessMap(param);
+	}
+
+	/**
+	 * 查询财务待审批
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryFinanceApproveStoreTry", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> queryApproveStoreSateTry(HttpServletRequest request) {
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		Map<String, Object> param = new HashMap<String, Object>();
+		String page = jsonRequest.getString("page");// 当前页
+		Integer pageCount = jsonRequest.getInteger("pageCount");// 每页的数量
+		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
+		param.put("end", pageCount);
+
+		param.put("whoCheck", ConstantsRole.ROLE_FINANCE);// 谁审批
+		List<Map<String, Object>> applyStoreMap = applyFlowService.queryFinanceApproveStoreTry(param);
+		param.put("result", applyStoreMap);
+		return ContainerUtils.buildResSuccessMap(param);
+	}
+
+	/**
+	 * 查询主管待审批
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryManagersApproveStoreTry", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> queryManagersApproveStoreTry(HttpServletRequest request) {
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		Map<String, Object> param = new HashMap<String, Object>();
+		String page = jsonRequest.getString("page");// 当前页
+		Integer pageCount = jsonRequest.getInteger("pageCount");// 每页的数量
+		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
+		param.put("end", pageCount);
+
+		param.put("whoCheck", ConstantsRole.ROLE_MANAGERS);// 谁审批
+		List<Map<String, Object>> applyStoreMap = applyFlowService.queryManagersApproveStoreTry(param);
+		param.put("result", applyStoreMap);
+		return ContainerUtils.buildResSuccessMap(param);
+	}
+
+	/**
+	 * 审批(财务,主管)
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/approveStore", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> approveStore(HttpServletRequest request) {
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("roleId", jsonRequest.getInteger("roleId"));
+		param.put("applyStoreId", jsonRequest.getInteger("applyStoreId"));
+		param.put("applyStatus", jsonRequest.getInteger("applyStatus"));// 状态
+		Integer applyStoreMap = applyFlowService.approveStore(param);
+		param.put("result", applyStoreMap);
+		return ContainerUtils.buildResSuccessMap(param);
+	}
+
+	/**
+	 * 查询审批信息
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryApproveMsg", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> queryAllApplyStore(HttpServletRequest request) {
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		Map<String, Object> param = new HashMap<String, Object>();
+		String page = jsonRequest.getString("page");// 当前页
+		Integer pageCount = jsonRequest.getInteger("pageCount");// 每页的数量
+		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
+		param.put("end", pageCount);
+
+		param.put("roleId", jsonRequest.getString("roleId"));
+		param.put("approveState", ConstantStorePower.approve_state_succ);
+		List<Map<String, Object>> applyStoreMap = applyFlowService.queryApproveMsg(param);
+		param.put("result", applyStoreMap);
+		return ContainerUtils.buildResSuccessMap(param);
+	}
+
+	/**
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/approveApplyStoreTry", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> approveApplyStoreTry(HttpServletRequest request) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		String userId = jsonRequest.getString("userId");// 当前用户id
+		String yjsUserId = jsonRequest.getString("yjsUserId");// 表单id
+		ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
+		Integer addApplyStoreId = applyFlowService.approveApplyStore(applyStore, userId);
+		return ContainerUtils.buildResSuccessMap(param);
+
 	}
 
 	/**
@@ -328,40 +481,6 @@ public class ApplyFlowController {
 		Map<String, Object> param = new HashMap<String, Object>();
 		ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
 		Integer applyStoreId = applyFlowService.updateApplyStore(applyStore);
-		return ContainerUtils.buildResSuccessMap(param);
-	}
-
-	/**
-	 * 查询用户所有的开店权
-	 * @param request
-	 * @return
-	 */
-	@RequestMapping(value = "/queryAllApplyStore", method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Object> queryAllApplyStore(HttpServletRequest request) {
-		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
-		Map<String, Object> param = new HashMap<String, Object>();
-		String userId = jsonRequest.getString("userId");
-		param.put("userId", userId);
-		param.put("yjsUserId", jsonRequest.getString("yjsUserId"));
-		List<Map<String, Object>> applyStoreMap = applyFlowService.queryAllApplyStore(param);
-		param.put("result", applyStoreMap);
-		return ContainerUtils.buildResSuccessMap(param);
-	}
-
-	/**
-	 * 查询用户开店权限详细信息
-	 * @param request
-	 * @return
-	 */
-	@RequestMapping(value = "/queryApplyStoreDetails", method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Object> queryApplyStoreDetails(HttpServletRequest request) {
-		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("yjsUserId", jsonRequest.getString("yjsUserId"));
-		Map<String, Object> applyStoreMap = applyFlowService.queryApplyStoreDetails(param);
-		param.put("result", applyStoreMap);
 		return ContainerUtils.buildResSuccessMap(param);
 	}
 

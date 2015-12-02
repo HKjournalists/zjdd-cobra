@@ -2,8 +2,10 @@ package com.zaijiadd.app.applyflow.entity;
 
 import java.util.Date;
 
-public class ApplyRoleRelation {
-    private Integer applyRoleRelationId;
+public class ApplyUserRelation {
+    private Integer applyUserRelationId;
+
+    private Integer userid;
 
     private Integer roleid;
 
@@ -11,16 +13,26 @@ public class ApplyRoleRelation {
 
     private Date updatedDate;
 
-    private Integer applyStoreId;
+    private Integer applyId;
 
     private Integer applyState;
 
-    public Integer getApplyRoleRelationId() {
-        return applyRoleRelationId;
+    private Integer approveState;
+
+    public Integer getApplyUserRelationId() {
+        return applyUserRelationId;
     }
 
-    public void setApplyRoleRelationId(Integer applyRoleRelationId) {
-        this.applyRoleRelationId = applyRoleRelationId;
+    public void setApplyUserRelationId(Integer applyUserRelationId) {
+        this.applyUserRelationId = applyUserRelationId;
+    }
+
+    public Integer getUserid() {
+        return userid;
+    }
+
+    public void setUserid(Integer userid) {
+        this.userid = userid;
     }
 
     public Integer getRoleid() {
@@ -47,12 +59,12 @@ public class ApplyRoleRelation {
         this.updatedDate = updatedDate;
     }
 
-    public Integer getApplyStoreId() {
-        return applyStoreId;
+    public Integer getApplyId() {
+        return applyId;
     }
 
-    public void setApplyStoreId(Integer applyStoreId) {
-        this.applyStoreId = applyStoreId;
+    public void setApplyId(Integer applyId) {
+        this.applyId = applyId;
     }
 
     public Integer getApplyState() {
@@ -61,5 +73,13 @@ public class ApplyRoleRelation {
 
     public void setApplyState(Integer applyState) {
         this.applyState = applyState;
+    }
+
+    public Integer getApproveState() {
+        return approveState;
+    }
+
+    public void setApproveState(Integer approveState) {
+        this.approveState = approveState;
     }
 }
