@@ -35,6 +35,7 @@
     	<mapper resource="com/zaijiadd/app/dataquery/dao/YjsReqMsgMapper.xml"/>
     	<mapper resource="com/zaijiadd/app/dataquery/dao/AllotLogMapper.xml"/>
     	<mapper resource="com/zaijiadd/app/user/dao/userInfoMapper.xml"/>
+    	<mapper resource="com/zaijiadd/app/user/dao/ShopUserInfoMapper.xml"/>
     	<mapper resource="com/zaijiadd/app/user/dao/userCallingDetailMapper.xml"/>
     	<mapper resource="com/zaijiadd/app/dataquery/dao/dataChangeLogMapper.xml"/>
     	

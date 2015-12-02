@@ -1,5 +1,7 @@
 package com.zaijiadd.app.applyflow.entity;
 
+import java.sql.Timestamp;
+
 public class StoreInfo {
 	
     private Long storeId;
@@ -38,12 +40,82 @@ public class StoreInfo {
     
     private String imgsAuditOpinion;
     
-    private Integer imgsAuditStatus;
+	private Integer imgsAuditStatus;
     
     private Integer addressAuditStatus;
+    
+    private Integer applicant;
+    
+    private Timestamp applicantTime;
+    
+    private Integer addressApprover;
+    
+    private Integer imgsApprover;
+    
+    private Timestamp addressApprovalTime;
+    
+    private Timestamp imgsApprovalTime;
+    
+    private Timestamp applicationShopTime;
    
 
-    public Integer getImgsAuditStatus() {
+    public Timestamp getApplicationShopTime() {
+		return applicationShopTime;
+	}
+
+	public void setApplicationShopTime(Timestamp applicationShopTime) {
+		this.applicationShopTime = applicationShopTime;
+	}
+	
+    public Integer getAddressApprover() {
+		return addressApprover;
+	}
+
+	public void setAddressApprover(Integer addressApprover) {
+		this.addressApprover = addressApprover;
+	}
+
+	public Integer getImgsApprover() {
+		return imgsApprover;
+	}
+
+	public void setImgsApprover(Integer imgsApprover) {
+		this.imgsApprover = imgsApprover;
+	}
+
+	public Timestamp getAddressApprovalTime() {
+		return addressApprovalTime;
+	}
+
+	public void setAddressApprovalTime(Timestamp addressApprovalTime) {
+		this.addressApprovalTime = addressApprovalTime;
+	}
+
+	public Timestamp getImgsApprovalTime() {
+		return imgsApprovalTime;
+	}
+
+	public void setImgsApprovalTime(Timestamp imgsApprovalTime) {
+		this.imgsApprovalTime = imgsApprovalTime;
+	}
+
+	public Integer getApplicant() {
+		return applicant;
+	}
+
+	public void setApplicant(Integer applicant) {
+		this.applicant = applicant;
+	}
+
+	public Timestamp getApplicantTime() {
+		return applicantTime;
+	}
+
+	public void setApplicantTime(Timestamp applicantTime) {
+		this.applicantTime = applicantTime;
+	}
+
+	public Integer getImgsAuditStatus() {
 		return imgsAuditStatus;
 	}
 
