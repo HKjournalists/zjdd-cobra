@@ -102,15 +102,6 @@ public interface ApplyFlowService {
 
 	/**
 	 * (用一句话描述方法的主要功能)
-	 * @param applyStore
-	 * @param userId TODO
-	 * @return
-	 */
-
-	Integer approveApplyStore(ApplyStore applyStore, String userId);
-
-	/**
-	 * (用一句话描述方法的主要功能)
 	 * @param param
 	 * @return
 	 */
@@ -148,5 +139,13 @@ public interface ApplyFlowService {
 	 */
 
 	List<Map<String, Object>> queryApproveMsg(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param userId
+	 * @return
+	 */
+
+	List<Map<String, Object>> printContract(Integer userId);
 
 }

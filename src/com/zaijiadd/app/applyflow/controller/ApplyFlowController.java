@@ -25,6 +25,7 @@ import com.zaijiadd.app.applyflow.service.ApplyFlowService;
 import com.zaijiadd.app.common.utils.ContainerUtils;
 import com.zaijiadd.app.common.utils.DateUtils;
 import com.zaijiadd.app.common.utils.ParseUtils;
+import com.zaijiadd.app.user.entity.UserInfoEntity;
 import com.zaijiadd.app.utils.constants.ConstantStorePower;
 import com.zaijiadd.app.utils.constants.ConstantsRole;
 
@@ -53,6 +54,9 @@ public class ApplyFlowController {
 			Map<String, Object> param = new HashMap<String, Object>();
 			InviteUserEntity inviteUserEntity = jsonToInviteUserVO(jsonRequest);
 			inviteUserEntity.setFuctionSate(1);// 用户信息
+			UserInfoEntity user = (UserInfoEntity) request.getSession().getAttribute("user");
+			Integer userId = user.getUserId();
+			inviteUserEntity.setYjsUserId(userId);
 			Integer inviteUserId = applyFlowService.addInviteUser(inviteUserEntity);
 			param.put("inviteUserId", inviteUserId);
 			return ContainerUtils.buildResSuccessMap(param);
@@ -75,6 +79,9 @@ public class ApplyFlowController {
 		Map<String, Object> param = new HashMap<String, Object>();
 		InviteUserEntity inviteUserEntity = jsonToInviteUserVO(jsonRequest);
 		inviteUserEntity.setFuctionSate(2);// 邀约
+		UserInfoEntity user = (UserInfoEntity) request.getSession().getAttribute("user");
+		Integer userId = user.getUserId();
+		inviteUserEntity.setYjsUserId(userId);
 		Integer inviteUserId = applyFlowService.addInviteUser(inviteUserEntity);
 		param.put("inviteUserId", inviteUserId);
 		return ContainerUtils.buildResSuccessMap(param);
@@ -148,13 +155,15 @@ public class ApplyFlowController {
 	@RequestMapping(value = "/queryAllInviteUserMsg", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> queryAllInviteUserMsg(HttpServletRequest request) {
+		UserInfoEntity user = (UserInfoEntity) request.getSession().getAttribute("user");
+		Integer userId = user.getUserId();
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
 		Map<String, Object> param = new HashMap<String, Object>();
 		String page = jsonRequest.getString("page");// 当前页
 		Integer pageCount = jsonRequest.getInteger("pageCount");// 每页的数量
 		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
 		param.put("end", pageCount);
-		param.put("yjsUserId", jsonRequest.getString("yjsUserId"));
+		param.put("yjsUserId", userId);
 		param.put("fuctionSate", "1");
 		List<Map<String, Object>> inviteUserMap = applyFlowService.queryInviteUserMap(param);
 		for (Map<String, Object> map : inviteUserMap) {
@@ -178,13 +187,15 @@ public class ApplyFlowController {
 	@RequestMapping(value = "/queryAllInviteUser", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> queryAllInviteUser(HttpServletRequest request) {
+		UserInfoEntity user = (UserInfoEntity) request.getSession().getAttribute("user");
+		Integer userId = user.getUserId();
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
 		Map<String, Object> param = new HashMap<String, Object>();
 		String page = jsonRequest.getString("page");// 当前页
 		Integer pageCount = jsonRequest.getInteger("pageCount");// 每页的数量
 		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
 		param.put("end", pageCount);
-		param.put("yjsUserId", jsonRequest.getString("yjsUserId"));
+		param.put("yjsUserId", userId);
 		param.put("fuctionSate", "2");
 		List<Map<String, Object>> inviteUserMap = applyFlowService.queryInviteUserMap(param);
 		for (Map<String, Object> map : inviteUserMap) {
@@ -204,13 +215,16 @@ public class ApplyFlowController {
 	@RequestMapping(value = "/queryInviteUserMsgLike", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> queryInviteUserMsgLike(HttpServletRequest request) {
+		UserInfoEntity user = (UserInfoEntity) request.getSession().getAttribute("user");
+		Integer userId = user.getUserId();
+
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
 		Map<String, Object> param = new HashMap<String, Object>();
 		String page = jsonRequest.getString("page");// 当前页
 		Integer pageCount = jsonRequest.getInteger("pageCount");// 每页的数量
 		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
 		param.put("end", pageCount);
-		param.put("yjsUserId", jsonRequest.getString("yjsUserId"));
+		param.put("yjsUserId", userId);
 		param.put("inviteuserName", jsonRequest.getString("inviteuserName"));
 		param.put("fuctionSate", "1");
 		List<Map<String, Object>> inviteUseMap = applyFlowService.queryInviteUserLike(param);
@@ -231,13 +245,16 @@ public class ApplyFlowController {
 	@RequestMapping(value = "/queryInviteUserLike", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> queryInviteUserLike(HttpServletRequest request) {
+		UserInfoEntity user = (UserInfoEntity) request.getSession().getAttribute("user");
+		Integer userId = user.getUserId();
+
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
 		Map<String, Object> param = new HashMap<String, Object>();
 		String page = jsonRequest.getString("page");// 当前页
 		Integer pageCount = jsonRequest.getInteger("pageCount");// 每页的数量
 		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
 		param.put("end", pageCount);
-		param.put("yjsUserId", jsonRequest.getString("yjsUserId"));
+		param.put("yjsUserId", userId);
 		param.put("inviteuserName", jsonRequest.getString("inviteuserName"));
 		param.put("fuctionSate", "2");
 		List<Map<String, Object>> inviteUseMap = applyFlowService.queryInviteUserLike(param);
@@ -288,6 +305,10 @@ public class ApplyFlowController {
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
 		Map<String, Object> param = new HashMap<String, Object>();
 		ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
+		UserInfoEntity user = (UserInfoEntity) request.getSession().getAttribute("user");
+		Integer userId = user.getUserId();
+
+		applyStore.setYjsUserId(userId);
 		Integer addApplyStoreId = applyFlowService.addApplyStore(applyStore);
 		return ContainerUtils.buildResSuccessMap(param);
 
@@ -324,7 +345,9 @@ public class ApplyFlowController {
 		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
 		param.put("end", pageCount);
 
-		param.put("yjsUserId", jsonRequest.getString("userId"));
+		UserInfoEntity user = (UserInfoEntity) request.getSession().getAttribute("user");
+		Integer userId = user.getUserId();
+		param.put("yjsUserId", userId);
 		param.put("applyStatus", ConstantStorePower.apply_state_succ);
 		List<Map<String, Object>> applyStoreOrderMap = applyFlowService.queryAllApplyStoreSate(param);
 		param.put("result", applyStoreOrderMap);
@@ -346,7 +369,9 @@ public class ApplyFlowController {
 		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
 		param.put("end", pageCount);
 
-		param.put("yjsUserId", jsonRequest.getString("userId"));
+		UserInfoEntity user = (UserInfoEntity) request.getSession().getAttribute("user");
+		Integer userId = user.getUserId();
+		param.put("yjsUserId", userId);
 		param.put("applyState", ConstantStorePower.apply_state_ready);
 		List<Map<String, Object>> applyStoreOrderMap = applyFlowService.queryAllApplyStoreSate(param);
 		param.put("result", applyStoreOrderMap);
@@ -362,13 +387,16 @@ public class ApplyFlowController {
 	@ResponseBody
 	public Map<String, Object> queryAllApplyStoreSateFail(HttpServletRequest request) {
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+
+		UserInfoEntity user = (UserInfoEntity) request.getSession().getAttribute("user");
+		Integer userId = user.getUserId();
 		Map<String, Object> param = new HashMap<String, Object>();
 		String page = jsonRequest.getString("page");// 当前页
 		Integer pageCount = jsonRequest.getInteger("pageCount");// 每页的数量
 		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
 		param.put("end", pageCount);
 
-		param.put("yjsUserId", jsonRequest.getString("userId"));
+		param.put("yjsUserId", userId);
 		param.put("applyState", ConstantStorePower.apply_state_fail);
 		List<Map<String, Object>> applyStoreOrderMap = applyFlowService.queryAllApplyStoreSate(param);
 		param.put("result", applyStoreOrderMap);
@@ -427,7 +455,12 @@ public class ApplyFlowController {
 	public Map<String, Object> approveStore(HttpServletRequest request) {
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
 		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("roleId", jsonRequest.getInteger("roleId"));
+
+		UserInfoEntity user = (UserInfoEntity) request.getSession().getAttribute("user");
+		Integer userId = user.getUserId();
+		Integer roleId = user.getRoleId();
+
+		param.put("roleId", roleId);
 		param.put("applyStoreId", jsonRequest.getInteger("applyStoreId"));
 		param.put("applyStatus", jsonRequest.getInteger("applyStatus"));// 状态
 		Integer applyStoreMap = applyFlowService.approveStore(param);
@@ -450,28 +483,13 @@ public class ApplyFlowController {
 		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
 		param.put("end", pageCount);
 
-		param.put("roleId", jsonRequest.getString("roleId"));
+		UserInfoEntity user = (UserInfoEntity) request.getSession().getAttribute("user");
+		Integer roleId = user.getRoleId();
+		param.put("roleId", roleId);
 		param.put("approveState", ConstantStorePower.approve_state_succ);
 		List<Map<String, Object>> applyStoreMap = applyFlowService.queryApproveMsg(param);
 		param.put("result", applyStoreMap);
 		return ContainerUtils.buildResSuccessMap(param);
-	}
-
-	/**
-	 * @param request
-	 * @return
-	 */
-	@RequestMapping(value = "/approveApplyStoreTry", method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Object> approveApplyStoreTry(HttpServletRequest request) {
-		Map<String, Object> param = new HashMap<String, Object>();
-		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
-		String userId = jsonRequest.getString("userId");// 当前用户id
-		String yjsUserId = jsonRequest.getString("yjsUserId");// 表单id
-		ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
-		Integer addApplyStoreId = applyFlowService.approveApplyStore(applyStore, userId);
-		return ContainerUtils.buildResSuccessMap(param);
-
 	}
 
 	/**
@@ -486,6 +504,24 @@ public class ApplyFlowController {
 		Map<String, Object> param = new HashMap<String, Object>();
 		ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
 		Integer applyStoreId = applyFlowService.updateApplyStore(applyStore);
+		return ContainerUtils.buildResSuccessMap(param);
+	}
+
+	/**
+	 * 打印合同
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/printContract", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> printContract(HttpServletRequest request) {
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		Map<String, Object> param = new HashMap<String, Object>();
+
+		UserInfoEntity user = (UserInfoEntity) request.getSession().getAttribute("user");
+		Integer userId = user.getUserId();
+		List<Map<String, Object>> printApply = applyFlowService.printContract(userId);
+		param.put("result", printApply);
 		return ContainerUtils.buildResSuccessMap(param);
 	}
 

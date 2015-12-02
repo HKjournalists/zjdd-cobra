@@ -149,51 +149,6 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	}
 
 	/**
-	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#approveApplyStore(com.zaijiadd.app.applyflow.entity.ApplyStore,
-	 *      String)
-	 */
-
-	@Override
-	public Integer approveApplyStore(ApplyStore applyStore, String userId) {
-		Integer roleId = 0;
-		Integer applyStoreId = applyStore.getApplyStoreId();
-		ApplyUserRelation applyUserRelation = new ApplyUserRelation();
-		applyUserRelation.setApplyId(applyStoreId);
-		applyUserRelation.setUserid(Integer.parseInt(userId));
-		if (ConstantsRole.ROLE_MANAGERS.equals(roleId)) {// 经理
-			Integer managersCheck = applyStore.getManagersCheck();// 经理是否同意
-			if (managersCheck != null && managersCheck == 1) {// 同意
-				applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
-				applyStore.setApplyStatus(0);
-				applyUserRelation.setApplyState(1);
-				// 只要是操作过的都insert操作表中
-				this.insertApplyRoleRelation(applyUserRelation);
-			} else {// 不同意
-				applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
-				applyStore.setApplyStatus(0);
-				applyUserRelation.setApplyState(0);
-				// 只要是操作过的都insert操作表中
-				this.insertApplyRoleRelation(applyUserRelation);
-				// 设置为备份的
-			}
-
-		} else if (ConstantsRole.ROLE_FINANCE.equals(roleId)) {// 财务
-			Integer financeCheck = applyStore.getFinanceCheck();
-			if (financeCheck != null && financeCheck == 1) {// 同意
-				applyStore.setApplyStatus(1);
-				applyUserRelation.setApplyState(1);
-			} else {// 不同意
-				applyStore.setApplyStatus(0);
-				applyUserRelation.setApplyState(0);
-				// 设为备份
-			}
-
-		}
-
-		return applyFlowDao.updateApplyStore(applyStore);
-	}
-
-	/**
 	 * (用一句话描述方法的主要功能)
 	 * @param applyUserRelation
 	 */
@@ -287,4 +242,14 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	public List<Map<String, Object>> queryApproveMsg(Map<String, Object> param) {
 		return applyFlowDao.queryApproveMsg(param);
 	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#printContract(java.lang.Integer)
+	 */
+
+	@Override
+	public List<Map<String, Object>> printContract(Integer userId) {
+		return applyFlowDao.printContract();
+	}
+
 }
