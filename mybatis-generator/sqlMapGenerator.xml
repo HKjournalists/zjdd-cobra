@@ -23,12 +23,33 @@
 		<sqlMapGenerator targetPackage="com.zaijiadd.app.applyflow.dao"
 			targetProject="cobra" />
 
-		<!-- 为哪些表生成代码 tableName:表名 schema:不用填写,其余属性是禁用例子查询的生成 -->
-		<table schema="" tableName="cobra_apply_store" domainObjectName="ApplyStore" enableCountByExample="false"
+		<!-- 为哪些表生成代码 tableName:表名 schema:不用填写,其余属性是禁用例子查询的生成 
+		<table schema="" tableName="cobra_apply_role_relation" domainObjectName="ApplyRoleRelation" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" selectByExampleQueryId="false"
 		>
 		</table>
-
+		-->
+	<!--
+		<table schema="" tableName="cobra_apply_store" domainObjectName="ApplyStores" enableCountByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false"
+			enableSelectByExample="false" selectByExampleQueryId="false"
+		>
+		</table>
+		-->
+		<!--
+		<table schema="" tableName="cobra_apply_user_relation" domainObjectName="ApplyUserRelation" enableCountByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false"
+			enableSelectByExample="false" selectByExampleQueryId="false"
+		>
+		</table>
+		-->
+		
+		
+		<table schema="" tableName="city" domainObjectName="citys" enableCountByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false"
+			enableSelectByExample="false" selectByExampleQueryId="false"
+		>
+		</table>
 	</context>
 </generatorConfiguration>

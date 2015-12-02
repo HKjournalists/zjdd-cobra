@@ -5,23 +5,32 @@ import java.util.List;
 import com.zaijiadd.app.applyflow.entity.City;
 
 public interface CityMapper {
-	
-    int deleteByPrimaryKey(Integer cityId);
-    
-    String selectNameById(Integer cityId);
 
-    int insert(City record);
+	int deleteByPrimaryKey(Integer cityId);
 
-    int insertSelective(City record);
+	String selectNameById(Integer cityId);
 
-    /**
-     * 按省份查询城市列表
-     * @param proviceId
-     * @return
-     */
-    List<City> selectByProvinceId(Integer proviceId);
+	int insert(City record);
 
-    int updateByPrimaryKeySelective(City record);
+	int insertSelective(City record);
 
-    int updateByPrimaryKey(City record);
+	/**
+	 * 按省份查询城市列表
+	 * @param proviceId
+	 * @return
+	 */
+	List<City> selectByProvinceId(Integer proviceId);
+
+	int updateByPrimaryKeySelective(City record);
+
+	int updateByPrimaryKey(City record);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param cityNme
+	 * @return
+	 */
+
+	City selectCityByName(String cityNme);
+
 }

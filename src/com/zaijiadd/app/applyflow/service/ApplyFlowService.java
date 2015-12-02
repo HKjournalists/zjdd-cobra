@@ -5,6 +5,7 @@
 
 package com.zaijiadd.app.applyflow.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -57,7 +58,7 @@ public interface ApplyFlowService {
 	 * @return
 	 */
 
-	ApplyStore queryAllApplyStore(Map<String, Object> param);
+	List<Map<String, Object>> queryAllApplyStore(Map<String, Object> param);
 
 	/**
 	 * (用一句话描述方法的主要功能)
@@ -74,5 +75,78 @@ public interface ApplyFlowService {
 	 */
 
 	List<Map<String, Object>> queryInviteUserMap(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStore
+	 * @return
+	 */
+
+	Integer updateApplyStore(ApplyStore applyStore);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStoreId
+	 * @return
+	 */
+
+	Map<String, Object> queryApplyStoreDetails(Integer applyStoreId);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param cityNme
+	 * @return
+	 */
+
+	BigDecimal getCityDealershipMoney(String cityNme);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStore
+	 * @param userId TODO
+	 * @return
+	 */
+
+	Integer approveApplyStore(ApplyStore applyStore, String userId);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	List<Map<String, Object>> queryAllApplyStoreSate(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	List<Map<String, Object>> queryFinanceApproveStoreTry(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	List<Map<String, Object>> queryManagersApproveStoreTry(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	Integer approveStore(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	List<Map<String, Object>> queryApproveMsg(Map<String, Object> param);
 
 }

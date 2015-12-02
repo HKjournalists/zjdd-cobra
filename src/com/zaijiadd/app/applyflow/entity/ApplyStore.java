@@ -1,255 +1,306 @@
 package com.zaijiadd.app.applyflow.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class ApplyStore {
-    private Integer applyStoreId;
 
-    private Integer applyType;
+	private Integer applyStoreId;
 
-    private Integer applyPersonType;
+	private Integer applyType;
 
-    private String capital;
+	private Integer applyPersonType;
 
-    private String city;
+	private String capital;
 
-    private String district;
+	private String city;
 
-    private Integer agencyType;
+	private String district;
 
-    private Date agencyTime;
+	private Integer agencyType;
 
-    private Integer dealershipNum;
+	private Date agencyTime;
 
-    private String applyName;
+	private Integer dealershipNum;
 
-    private String personNum;
+	private String applyName;
 
-    private String phone;
+	private String personNum;
 
-    private String postAddr;
+	private String phone;
 
-    private String maiAddr;
+	private String postAddr;
 
-    private String urgencyPerson;
+	private String maiAddr;
 
-    private String urgencyPhone;
+	private String urgencyPerson;
 
-    private String companyname;
+	private String urgencyPhone;
 
-    private Integer payWay;
+	private String companyname;
 
-    private Integer paymoneyType;
+	private Integer payWay;
 
-    private String paidMoney;
+	private Integer paymoneyType;
 
-    private String needPaymoney;
+	private BigDecimal paidMoney;
 
-    private Integer yjsUserId;
+	private BigDecimal needPaymoney;
 
-    private Integer financeCheck;
+	private Integer yjsUserId;
 
-    private Integer managersCheck;
+	private Integer financeCheck;
 
-    private Integer applyStatus;
+	private Integer managersCheck;
 
-    public Integer getApplyStoreId() {
-        return applyStoreId;
-    }
+	private Integer applyStatus;
+	private Integer whoCheck;
+	private Integer agencyYear;
 
-    public void setApplyStoreId(Integer applyStoreId) {
-        this.applyStoreId = applyStoreId;
-    }
+	private Integer storeNumm;
 
-    public Integer getApplyType() {
-        return applyType;
-    }
+	private Integer bankNumone;
 
-    public void setApplyType(Integer applyType) {
-        this.applyType = applyType;
-    }
+	private Integer bankNumtwo;
 
-    public Integer getApplyPersonType() {
-        return applyPersonType;
-    }
+	public Integer getAgencyYear() {
+		return agencyYear;
+	}
 
-    public void setApplyPersonType(Integer applyPersonType) {
-        this.applyPersonType = applyPersonType;
-    }
+	public void setAgencyYear(Integer agencyYear) {
+		this.agencyYear = agencyYear;
+	}
 
-    public String getCapital() {
-        return capital;
-    }
+	public Integer getStoreNumm() {
+		return storeNumm;
+	}
 
-    public void setCapital(String capital) {
-        this.capital = capital;
-    }
+	public void setStoreNumm(Integer storeNumm) {
+		this.storeNumm = storeNumm;
+	}
 
-    public String getCity() {
-        return city;
-    }
+	public Integer getBankNumone() {
+		return bankNumone;
+	}
 
-    public void setCity(String city) {
-        this.city = city;
-    }
+	public void setBankNumone(Integer bankNumone) {
+		this.bankNumone = bankNumone;
+	}
 
-    public String getDistrict() {
-        return district;
-    }
+	public Integer getBankNumtwo() {
+		return bankNumtwo;
+	}
 
-    public void setDistrict(String district) {
-        this.district = district;
-    }
+	public void setBankNumtwo(Integer bankNumtwo) {
+		this.bankNumtwo = bankNumtwo;
+	}
 
-    public Integer getAgencyType() {
-        return agencyType;
-    }
-
-    public void setAgencyType(Integer agencyType) {
-        this.agencyType = agencyType;
-    }
-
-    public Date getAgencyTime() {
-        return agencyTime;
-    }
-
-    public void setAgencyTime(Date agencyTime) {
-        this.agencyTime = agencyTime;
-    }
-
-    public Integer getDealershipNum() {
-        return dealershipNum;
-    }
-
-    public void setDealershipNum(Integer dealershipNum) {
-        this.dealershipNum = dealershipNum;
-    }
-
-    public String getApplyName() {
-        return applyName;
-    }
-
-    public void setApplyName(String applyName) {
-        this.applyName = applyName;
-    }
-
-    public String getPersonNum() {
-        return personNum;
-    }
-
-    public void setPersonNum(String personNum) {
-        this.personNum = personNum;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getPostAddr() {
-        return postAddr;
-    }
-
-    public void setPostAddr(String postAddr) {
-        this.postAddr = postAddr;
-    }
-
-    public String getMaiAddr() {
-        return maiAddr;
-    }
-
-    public void setMaiAddr(String maiAddr) {
-        this.maiAddr = maiAddr;
-    }
-
-    public String getUrgencyPerson() {
-        return urgencyPerson;
-    }
-
-    public void setUrgencyPerson(String urgencyPerson) {
-        this.urgencyPerson = urgencyPerson;
-    }
-
-    public String getUrgencyPhone() {
-        return urgencyPhone;
-    }
-
-    public void setUrgencyPhone(String urgencyPhone) {
-        this.urgencyPhone = urgencyPhone;
-    }
-
-    public String getCompanyname() {
-        return companyname;
-    }
-
-    public void setCompanyname(String companyname) {
-        this.companyname = companyname;
-    }
-
-    public Integer getPayWay() {
-        return payWay;
-    }
-
-    public void setPayWay(Integer payWay) {
-        this.payWay = payWay;
-    }
-
-    public Integer getPaymoneyType() {
-        return paymoneyType;
-    }
-
-    public void setPaymoneyType(Integer paymoneyType) {
-        this.paymoneyType = paymoneyType;
-    }
-
-    public String getPaidMoney() {
-        return paidMoney;
-    }
-
-    public void setPaidMoney(String paidMoney) {
-        this.paidMoney = paidMoney;
-    }
-
-    public String getNeedPaymoney() {
-        return needPaymoney;
-    }
-
-    public void setNeedPaymoney(String needPaymoney) {
-        this.needPaymoney = needPaymoney;
-    }
-
-    public Integer getYjsUserId() {
-        return yjsUserId;
-    }
-
-    public void setYjsUserId(Integer yjsUserId) {
-        this.yjsUserId = yjsUserId;
-    }
-
-    public Integer getFinanceCheck() {
-        return financeCheck;
-    }
-
-    public void setFinanceCheck(Integer financeCheck) {
-        this.financeCheck = financeCheck;
-    }
-
-    public Integer getManagersCheck() {
-        return managersCheck;
-    }
-
-    public void setManagersCheck(Integer managersCheck) {
-        this.managersCheck = managersCheck;
-    }
-
-    public Integer getApplyStatus() {
-        return applyStatus;
-    }
-
-    public void setApplyStatus(Integer applyStatus) {
-        this.applyStatus = applyStatus;
-    }
+	public Integer getApplyStoreId() {
+		return applyStoreId;
+	}
+
+	public void setApplyStoreId(Integer applyStoreId) {
+		this.applyStoreId = applyStoreId;
+	}
+
+	public Integer getApplyType() {
+		return applyType;
+	}
+
+	public void setApplyType(Integer applyType) {
+		this.applyType = applyType;
+	}
+
+	public Integer getApplyPersonType() {
+		return applyPersonType;
+	}
+
+	public void setApplyPersonType(Integer applyPersonType) {
+		this.applyPersonType = applyPersonType;
+	}
+
+	public String getCapital() {
+		return capital;
+	}
+
+	public void setCapital(String capital) {
+		this.capital = capital;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getDistrict() {
+		return district;
+	}
+
+	public void setDistrict(String district) {
+		this.district = district;
+	}
+
+	public Integer getAgencyType() {
+		return agencyType;
+	}
+
+	public void setAgencyType(Integer agencyType) {
+		this.agencyType = agencyType;
+	}
+
+	public Date getAgencyTime() {
+		return agencyTime;
+	}
+
+	public void setAgencyTime(Date agencyTime) {
+		this.agencyTime = agencyTime;
+	}
+
+	public Integer getDealershipNum() {
+		return dealershipNum;
+	}
+
+	public void setDealershipNum(Integer dealershipNum) {
+		this.dealershipNum = dealershipNum;
+	}
+
+	public String getApplyName() {
+		return applyName;
+	}
+
+	public void setApplyName(String applyName) {
+		this.applyName = applyName;
+	}
+
+	public String getPersonNum() {
+		return personNum;
+	}
+
+	public void setPersonNum(String personNum) {
+		this.personNum = personNum;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getPostAddr() {
+		return postAddr;
+	}
+
+	public void setPostAddr(String postAddr) {
+		this.postAddr = postAddr;
+	}
+
+	public String getMaiAddr() {
+		return maiAddr;
+	}
+
+	public void setMaiAddr(String maiAddr) {
+		this.maiAddr = maiAddr;
+	}
+
+	public String getUrgencyPerson() {
+		return urgencyPerson;
+	}
+
+	public void setUrgencyPerson(String urgencyPerson) {
+		this.urgencyPerson = urgencyPerson;
+	}
+
+	public String getUrgencyPhone() {
+		return urgencyPhone;
+	}
+
+	public void setUrgencyPhone(String urgencyPhone) {
+		this.urgencyPhone = urgencyPhone;
+	}
+
+	public String getCompanyname() {
+		return companyname;
+	}
+
+	public void setCompanyname(String companyname) {
+		this.companyname = companyname;
+	}
+
+	public Integer getPayWay() {
+		return payWay;
+	}
+
+	public void setPayWay(Integer payWay) {
+		this.payWay = payWay;
+	}
+
+	public Integer getPaymoneyType() {
+		return paymoneyType;
+	}
+
+	public void setPaymoneyType(Integer paymoneyType) {
+		this.paymoneyType = paymoneyType;
+	}
+
+	public BigDecimal getPaidMoney() {
+		return paidMoney;
+	}
+
+	public void setPaidMoney(BigDecimal paidMoney) {
+		this.paidMoney = paidMoney;
+	}
+
+	public BigDecimal getNeedPaymoney() {
+		return needPaymoney;
+	}
+
+	public void setNeedPaymoney(BigDecimal needPaymoney) {
+		this.needPaymoney = needPaymoney;
+	}
+
+	public Integer getYjsUserId() {
+		return yjsUserId;
+	}
+
+	public void setYjsUserId(Integer yjsUserId) {
+		this.yjsUserId = yjsUserId;
+	}
+
+	public Integer getFinanceCheck() {
+		return financeCheck;
+	}
+
+	public void setFinanceCheck(Integer financeCheck) {
+		this.financeCheck = financeCheck;
+	}
+
+	public Integer getManagersCheck() {
+		return managersCheck;
+	}
+
+	public void setManagersCheck(Integer managersCheck) {
+		this.managersCheck = managersCheck;
+	}
+
+	public Integer getApplyStatus() {
+		return applyStatus;
+	}
+
+	public void setApplyStatus(Integer applyStatus) {
+		this.applyStatus = applyStatus;
+	}
+
+	public Integer getWhoCheck() {
+		return whoCheck;
+	}
+
+	public void setWhoCheck(Integer whoCheck) {
+		this.whoCheck = whoCheck;
+	}
+
 }
