@@ -42,4 +42,22 @@
 			roleid = 2
 	</select>
 	
+	<select id="getUserInfoForLogin" parameterType="map" resultType="userInfoEntity">
+		select
+			user_id userId,
+			mobile mobile,
+			realname realname,
+			password password,
+			email email,
+			roleid roleId,
+			isleader isLeader,
+			orgid orgId,
+			landline_id landlineId,
+			job_id jobId
+		from
+			yjs_user
+		where
+			mobile = #{username} and password = #{password}
+	</select>
+	
 </mapper>

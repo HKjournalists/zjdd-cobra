@@ -15,6 +15,13 @@
     from store_img
     where img_id = #{imgId,jdbcType=BIGINT}
   </select>
+  
+  <select id="selectByStoreId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from store_img
+    where store_id = #{storeId,jdbcType=BIGINT}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from store_img
     where img_id = #{imgId,jdbcType=BIGINT}
