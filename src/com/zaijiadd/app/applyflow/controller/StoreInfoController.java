@@ -1,5 +1,7 @@
 package com.zaijiadd.app.applyflow.controller;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.zaijiadd.app.applyflow.entity.StoreInfo;
 import com.zaijiadd.app.applyflow.service.StoreInfoService;
 import com.zaijiadd.app.common.utils.ContainerUtils;
+import com.zaijiadd.app.user.entity.UserInfoEntity;
 
 /**
  * 店铺开户上架入口
@@ -36,9 +39,12 @@ public class StoreInfoController {
 	 */
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> addInviteUserMsg(StoreInfo info) {
+	public Map<String, Object> addInviteUserMsg(StoreInfo info, HttpServletRequest request) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		try {
+			UserInfoEntity userInfoEntity = (UserInfoEntity) request.getSession().getAttribute("user");
+			info.setApplicant(userInfoEntity.getUserId());
+			info.setApplicantTime(new Timestamp(new Date().getTime()));
 			this.storeInfoService.insert(info);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -132,6 +138,8 @@ public class StoreInfoController {
 			} else {
 				storeInfo.setAddressAuditStatus(-1);
 			}
+			storeInfo.setAddressApprovalTime(new Timestamp(new Date().getTime()));
+			storeInfo.setAddressApprover(((UserInfoEntity)request.getSession().getAttribute("user")).getUserId());
 			this.storeInfoService.updateByPrimaryKeySelective(storeInfo);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -167,6 +175,8 @@ public class StoreInfoController {
 			} else {
 				storeInfo.setImgsAuditStatus(-1);
 			}
+			storeInfo.setImgsApprovalTime(new Timestamp(new Date().getTime()));
+			storeInfo.setImgsApprover(((UserInfoEntity)request.getSession().getAttribute("user")).getUserId());
 			this.storeInfoService.updateByPrimaryKeySelective(storeInfo);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -176,4 +186,69 @@ public class StoreInfoController {
 
 	}
 
+	
+	/**
+	 * 我的开户申请
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/applicationAccount/list/{type}", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> applicationList(@PathVariable int type, HttpServletRequest request) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("status", type);
+			param.put("applicant",  ((UserInfoEntity)request.getSession().getAttribute("user")).getUserId());
+			result.put("result", this.storeInfoService.selectByApplicant(param));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ContainerUtils.buildResFailMap();
+		}
+		return ContainerUtils.buildResSuccessMap(result);
+
+	}
+	/**
+	 * 我的申请
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/applicationShop/list/{type}", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> applicationShop(@PathVariable int type, HttpServletRequest request) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("status", type);
+			param.put("applicant",  ((UserInfoEntity)request.getSession().getAttribute("user")).getUserId());
+			result.put("result", this.storeInfoService.selectByApplicant(param));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ContainerUtils.buildResFailMap();
+		}
+		return ContainerUtils.buildResSuccessMap(result);
+
+	}
+	
+	/**
+	 * 我的审批（运营）
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/myApproval/list/{type}", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> myApproval(@PathVariable int type, HttpServletRequest request) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("status", type);
+			param.put("type",  ((UserInfoEntity)request.getSession().getAttribute("user")).getUserId());
+			result.put("result", this.storeInfoService.getMyApproval(param));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ContainerUtils.buildResFailMap();
+		}
+		return ContainerUtils.buildResSuccessMap(result);
+
+	}
 }
