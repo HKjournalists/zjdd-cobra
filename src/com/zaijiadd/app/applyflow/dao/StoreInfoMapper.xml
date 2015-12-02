@@ -3,17 +3,25 @@
 <mapper namespace="com.zaijiadd.app.applyflow.dao.StoreInfoDao" >
   <resultMap id="BaseResultMap" type="com.zaijiadd.app.applyflow.entity.StoreInfo" >
     <id column="store_id" property="storeId" jdbcType="BIGINT" />
-    <result column="capital" property="capital" jdbcType="VARCHAR" />
-    <result column="city" property="city" jdbcType="VARCHAR" />
-    <result column="district" property="district" jdbcType="VARCHAR" />
+    <result column="capital" property="capital" jdbcType="INTEGER" />
+    <result column="capital_name" property="capitalName" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="INTEGER" />
+    <result column="city_name" property="cityName" jdbcType="VARCHAR" />
+    <result column="district" property="district" jdbcType="INTEGER" />
+    <result column="district_name" property="districtName" jdbcType="VARCHAR" />
     <result column="apply_store_id" property="applyStoreId" jdbcType="BIGINT" />
     <result column="apply_name" property="applyName" jdbcType="VARCHAR" />
     <result column="person_num" property="personNum" jdbcType="VARCHAR" />
     <result column="phone" property="phone" jdbcType="VARCHAR" />
-    <result column="street" property="street" jdbcType="VARCHAR" />
+    <result column="street" property="street" jdbcType="INTEGER" />
+    <result column="street_name" property="streetName" jdbcType="VARCHAR" />
     <result column="detail_address" property="detailAddress" jdbcType="VARCHAR" />
     <result column="village" property="village" jdbcType="VARCHAR" />
+    <result column="address_audit_opinion" property="addressAuditOpinion" jdbcType="VARCHAR" />
+    <result column="imgs_audit_opinion" property="imgsAuditOpinion" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="address_audit_status" property="addressAuditStatus" jdbcType="INTEGER" />
+    <result column="imgs_audit_status" property="imgsAuditStatus" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     store_id, capital, city, district, apply_store_id, apply_name, person_num, phone, 
@@ -153,8 +161,20 @@
       <if test="village != null" >
         village = #{village,jdbcType=VARCHAR},
       </if>
+      <if test="addressAuditOpinion != null" >
+        address_audit_opinion = #{addressAuditOpinion,jdbcType=VARCHAR},
+      </if>
+      <if test="imgsAuditOpinion != null" >
+        imgs_audit_opinion = #{imgsAuditOpinion,jdbcType=VARCHAR},
+      </if>
       <if test="status != null" >
         status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="addressAuditStatus != null" >
+        address_audit_status = #{addressAuditStatus,jdbcType=INTEGER},
+      </if>
+      <if test="imgsAuditStatus != null" >
+        imgs_audit_status = #{imgsAuditStatus,jdbcType=INTEGER},
       </if>
     </set>
     where store_id = #{storeId,jdbcType=BIGINT}

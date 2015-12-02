@@ -15,6 +15,12 @@
     from town
     where country_id = #{countryId,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectNameById" resultType="String" parameterType="Integer">
+    select town_name
+    	from town  where town_id = #{townId,jdbcType=INTEGER} 
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from town
     where town_id = #{townId,jdbcType=INTEGER}

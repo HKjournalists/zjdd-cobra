@@ -15,6 +15,11 @@
     from city
     where province_id = #{provinceId,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectNameById" resultType="String" parameterType="Integer">
+    select city_name
+    	from city  where city_id = #{cityId,jdbcType=INTEGER} 
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from city
     where city_id = #{cityId,jdbcType=INTEGER}

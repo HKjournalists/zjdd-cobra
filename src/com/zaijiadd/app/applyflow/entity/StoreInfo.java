@@ -1,13 +1,20 @@
 package com.zaijiadd.app.applyflow.entity;
 
 public class StoreInfo {
+	
     private Long storeId;
 
-    private String capital;
+    private Integer capital;
+    
+    private String capitalName;
 
-    private String city;
+    private Integer city;
+    
+    private String cityName;
 
-    private String district;
+    private Integer district;
+    
+    private String districtName;
 
     private Long applyStoreId;
 
@@ -17,107 +24,185 @@ public class StoreInfo {
 
     private String phone;
 
-    private String street;
-
-    private String detailAddress;
+    private Integer street;
+    
+    private String streetName;
+    
+	private String detailAddress;
 
     private String village;
 
     private Integer status;
 
-    public Long getStoreId() {
-        return storeId;
-    }
+    private String addressAuditOpinion;
+    
+    private String imgsAuditOpinion;
+    
+    private Integer imgsAuditStatus;
+    
+    private Integer addressAuditStatus;
+   
 
-    public void setStoreId(Long storeId) {
-        this.storeId = storeId;
-    }
+    public Integer getImgsAuditStatus() {
+		return imgsAuditStatus;
+	}
 
-    public String getCapital() {
-        return capital;
-    }
+	public void setImgsAuditStatus(Integer imgsAuditStatus) {
+		this.imgsAuditStatus = imgsAuditStatus;
+	}
 
-    public void setCapital(String capital) {
-        this.capital = capital == null ? null : capital.trim();
-    }
+	public Integer getAddressAuditStatus() {
+		return addressAuditStatus;
+	}
 
-    public String getCity() {
-        return city;
-    }
+	public void setAddressAuditStatus(Integer addressAuditStatus) {
+		this.addressAuditStatus = addressAuditStatus;
+	}
 
-    public void setCity(String city) {
-        this.city = city == null ? null : city.trim();
-    }
+	public String getImgsAuditOpinion() {
+		return imgsAuditOpinion;
+	}
 
-    public String getDistrict() {
-        return district;
-    }
+	public void setImgsAuditOpinion(String imgsAuditOpinion) {
+		this.imgsAuditOpinion = imgsAuditOpinion;
+	}
 
-    public void setDistrict(String district) {
-        this.district = district == null ? null : district.trim();
-    }
+	public String getAddressAuditOpinion() {
+		return addressAuditOpinion;
+	}
 
-    public Long getApplyStoreId() {
-        return applyStoreId;
-    }
+	public void setAddressAuditOpinion(String addressAuditOpinion) {
+		this.addressAuditOpinion = addressAuditOpinion;
+	}
 
-    public void setApplyStoreId(Long applyStoreId) {
-        this.applyStoreId = applyStoreId;
-    }
 
-    public String getApplyName() {
-        return applyName;
-    }
 
-    public void setApplyName(String applyName) {
-        this.applyName = applyName == null ? null : applyName.trim();
-    }
+	public Long getStoreId() {
+		return storeId;
+	}
 
-    public String getPersonNum() {
-        return personNum;
-    }
+	public void setStoreId(Long storeId) {
+		this.storeId = storeId;
+	}
 
-    public void setPersonNum(String personNum) {
-        this.personNum = personNum == null ? null : personNum.trim();
-    }
+	public Integer getCapital() {
+		return capital;
+	}
 
-    public String getPhone() {
-        return phone;
-    }
+	public void setCapital(Integer capital) {
+		this.capital = capital;
+	}
 
-    public void setPhone(String phone) {
-        this.phone = phone == null ? null : phone.trim();
-    }
+	public String getCapitalName() {
+		return capitalName;
+	}
 
-    public String getStreet() {
-        return street;
-    }
+	public void setCapitalName(String capitalName) {
+		this.capitalName = capitalName;
+	}
 
-    public void setStreet(String street) {
-        this.street = street == null ? null : street.trim();
-    }
+	public Integer getCity() {
+		return city;
+	}
 
-    public String getDetailAddress() {
-        return detailAddress;
-    }
+	public void setCity(Integer city) {
+		this.city = city;
+	}
 
-    public void setDetailAddress(String detailAddress) {
-        this.detailAddress = detailAddress == null ? null : detailAddress.trim();
-    }
+	public String getCityName() {
+		return cityName;
+	}
 
-    public String getVillage() {
-        return village;
-    }
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
 
-    public void setVillage(String village) {
-        this.village = village == null ? null : village.trim();
-    }
+	public Integer getDistrict() {
+		return district;
+	}
 
-    public Integer getStatus() {
-        return status;
-    }
+	public void setDistrict(Integer district) {
+		this.district = district;
+	}
 
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
+	public String getDistrictName() {
+		return districtName;
+	}
+
+	public void setDistrictName(String districtName) {
+		this.districtName = districtName;
+	}
+
+	public Long getApplyStoreId() {
+		return applyStoreId;
+	}
+
+	public void setApplyStoreId(Long applyStoreId) {
+		this.applyStoreId = applyStoreId;
+	}
+
+	public String getApplyName() {
+		return applyName;
+	}
+
+	public void setApplyName(String applyName) {
+		this.applyName = applyName;
+	}
+
+	public String getPersonNum() {
+		return personNum;
+	}
+
+	public void setPersonNum(String personNum) {
+		this.personNum = personNum;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public Integer getStreet() {
+		return street;
+	}
+
+	public void setStreet(Integer street) {
+		this.street = street;
+	}
+
+	public String getStreetName() {
+		return streetName;
+	}
+
+	public void setStreetName(String streetName) {
+		this.streetName = streetName;
+	}
+
+	public String getDetailAddress() {
+		return detailAddress;
+	}
+
+	public void setDetailAddress(String detailAddress) {
+		this.detailAddress = detailAddress;
+	}
+
+	public String getVillage() {
+		return village;
+	}
+
+	public void setVillage(String village) {
+		this.village = village;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
 }

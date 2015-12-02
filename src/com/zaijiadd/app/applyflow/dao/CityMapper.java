@@ -7,6 +7,8 @@ import com.zaijiadd.app.applyflow.entity.City;
 public interface CityMapper {
 	
     int deleteByPrimaryKey(Integer cityId);
+    
+    String selectNameById(Integer cityId);
 
     int insert(City record);
 

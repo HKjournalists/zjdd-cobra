@@ -5,7 +5,10 @@ import java.util.List;
 import com.zaijiadd.app.applyflow.entity.Country;
 
 public interface CountryMapper {
+	
     int deleteByPrimaryKey(Integer countryId);
+    
+    String selectNameById(Integer countryId);
 
     int insert(Country record);
 

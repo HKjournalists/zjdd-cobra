@@ -13,6 +13,8 @@ public interface ProvinceMapper {
     int insertSelective(Province record);
 
     Province selectByPrimaryKey(Integer provinceId);
+    
+    String selectNameById(Integer provinceId);
 
     int updateByPrimaryKeySelective(Province record);
 

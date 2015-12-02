@@ -5,7 +5,10 @@ import java.util.List;
 import com.zaijiadd.app.applyflow.entity.Town;
 
 public interface TownMapper {
+	
     int deleteByPrimaryKey(Integer townId);
+    
+    String selectNameById(Integer townId);
 
     int insert(Town record);
 
