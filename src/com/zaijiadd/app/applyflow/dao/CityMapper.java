@@ -1,15 +1,23 @@
 package com.zaijiadd.app.applyflow.dao;
 
+import java.util.List;
+
 import com.zaijiadd.app.applyflow.entity.City;
 
 public interface CityMapper {
+	
     int deleteByPrimaryKey(Integer cityId);
 
     int insert(City record);
 
     int insertSelective(City record);
 
-    City selectByPrimaryKey(Integer cityId);
+    /**
+     * 按省份查询城市列表
+     * @param proviceId
+     * @return
+     */
+    List<City> selectByProvinceId(Integer proviceId);
 
     int updateByPrimaryKeySelective(City record);
 

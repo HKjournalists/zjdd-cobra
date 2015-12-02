@@ -1,5 +1,7 @@
 package com.zaijiadd.app.applyflow.dao;
 
+import java.util.List;
+
 import com.zaijiadd.app.applyflow.entity.Town;
 
 public interface TownMapper {
@@ -9,7 +11,12 @@ public interface TownMapper {
 
     int insertSelective(Town record);
 
-    Town selectByPrimaryKey(Integer townId);
+    /**
+     * 按区县查询管辖街道等
+     * @param countryId
+     * @return
+     */
+    List<Town> selectByCountryId(Integer countryId);
 
     int updateByPrimaryKeySelective(Town record);
 
