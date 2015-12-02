@@ -5,15 +5,23 @@
     <id column="city_id" property="cityId" jdbcType="INTEGER" />
     <result column="city_name" property="cityName" jdbcType="VARCHAR" />
     <result column="province_id" property="provinceId" jdbcType="INTEGER" />
+    <result column="city_money" property="cityMoney" jdbcType="DECIMAL" />
   </resultMap>
   <sql id="Base_Column_List" >
-    city_id, city_name, province_id
+    city_id, city_name, province_id,city_money
   </sql>
   <select id="selectByProvinceId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from city
     where province_id = #{provinceId,jdbcType=INTEGER}
+  </select>
+  
+   <select id="selectCityByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from city
+    where city_name = #{cityName,jdbcType=VARCHAR}
   </select>
   
   <select id="selectNameById" resultType="String" parameterType="Integer">

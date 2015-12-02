@@ -48,13 +48,18 @@ public class ApplyFlowController {
 	@RequestMapping(value = "/addInviteUserMsg", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> addInviteUserMsg(HttpServletRequest request) {
-		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
-		Map<String, Object> param = new HashMap<String, Object>();
-		InviteUserEntity inviteUserEntity = jsonToInviteUserVO(jsonRequest);
-		inviteUserEntity.setFuctionSate(1);// 用户信息
-		Integer inviteUserId = applyFlowService.addInviteUser(inviteUserEntity);
-		param.put("inviteUserId", inviteUserId);
-		return ContainerUtils.buildResSuccessMap(param);
+		try {
+			JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+			Map<String, Object> param = new HashMap<String, Object>();
+			InviteUserEntity inviteUserEntity = jsonToInviteUserVO(jsonRequest);
+			inviteUserEntity.setFuctionSate(1);// 用户信息
+			Integer inviteUserId = applyFlowService.addInviteUser(inviteUserEntity);
+			param.put("inviteUserId", inviteUserId);
+			return ContainerUtils.buildResSuccessMap(param);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ContainerUtils.buildResFailMap();
+		}
 
 	}
 

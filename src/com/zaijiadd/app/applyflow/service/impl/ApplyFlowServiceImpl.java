@@ -13,8 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zaijiadd.app.applyflow.dao.ApplyFlowDao;
+import com.zaijiadd.app.applyflow.dao.CityMapper;
 import com.zaijiadd.app.applyflow.entity.ApplyStore;
 import com.zaijiadd.app.applyflow.entity.ApplyUserRelation;
+import com.zaijiadd.app.applyflow.entity.City;
 import com.zaijiadd.app.applyflow.entity.InviteUserEntity;
 import com.zaijiadd.app.applyflow.service.ApplyFlowService;
 import com.zaijiadd.app.user.dao.UserInfoDAO;
@@ -36,6 +38,8 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	ApplyFlowDao applyFlowDao;
 	@Autowired
 	private UserInfoDAO userInfoDao;
+	@Autowired
+	private CityMapper cityMapper;
 
 	@Override
 	public Integer addInviteUser(InviteUserEntity inviteUserEntity) {
@@ -67,14 +71,16 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 
 	@Override
 	public Integer addApplyStore(ApplyStore applyStore) {
+		String cityNme = applyStore.getCity();
 		Integer dealershipNum = applyStore.getDealershipNum();
 		BigDecimal dealershipNumBig = new BigDecimal(dealershipNum);
-		BigDecimal cityMoney = this.getCityDealershipMoney(dealershipNum);
-		BigDecimal PaymoneyCount = cityMoney.multiply(dealershipNumBig);
+		BigDecimal cityMoney = this.getCityDealershipMoney(cityNme);
+		BigDecimal PaymoneyCount = cityMoney.multiply(dealershipNumBig);// 乘
 
 		BigDecimal paidMoney = applyStore.getPaidMoney();
 		BigDecimal needPaymoney = applyStore.getNeedPaymoney();
 		BigDecimal needPaymoneyCount = paidMoney.add(needPaymoney);
+
 		if (needPaymoneyCount.compareTo(PaymoneyCount) < 0) {// 实际付的金额比应收的金额小，那么给主管审批
 			applyStore.setWhoCheck(ConstantsRole.ROLE_MANAGERS);
 		} else {// 实际付的金额比应收的金额 相等，给财务
@@ -132,13 +138,13 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 
 	/**
 	 * @return
-	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#getCityDealershipMoney(java.lang.Integer)
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#getCityDealershipMoney(String)
 	 */
 
 	@Override
-	public BigDecimal getCityDealershipMoney(Integer dealershipNum) {
-		return null;
-		// TODO 该方法尚未实现
+	public BigDecimal getCityDealershipMoney(String cityNme) {
+		City city = cityMapper.selectCityByName(cityNme);
+		return city.getCityMoney();
 
 	}
 

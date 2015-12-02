@@ -1,33 +1,45 @@
 package com.zaijiadd.app.applyflow.entity;
 
+import java.math.BigDecimal;
+
 public class City {
-    private Integer cityId;
 
-    private String cityName;
+	private Integer cityId;
 
-    private Integer provinceId;
+	private String cityName;
 
-    public Integer getCityId() {
-        return cityId;
-    }
+	private Integer provinceId;
+	private BigDecimal cityMoney;
 
-    public void setCityId(Integer cityId) {
-        this.cityId = cityId;
-    }
+	public BigDecimal getCityMoney() {
+		return cityMoney;
+	}
 
-    public String getCityName() {
-        return cityName;
-    }
+	public void setCityMoney(BigDecimal cityMoney) {
+		this.cityMoney = cityMoney;
+	}
 
-    public void setCityName(String cityName) {
-        this.cityName = cityName == null ? null : cityName.trim();
-    }
+	public Integer getCityId() {
+		return cityId;
+	}
 
-    public Integer getProvinceId() {
-        return provinceId;
-    }
+	public void setCityId(Integer cityId) {
+		this.cityId = cityId;
+	}
 
-    public void setProvinceId(Integer provinceId) {
-        this.provinceId = provinceId;
-    }
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName == null ? null : cityName.trim();
+	}
+
+	public Integer getProvinceId() {
+		return provinceId;
+	}
+
+	public void setProvinceId(Integer provinceId) {
+		this.provinceId = provinceId;
+	}
 }

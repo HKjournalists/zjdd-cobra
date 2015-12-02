@@ -94,11 +94,11 @@ public interface ApplyFlowService {
 
 	/**
 	 * (用一句话描述方法的主要功能)
-	 * @param dealershipNum
+	 * @param cityNme
 	 * @return
 	 */
 
-	BigDecimal getCityDealershipMoney(Integer dealershipNum);
+	BigDecimal getCityDealershipMoney(String cityNme);
 
 	/**
 	 * (用一句话描述方法的主要功能)
