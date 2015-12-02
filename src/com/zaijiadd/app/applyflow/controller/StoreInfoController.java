@@ -73,6 +73,26 @@ public class StoreInfoController {
 
 	}
 	
+	/**
+	 * 地址审核初始化
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/addressAuditInit/{storeId}", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> addressAuditInit(@PathVariable Long storeId) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		try {
+			param.put("detail", this.storeInfoService.selectByPrimaryKey(storeId));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ContainerUtils.buildResFailMap();
+		}
+		return ContainerUtils.buildResSuccessMap(param);
+
+	}
+	
+	
 	
 	/**
 	 * 申请开店
@@ -241,8 +261,8 @@ public class StoreInfoController {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
 			Map<String, Object> param = new HashMap<String, Object>();
-			param.put("status", type);
-			param.put("type",  ((UserInfoEntity)request.getSession().getAttribute("user")).getUserId());
+			param.put("type", type);
+			param.put("userId",  ((UserInfoEntity)request.getSession().getAttribute("user")).getUserId());
 			result.put("result", this.storeInfoService.getMyApproval(param));
 		} catch (Exception e) {
 			e.printStackTrace();

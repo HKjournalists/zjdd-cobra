@@ -17,6 +17,7 @@ import com.zaijiadd.app.applyflow.dao.ProvinceMapper;
 import com.zaijiadd.app.applyflow.dao.StoreImgDao;
 import com.zaijiadd.app.applyflow.dao.StoreInfoDao;
 import com.zaijiadd.app.applyflow.dao.TownMapper;
+import com.zaijiadd.app.applyflow.dto.StoreApprovalDTO;
 import com.zaijiadd.app.applyflow.dto.StoreInfoDTO;
 import com.zaijiadd.app.applyflow.entity.StoreImg;
 import com.zaijiadd.app.applyflow.entity.StoreInfo;
@@ -75,6 +76,7 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 		//图片审核中
 		storeInfo.setStatus(2);
 		storeInfo.setStoreId(storeId);
+		//storeInfo.setApplicationShopTime(new );
 		this.storeInfoDao.updateByPrimaryKeySelective(storeInfo);
 		
 		for(String fileUrl : fileUrls) {
@@ -193,11 +195,11 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 		
 	}
 	
-	private List<Map<String, Object>> groupByApprovalDay(List<StoreInfoDTO> list, int type) {
+	private List<Map<String, Object>> groupByApprovalDay(List<StoreApprovalDTO> list, int type) {
 		List<Map<String, Object>> returnList = new ArrayList<>();
 		HashSet<String> daySet = new HashSet<>();
 		if(list != null) {
-			for(StoreInfoDTO dto : list) {
+			for(StoreApprovalDTO dto : list) {
 				String  day = null;
 				if(type == 0) {
 					day = DateUtils.transDateToString(new Date(dto.getApplicationTime().getTime()), DateUtils.SHORT_DATE_TIME);
@@ -211,8 +213,8 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 			while(it.hasNext()) {
 				Map<String, Object> returnMap  = new HashMap<String, Object>();
 				String day = it.next();
-				List<StoreInfoDTO> dayList = new ArrayList<>();
-				for(StoreInfoDTO dto : list) {
+				List<StoreApprovalDTO> dayList = new ArrayList<>();
+				for(StoreApprovalDTO dto : list) {
 					String otherDay = null;
 					if(type == 0) {
 						otherDay = DateUtils.transDateToString(new Date(dto.getApplicationTime().getTime()), DateUtils.SHORT_DATE_TIME);

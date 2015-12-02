@@ -91,7 +91,7 @@ public class AreaController {
 		Map<String, Object> param = new HashMap<String, Object>();
 		try {
 			param.put("townList", this.areaService.selectByCountryId(countryId));
-		} catch (Exception e) {
+		} catch (Exception e) { 
 			e.printStackTrace();
 			return ContainerUtils.buildResFailMap();
 		}

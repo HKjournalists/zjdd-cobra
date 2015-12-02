@@ -40,7 +40,7 @@ public class StoreInfo {
     
     private String imgsAuditOpinion;
     
-    private Integer imgsAuditStatus;
+	private Integer imgsAuditStatus;
     
     private Integer addressAuditStatus;
     
@@ -55,8 +55,18 @@ public class StoreInfo {
     private Timestamp addressApprovalTime;
     
     private Timestamp imgsApprovalTime;
+    
+    private Timestamp applicationShopTime;
    
 
+    public Timestamp getApplicationShopTime() {
+		return applicationShopTime;
+	}
+
+	public void setApplicationShopTime(Timestamp applicationShopTime) {
+		this.applicationShopTime = applicationShopTime;
+	}
+	
     public Integer getAddressApprover() {
 		return addressApprover;
 	}

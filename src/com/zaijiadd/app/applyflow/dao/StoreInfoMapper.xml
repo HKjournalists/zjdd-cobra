@@ -37,7 +37,17 @@
     <result column="application_time" property="applicationTime" jdbcType="TIMESTAMP" />
     <result column="address_approval_time" property="addressApprovalTime" jdbcType="TIMESTAMP" />
     <result column="imgs_approval_time" property="imgsApprovalTime" jdbcType="TIMESTAMP" />
-     <result column="application_shop_time" property="applicationShopTime" jdbcType="TIMESTAMP" />
+   	<result column="application_shop_time" property="applicationShopTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <resultMap id="ApprovalResultMap" type="com.zaijiadd.app.applyflow.dto.StoreApprovalDTO" >
+    <result column="apply_name" property="applyName" jdbcType="VARCHAR" />
+    <result column="paymoney_type" property="paymoneyType" jdbcType="INTEGER" />
+    <result column="paid_money" property="paidMoney" jdbcType="DECIMAL" />
+    <result column="application_time" property="applicationTime" jdbcType="TIMESTAMP" />
+    <result column="address_approval_time" property="addressApprovalTime" jdbcType="TIMESTAMP" />
+    <result column="imgs_approval_time" property="imgsApprovalTime" jdbcType="TIMESTAMP" />
+    <result column="application_shop_time" property="applicationShopTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     store_id, capital, city, district, apply_store_id, apply_name, person_num, phone, 
@@ -50,7 +60,7 @@
     where store_id = #{storeId,jdbcType=BIGINT}
   </select>
   <select id="selectByApplicant" resultMap="DtoResultMap" parameterType="map" >
-    select  t1.apply_name, t1.phone,t1.application_time,t2.apply_type,t1.imgs_approval_time,t1.address_approval_time  from store_info t1  
+    select  t1.apply_name, t1.application_shop_time, t1.phone, t1.application_time, t2.apply_type,t1.imgs_approval_time,t1.address_approval_time  from store_info t1  
     LEFT JOIN  cobra_apply_store t2 ON t1.apply_store_id=t2.apply_store_id
 	where t1.applicant=#{applicant}
 	<if test="status != null" >
@@ -64,27 +74,27 @@
      </if>
   </select>
   
-   <select id="getMyApproval" resultMap="DtoResultMap" parameterType="map" >
-    select  t1.apply_name, t1.person_num,t1.application_time,t2.apply_type,t1.imgs_approval_time,t1.address_approval_time  from store_info t1  
+   <select id="getMyApproval" resultMap="ApprovalResultMap" parameterType="map" >
+    select  t1.apply_name, t1.application_shop_time,t2.paid_money,t1.application_time,t2.paymoney_type,t1.imgs_approval_time,t1.address_approval_time  from store_info t1  
     LEFT JOIN  cobra_apply_store t2 ON t1.apply_store_id=t2.apply_store_id
 	where 1=1
 	<if test="status != null" >
-        and status = #{status,jdbcType=INTEGER},
+        and status = #{status,jdbcType=INTEGER}
      </if>
      <if test="addressAuditStatus != null" >
-        and address_audit_status = #{addressAuditStatus,jdbcType=INTEGER},
+        and address_audit_status = #{addressAuditStatus,jdbcType=INTEGER}
      </if>
      
      <if test="addressApprover != null" >
-        	and address_approver = #{addressApprover,jdbcType=INTEGER},
+        	and address_approver = #{addressApprover,jdbcType=INTEGER}
      </if>
      
      <if test="imgsApprover != null" >
-        	and imgs_approver = #{imgsApprover,jdbcType=INTEGER},
+        	and imgs_approver = #{imgsApprover,jdbcType=INTEGER}
      </if>
      
      <if test="imgsAuditStatus != null" >
-        and imgs_audit_status = #{imgsAuditStatus,jdbcType=INTEGER},
+        and imgs_audit_status = #{imgsAuditStatus,jdbcType=INTEGER}
      </if>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
