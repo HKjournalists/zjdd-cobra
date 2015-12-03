@@ -50,6 +50,32 @@ public class IndexController {
 		return ContainerUtils.buildResSuccessMap(param);
 
 	}
+	/**
+	 * 用户注册
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/registerUser", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> registerUser(HttpServletRequest request) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		try {
+			String mobile = request.getParameter("mobile");
+			UserInfoEntity userInfoEntity = systemUserService.registerUser(mobile);
+			request.getSession().setAttribute("user", userInfoEntity);
+			UserInfoDTO userInfoDTO = new UserInfoDTO();
+			if(userInfoEntity == null) {
+				return ContainerUtils.buildResFailMap();
+			}
+			PropertyUtils.copyProperties(userInfoDTO, userInfoEntity);
+			param.put("userInfo", userInfoDTO);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ContainerUtils.buildResFailMap();
+		}
+		return ContainerUtils.buildResSuccessMap(param);
+		
+	}
 	
 	/**
 	 * 用户退出

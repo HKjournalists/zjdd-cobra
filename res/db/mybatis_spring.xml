@@ -85,4 +85,8 @@
 		<property name="mapperInterface" value="com.zaijiadd.app.applyflow.dao.StoreImgDao" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
 	</bean>
+	<bean id="shopUserInfoDAO" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.zaijiadd.app.user.dao.ShopUserInfoDAO" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
 </beans>
