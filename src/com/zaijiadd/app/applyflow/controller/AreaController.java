@@ -1,6 +1,7 @@
 package com.zaijiadd.app.applyflow.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.zaijiadd.app.applyflow.dao.CityMapper;
+import com.zaijiadd.app.applyflow.dao.CountryMapper;
+import com.zaijiadd.app.applyflow.dao.ProvinceMapper;
+import com.zaijiadd.app.applyflow.dao.TownMapper;
+import com.zaijiadd.app.applyflow.entity.City;
+import com.zaijiadd.app.applyflow.entity.Country;
+import com.zaijiadd.app.applyflow.entity.Town;
 import com.zaijiadd.app.applyflow.service.AreaService;
 import com.zaijiadd.app.common.utils.ContainerUtils;
 
@@ -26,6 +34,14 @@ public class AreaController {
 	
 	@Autowired
 	private AreaService areaService;
+	@Autowired
+	private ProvinceMapper provinceMapper;
+	@Autowired
+	private CityMapper cityMapper;
+	@Autowired
+	private CountryMapper countryMapper;
+	@Autowired
+	private TownMapper townMapper;
 	/**
 	 * 省份列表
 	 * @param request
@@ -43,6 +59,27 @@ public class AreaController {
 		}
 		return ContainerUtils.buildResSuccessMap(param);
 
+	}
+	
+	private void xiugai() throws Exception {
+		for(int i = 1; i < 5; i ++) {
+			List cityList = this.areaService.selectByProvinceId(i);
+			for(int j = 0, size = cityList.size(); j < size;j ++) {
+				City city = (City) cityList.get(j);
+				Country country = new Country();
+				country.setCityId(i);
+				country.setCountryName(city.getCityName());
+				this.countryMapper.insert(country);
+				List countryList = this.areaService.selectByCityId(city.getCityId());
+				for(int m = 0; m < countryList.size(); m ++) {
+					Country country1 = (Country) countryList.get(m);
+					Town town = new Town();
+					town.setCountryId(country.getCountryId());
+					town.setTownName(country1.getCountryName());
+					this.townMapper.insert(town);
+				}
+			}
+		}
 	}
 	/**
 	 * 城市列表
