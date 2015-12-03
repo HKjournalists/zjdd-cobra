@@ -94,20 +94,11 @@ public interface ApplyFlowService {
 
 	/**
 	 * (用一句话描述方法的主要功能)
-	 * @param cityNme
+	 * @param cityId
 	 * @return
 	 */
 
-	BigDecimal getCityDealershipMoney(String cityNme);
-
-	/**
-	 * (用一句话描述方法的主要功能)
-	 * @param applyStore
-	 * @param userId TODO
-	 * @return
-	 */
-
-	Integer approveApplyStore(ApplyStore applyStore, String userId);
+	BigDecimal getCityDealershipMoney(Integer cityId);
 
 	/**
 	 * (用一句话描述方法的主要功能)
@@ -148,5 +139,29 @@ public interface ApplyFlowService {
 	 */
 
 	List<Map<String, Object>> queryApproveMsg(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param userId
+	 * @return
+	 */
+
+	List<Map<String, Object>> printContract(Integer userId);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	Map<String, Object> queryInviteUserDet(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	Map<String, Object> queryInviteUserMsgDet(Map<String, Object> param);
 
 }

@@ -62,6 +62,35 @@ public class ApplyStore {
 	private Integer bankNumone;
 
 	private Integer bankNumtwo;
+	private Integer capitalId;
+
+	private Integer cityId;
+
+	private Integer districtId;
+
+	public Integer getCapitalId() {
+		return capitalId;
+	}
+
+	public void setCapitalId(Integer capitalId) {
+		this.capitalId = capitalId;
+	}
+
+	public Integer getCityId() {
+		return cityId;
+	}
+
+	public void setCityId(Integer cityId) {
+		this.cityId = cityId;
+	}
+
+	public Integer getDistrictId() {
+		return districtId;
+	}
+
+	public void setDistrictId(Integer districtId) {
+		this.districtId = districtId;
+	}
 
 	public Integer getAgencyYear() {
 		return agencyYear;

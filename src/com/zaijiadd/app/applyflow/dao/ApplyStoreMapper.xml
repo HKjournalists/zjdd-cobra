@@ -32,22 +32,34 @@
     <result column="store_numm" property="storeNumm" jdbcType="INTEGER" />
     <result column="bank_numOne" property="bankNumone" jdbcType="INTEGER" />
     <result column="bank_numTwo" property="bankNumtwo" jdbcType="INTEGER" />
+      <result column="capital_id" property="capitalId" jdbcType="INTEGER" />
+    <result column="city_id" property="cityId" jdbcType="INTEGER" />
+    <result column="district_id" property="districtId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     apply_store_id as applyStoreId, apply_type as applyType, apply_person_type as applyPersonType, 
     capital as capital, city as city, district as district, agency_type as agencyType, 
     agency_time as agencyTime, dealership_num as dealershipNum, apply_name as applyName, person_num as personNum, 
     phone as phone, post_addr as postAddr, mai_addr as maiAddr, 
-    urgency_person as urgency_person, urgency_phone as urgency_phone, CompanyName as CompanyName, pay_way as pay_way,
-     paymoney_type as paymoney_type, paid_money as paid_money, need_paymoney as need_paymoney,  
+    urgency_person as urgencyPerson, urgency_phone as urgencyPhone, CompanyName as CompanyName, pay_way as payWay,
+     paymoney_type as paymoneyType, paid_money as paidMoney, need_paymoney as needPaymoney,  
     yjs_user_id as yjsUserId, finance_check as financeCheck, managers_check as managersCheck, apply_status as applyStatus,
-    who_check as whoCheck, agency_year as agencyYear, store_numm as storeNumm, bank_numOne bankNumone, bank_numTwo bankNumtwo
+    who_check as whoCheck, agency_year as agencyYear, store_numm as storeNumm, bank_numOne bankNumone, bank_numTwo bankNumtwo,
+    capital_id as capitalId , city_id as cityId, district_id as districtId
   </sql>
+  
+     <!-- 查询打印信息-->
+   <sql id="Base_Column_order_printContract_List" >
+    apply_store_id as applyStoreId, apply_type as applyType, agency_time as agencyTime, apply_name as applyName, 
+     capital as capital, city as city, district as district, agency_type as agencyType
+  </sql>
+  
    <!-- 查询订单状态 -->
    <sql id="Base_Column_order_state_List" >
     apply_store_id as applyStoreId, apply_type as applyType, agency_time as agencyTime, apply_name as applyName, 
      paymoney_type as paymoney_type,  apply_status as applyStatus,who_check as whoCheck
   </sql>
+  
    <!-- 查询财务的order-->
    <sql id="Base_Column_approve_finance_state_List" >
      apply_store_id as applyStoreId, apply_type as applyType, agency_time as agencyTime, apply_name as applyName, 
@@ -60,7 +72,7 @@
      paymoney_type as paymoney_type,  apply_status as applyStatus,who_check as whoCheck
   </sql>
      <!-- 查询订单状态 -->
-  <select id="queryAllApplyStoreSate" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+  <select id="queryAllApplyStoreSate" resultMap="java.util.HashMap" parameterType="java.util.HashMap" >
     select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
     	<where>
 			<if test="yjsUserId != null and yjsUserId !=''">
@@ -73,9 +85,10 @@
 			limit #{start,jdbcType=INTEGER}, #{end}
 		</where>
   </select>
-   
+
+  
     <!-- 查询待审批的 -->
-   <select id="queryApproveStoreSate" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+   <select id="queryApproveStoreSate" resultMap="java.util.HashMap" parameterType="java.util.HashMap" >
     select <include refid="Base_Column_state_List" /> from cobra_apply_store
     	<where>
 			<if test="yjsUserId != null and yjsUserId !=''">
@@ -90,7 +103,7 @@
   </select>
   
     <!-- 查询给主管审批的 managers-->
-  <select id="queryManagersApproveStoreTry" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+  <select id="queryManagersApproveStoreTry" resultMap="java.util.HashMap" parameterType="java.util.HashMap" >
     select <include refid="Base_Column_approve_managers_state_List" /> from cobra_apply_store
     	<where>
 			<if test="whoCheck != null and whoCheck !=''">
@@ -104,7 +117,7 @@
 		</where>
   </select>
   <!-- 查询财务待审批的 -->
-  <select id="queryFinanceApproveStoreTry" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+  <select id="queryFinanceApproveStoreTry" resultMap="java.util.HashMap" parameterType="java.util.HashMap" >
     select <include refid="Base_Column_state_List" /> from cobra_apply_store
     	<where>
 			<if test="whoCheck != null and whoCheck !=''">
@@ -124,6 +137,13 @@
     <include refid="Base_Column_List" />
     from cobra_apply_store
     where apply_store_id = #{applyStoreId,jdbcType=INTEGER}
+  </select>
+  
+     
+    <!-- 打印合同 -->
+  <select id="printContract" resultMap="java.util.HashMap" parameterType="java.lang.Integer" >
+    select <include refid="Base_Column_order_printContract_List" /> from cobra_apply_store
+       where yjs_user_id = #{yjsUserId,jdbcType=INTEGER}
   </select>
   
   <!-- 增加单子-->

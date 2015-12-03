@@ -76,14 +76,6 @@ public interface ApplyFlowDao {
 
 	/**
 	 * (用一句话描述方法的主要功能)
-	 * @param applyStore
-	 * @return
-	 */
-
-	public Integer updateApplyStore(ApplyStore applyStore);
-
-	/**
-	 * (用一句话描述方法的主要功能)
 	 * @param param
 	 * @return
 	 */
@@ -121,5 +113,28 @@ public interface ApplyFlowDao {
 	 */
 
 	public List<Map<String, Object>> queryApproveMsg(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @return
+	 */
+
+	public List<Map<String, Object>> printContract();
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	public Map<String, Object> queryInviteUserDet(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	public Map<String, Object> queryInviteUserMsgDet(Map<String, Object> param);
 
 }
