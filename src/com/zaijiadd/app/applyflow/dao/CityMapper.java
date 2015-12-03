@@ -1,5 +1,6 @@
 package com.zaijiadd.app.applyflow.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.zaijiadd.app.applyflow.entity.City;
@@ -27,10 +28,10 @@ public interface CityMapper {
 
 	/**
 	 * (用一句话描述方法的主要功能)
-	 * @param cityNme
+	 * @param cityId
 	 * @return
 	 */
 
-	City selectCityByName(String cityNme);
+	ArrayList<City> selectCityByID(Integer cityId);
 
 }

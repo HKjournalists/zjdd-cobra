@@ -6,6 +6,7 @@
 package com.zaijiadd.app.applyflow.service.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -71,22 +72,38 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 
 	@Override
 	public Integer addApplyStore(ApplyStore applyStore) {
-		String cityNme = applyStore.getCity();
-		Integer dealershipNum = applyStore.getDealershipNum();
-		BigDecimal dealershipNumBig = new BigDecimal(dealershipNum);
-		BigDecimal cityMoney = this.getCityDealershipMoney(cityNme);
-		BigDecimal PaymoneyCount = cityMoney.multiply(dealershipNumBig);// 乘
-
+		Integer applyType = applyStore.getApplyType();
+		// 用户支付的
 		BigDecimal paidMoney = applyStore.getPaidMoney();
 		BigDecimal needPaymoney = applyStore.getNeedPaymoney();
-		BigDecimal needPaymoneyCount = paidMoney.add(needPaymoney);
+		BigDecimal personPaymoneyCount = paidMoney.add(needPaymoney);
 
-		if (needPaymoneyCount.compareTo(PaymoneyCount) < 0) {// 实际付的金额比应收的金额小，那么给主管审批
-			applyStore.setWhoCheck(ConstantsRole.ROLE_MANAGERS);
-		} else {// 实际付的金额比应收的金额 相等，给财务
+		if (applyType.equals(ConstantStorePower.APPLY_TYPE_DEALERSHIP)) {// 经销权
+			// 应该支付
+			Integer cityId = applyStore.getCityId();
+			Integer dealershipNum = applyStore.getDealershipNum();
+			BigDecimal dealershipNumBig = new BigDecimal(dealershipNum);
+			BigDecimal cityMoney = this.getCityDealershipMoney(cityId);
+			BigDecimal needPaymoneyCount = cityMoney.multiply(dealershipNumBig);// 乘
+
+			if (personPaymoneyCount.compareTo(needPaymoneyCount) < 0) {// 实际付的金额比应收的金额小，那么给主管审批
+				applyStore.setWhoCheck(ConstantsRole.ROLE_MANAGERS);
+			} else {// 实际付的金额比应收的金额 相等，给财务
+				applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
+			}
+			applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);
+		} else if (applyType.equals(ConstantStorePower.apply_type_SMALLSTORE)) {// 小店
+			Integer storeNumm = applyStore.getStoreNumm();
+			BigDecimal bigDecimalBig = new BigDecimal(storeNumm);
+			BigDecimal needPaymoneyCount = ConstantStorePower.store_money.multiply(bigDecimalBig);
+			if (personPaymoneyCount.compareTo(needPaymoneyCount) < 0) {// 实际付的金额比应收的金额小，那么给主管审批
+				applyStore.setWhoCheck(ConstantsRole.ROLE_MANAGERS);
+			} else {// 实际付的金额比应收的金额 相等，给财务
+				applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
+			}
 			applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 		}
-		applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);
+
 		return applyFlowDao.addApplyStore(applyStore);
 	}
 
@@ -138,13 +155,17 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 
 	/**
 	 * @return
-	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#getCityDealershipMoney(String)
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#getCityDealershipMoney(Integer)
 	 */
 
 	@Override
-	public BigDecimal getCityDealershipMoney(String cityNme) {
-		City city = cityMapper.selectCityByName(cityNme);
-		return city.getCityMoney();
+	public BigDecimal getCityDealershipMoney(Integer cityId) {
+		ArrayList<City> city = cityMapper.selectCityByID(cityId);
+		if (city.size() > 0) {
+			return city.get(0).getCityMoney();
+
+		}
+		return new BigDecimal(1);
 
 	}
 
@@ -250,6 +271,24 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	@Override
 	public List<Map<String, Object>> printContract(Integer userId) {
 		return applyFlowDao.printContract();
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#queryInviteUserDet(java.util.Map)
+	 */
+
+	@Override
+	public Map<String, Object> queryInviteUserDet(Map<String, Object> param) {
+		return applyFlowDao.queryInviteUserDet(param);
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#queryInviteUserMsgDet(java.util.Map)
+	 */
+
+	@Override
+	public Map<String, Object> queryInviteUserMsgDet(Map<String, Object> param) {
+		return applyFlowDao.queryInviteUserMsgDet(param);
 	}
 
 }

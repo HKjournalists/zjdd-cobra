@@ -42,6 +42,7 @@
     	<mapper resource="com/zaijiadd/app/applyflow/dao/InviteUserMapper.xml"/>
     	<mapper resource="com/zaijiadd/app/applyflow/dao/StoreImgMapper.xml"/>
     	<mapper resource="com/zaijiadd/app/applyflow/dao/StoreInfoMapper.xml"/>
+    	<mapper resource="com/zaijiadd/app/applyflow/dao/cityDealershipMapper.xml"/>
     </mappers>
 	
 	

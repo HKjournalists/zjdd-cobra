@@ -32,6 +32,9 @@
     <result column="store_numm" property="storeNumm" jdbcType="INTEGER" />
     <result column="bank_numOne" property="bankNumone" jdbcType="INTEGER" />
     <result column="bank_numTwo" property="bankNumtwo" jdbcType="INTEGER" />
+      <result column="capital_id" property="capitalId" jdbcType="INTEGER" />
+    <result column="city_id" property="cityId" jdbcType="INTEGER" />
+    <result column="district_id" property="districtId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     apply_store_id as applyStoreId, apply_type as applyType, apply_person_type as applyPersonType, 
@@ -41,7 +44,8 @@
     urgency_person as urgencyPerson, urgency_phone as urgencyPhone, CompanyName as CompanyName, pay_way as payWay,
      paymoney_type as paymoneyType, paid_money as paidMoney, need_paymoney as needPaymoney,  
     yjs_user_id as yjsUserId, finance_check as financeCheck, managers_check as managersCheck, apply_status as applyStatus,
-    who_check as whoCheck, agency_year as agencyYear, store_numm as storeNumm, bank_numOne bankNumone, bank_numTwo bankNumtwo
+    who_check as whoCheck, agency_year as agencyYear, store_numm as storeNumm, bank_numOne bankNumone, bank_numTwo bankNumtwo,
+    capital_id as capitalId , city_id as cityId, district_id as districtId
   </sql>
   
      <!-- 查询打印信息-->

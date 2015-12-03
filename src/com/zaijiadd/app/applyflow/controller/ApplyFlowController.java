@@ -58,6 +58,7 @@ public class ApplyFlowController {
 			Integer userId = user.getUserId();
 			inviteUserEntity.setYjsUserId(userId);
 			Integer inviteUserId = applyFlowService.addInviteUser(inviteUserEntity);
+			inviteUserId = inviteUserEntity.getInviteUserid();
 			param.put("inviteUserId", inviteUserId);
 			return ContainerUtils.buildResSuccessMap(param);
 		} catch (Exception e) {
@@ -68,7 +69,7 @@ public class ApplyFlowController {
 	}
 
 	/**
-	 * 增加邀约
+	 * 增加邀约记录
 	 * @param request
 	 * @return
 	 */
@@ -83,6 +84,7 @@ public class ApplyFlowController {
 		Integer userId = user.getUserId();
 		inviteUserEntity.setYjsUserId(userId);
 		Integer inviteUserId = applyFlowService.addInviteUser(inviteUserEntity);
+		inviteUserId = inviteUserEntity.getInviteUserid();
 		param.put("inviteUserId", inviteUserId);
 		return ContainerUtils.buildResSuccessMap(param);
 
@@ -119,16 +121,14 @@ public class ApplyFlowController {
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("inviteUserid", jsonRequest.getString("inviteUserid"));
 		param.put("fuctionSate", "1");
-		InviteUserEntity inviteUserEntity = applyFlowService.queryInviteUser(param);
-		String visitTime = inviteUserEntity.getVisitTime();
-		inviteUserEntity.setVisitTime(DateUtils.getDate(visitTime));
-		Map<String, Object> entityToMap = ContainerUtils.entityToMap(inviteUserEntity);
-		return ContainerUtils.buildResSuccessMap(entityToMap);
+		Map<String, Object> inviteUserEntityDet = applyFlowService.queryInviteUserMsgDet(param);
+		param.put("result", inviteUserEntityDet);
+		return ContainerUtils.buildResSuccessMap(param);
 
 	}
 
 	/**
-	 * 查询邀约详情
+	 * 查询邀约记录详情
 	 * @param request
 	 * @return
 	 */
@@ -139,11 +139,9 @@ public class ApplyFlowController {
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("inviteUserid", jsonRequest.getString("inviteUserid"));
 		param.put("fuctionSate", "2");
-		InviteUserEntity inviteUserEntity = applyFlowService.queryInviteUser(param);
-		String visitTime = inviteUserEntity.getVisitTime();
-		inviteUserEntity.setVisitTime(DateUtils.getDate(visitTime));
-		Map<String, Object> entityToMap = ContainerUtils.entityToMap(inviteUserEntity);
-		return ContainerUtils.buildResSuccessMap(entityToMap);
+		Map<String, Object> inviteUserEntityDet = applyFlowService.queryInviteUserDet(param);
+		param.put("result", inviteUserEntityDet);
+		return ContainerUtils.buildResSuccessMap(param);
 
 	}
 
