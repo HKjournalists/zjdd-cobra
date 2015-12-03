@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zaijiadd.app.applyflow.dao.CommunityMapper" >
+  <resultMap id="BaseResultMap" type="com.zaijiadd.app.applyflow.entity.Community" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="location_id" property="locationId" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="addr" property="addr" jdbcType="VARCHAR" />
+    <result column="longitude" property="longitude" jdbcType="DECIMAL" />
+    <result column="latitude" property="latitude" jdbcType="DECIMAL" />
+    <result column="latitude_min" property="latitudeMin" jdbcType="DECIMAL" />
+    <result column="latitude_max" property="latitudeMax" jdbcType="DECIMAL" />
+    <result column="longitude_min" property="longitudeMin" jdbcType="DECIMAL" />
+    <result column="longitude_max" property="longitudeMax" jdbcType="DECIMAL" />
+    <result column="coupon_num" property="couponNum" jdbcType="INTEGER" />
+    <result column="coupon_taken_num" property="couponTakenNum" jdbcType="INTEGER" />
+    <result column="state" property="state" jdbcType="TINYINT" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+    <result column="deleted_at" property="deletedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, location_id, name, addr, longitude, latitude, latitude_min, latitude_max, longitude_min, 
+    longitude_max, coupon_num, coupon_taken_num, state, created_at, updated_at, deleted_at
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from zj_community
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from zj_community
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zaijiadd.app.applyflow.entity.Community" >
+    insert into zj_community (id, location_id, name, 
+      addr, longitude, latitude, 
+      latitude_min, latitude_max, longitude_min, 
+      longitude_max, coupon_num, coupon_taken_num, 
+      state, created_at, updated_at, 
+      deleted_at)
+    values (#{id,jdbcType=INTEGER}, #{locationId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+      #{addr,jdbcType=VARCHAR}, #{longitude,jdbcType=DECIMAL}, #{latitude,jdbcType=DECIMAL}, 
+      #{latitudeMin,jdbcType=DECIMAL}, #{latitudeMax,jdbcType=DECIMAL}, #{longitudeMin,jdbcType=DECIMAL}, 
+      #{longitudeMax,jdbcType=DECIMAL}, #{couponNum,jdbcType=INTEGER}, #{couponTakenNum,jdbcType=INTEGER}, 
+      #{state,jdbcType=TINYINT}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}, 
+      #{deletedAt,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zaijiadd.app.applyflow.entity.Community" >
+    insert into zj_community
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="locationId != null" >
+        location_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="addr != null" >
+        addr,
+      </if>
+      <if test="longitude != null" >
+        longitude,
+      </if>
+      <if test="latitude != null" >
+        latitude,
+      </if>
+      <if test="latitudeMin != null" >
+        latitude_min,
+      </if>
+      <if test="latitudeMax != null" >
+        latitude_max,
+      </if>
+      <if test="longitudeMin != null" >
+        longitude_min,
+      </if>
+      <if test="longitudeMax != null" >
+        longitude_max,
+      </if>
+      <if test="couponNum != null" >
+        coupon_num,
+      </if>
+      <if test="couponTakenNum != null" >
+        coupon_taken_num,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+      <if test="createdAt != null" >
+        created_at,
+      </if>
+      <if test="updatedAt != null" >
+        updated_at,
+      </if>
+      <if test="deletedAt != null" >
+        deleted_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="locationId != null" >
+        #{locationId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="addr != null" >
+        #{addr,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null" >
+        #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null" >
+        #{latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitudeMin != null" >
+        #{latitudeMin,jdbcType=DECIMAL},
+      </if>
+      <if test="latitudeMax != null" >
+        #{latitudeMax,jdbcType=DECIMAL},
+      </if>
+      <if test="longitudeMin != null" >
+        #{longitudeMin,jdbcType=DECIMAL},
+      </if>
+      <if test="longitudeMax != null" >
+        #{longitudeMax,jdbcType=DECIMAL},
+      </if>
+      <if test="couponNum != null" >
+        #{couponNum,jdbcType=INTEGER},
+      </if>
+      <if test="couponTakenNum != null" >
+        #{couponTakenNum,jdbcType=INTEGER},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=TINYINT},
+      </if>
+      <if test="createdAt != null" >
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null" >
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deletedAt != null" >
+        #{deletedAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zaijiadd.app.applyflow.entity.Community" >
+    update zj_community
+    <set >
+      <if test="locationId != null" >
+        location_id = #{locationId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="addr != null" >
+        addr = #{addr,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null" >
+        longitude = #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null" >
+        latitude = #{latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitudeMin != null" >
+        latitude_min = #{latitudeMin,jdbcType=DECIMAL},
+      </if>
+      <if test="latitudeMax != null" >
+        latitude_max = #{latitudeMax,jdbcType=DECIMAL},
+      </if>
+      <if test="longitudeMin != null" >
+        longitude_min = #{longitudeMin,jdbcType=DECIMAL},
+      </if>
+      <if test="longitudeMax != null" >
+        longitude_max = #{longitudeMax,jdbcType=DECIMAL},
+      </if>
+      <if test="couponNum != null" >
+        coupon_num = #{couponNum,jdbcType=INTEGER},
+      </if>
+      <if test="couponTakenNum != null" >
+        coupon_taken_num = #{couponTakenNum,jdbcType=INTEGER},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=TINYINT},
+      </if>
+      <if test="createdAt != null" >
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null" >
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deletedAt != null" >
+        deleted_at = #{deletedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zaijiadd.app.applyflow.entity.Community" >
+    update zj_community
+    set location_id = #{locationId,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      addr = #{addr,jdbcType=VARCHAR},
+      longitude = #{longitude,jdbcType=DECIMAL},
+      latitude = #{latitude,jdbcType=DECIMAL},
+      latitude_min = #{latitudeMin,jdbcType=DECIMAL},
+      latitude_max = #{latitudeMax,jdbcType=DECIMAL},
+      longitude_min = #{longitudeMin,jdbcType=DECIMAL},
+      longitude_max = #{longitudeMax,jdbcType=DECIMAL},
+      coupon_num = #{couponNum,jdbcType=INTEGER},
+      coupon_taken_num = #{couponTakenNum,jdbcType=INTEGER},
+      state = #{state,jdbcType=TINYINT},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      deleted_at = #{deletedAt,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
