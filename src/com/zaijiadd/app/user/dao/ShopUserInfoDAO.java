@@ -12,5 +12,8 @@ public interface ShopUserInfoDAO {
 	public UserInfoEntity getUserInfoByLeaderOrg( Integer orgId );
 	
 	UserInfoEntity getUserInfoForLogin(Map<String, String> map);
+	
+	int insert(UserInfoEntity userInfoEntity);
+
 
 }

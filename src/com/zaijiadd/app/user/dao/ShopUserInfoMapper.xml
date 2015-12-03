@@ -59,5 +59,13 @@
 		where
 			mobile = #{username} and password = #{password}
 	</select>
-	
+	<insert id="insert" parameterType="userInfoEntity" >
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="userId">
+			SELECT LAST_INSERT_ID() AS id
+		</selectKey>
+		insert into shop_user
+		( mobile, password)
+		values
+		( #{mobile}, #{password})
+	</insert>
 </mapper>

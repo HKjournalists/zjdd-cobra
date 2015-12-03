@@ -50,8 +50,9 @@
     <result column="application_shop_time" property="applicationShopTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    store_id, capital, city, district, apply_store_id, apply_name, person_num, phone, 
-    street, detail_address, village, status
+  <!--   store_id, capital, city, district, apply_store_id, apply_name, person_num, phone, 
+    street, detail_address, village, status -->
+    	*
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 

@@ -1,10 +1,16 @@
 package com.zaijiadd.app.applyflow.entity;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class StoreInfo {
+public class StoreInfo implements Serializable {
 	
-    private Long storeId;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7808020320004558829L;
+
+	private Long storeId;
 
     private Integer capital;
     
@@ -57,9 +63,19 @@ public class StoreInfo {
     private Timestamp imgsApprovalTime;
     
     private Timestamp applicationShopTime;
+    
+    private Timestamp applicationTime;
    
 
-    public Timestamp getApplicationShopTime() {
+    public Timestamp getApplicationTime() {
+		return applicationTime;
+	}
+
+	public void setApplicationTime(Timestamp applicationTime) {
+		this.applicationTime = applicationTime;
+	}
+
+	public Timestamp getApplicationShopTime() {
 		return applicationShopTime;
 	}
 
