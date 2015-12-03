@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zaijiadd.app.applyflow.dao.ApplyUserRelationDao" >
+  <resultMap id="BaseResultMap" type="com.zaijiadd.app.applyflow.entity.ApplyUserRelation" >
+    <id column="apply_user_relation_id" property="applyUserRelationId" jdbcType="INTEGER" />
+    <result column="userId" property="userid" jdbcType="INTEGER" />
+    <result column="roleId" property="roleid" jdbcType="INTEGER" />
+    <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+    <result column="updated_date" property="updatedDate" jdbcType="TIMESTAMP" />
+    <result column="apply_id" property="applyId" jdbcType="INTEGER" />
+    <result column="apply_state" property="applyState" jdbcType="INTEGER" />
+    <result column="approve_state" property="approveState" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    apply_user_relation_id as applyUserRelationId, userId as userid,  roleId as roleid, created_date as createdDate , 
+    updated_date as updatedDate, apply_id as applyId, approve_state as approveState
+  </sql>
+  <select id="queryAllApplyStore" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from cobra_apply_user_relation
+    where apply_user_relation_id = #{applyUserRelationId,jdbcType=INTEGER}
+  </select>
+  
+   <select id="queryApproveMsg" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+    select 
+    <include refid="Base_Column_List" /> from cobra_apply_user_relation
+    	<where>
+			<if test="roleId != null and yjsUserId !=''">
+				roleId = #{roleId}
+			</if>
+			<if test="approveState != null">
+				and approve_state = #{approveState}
+			</if>
+			order by created_date desc
+			limit #{start,jdbcType=INTEGER}, #{end}
+		</where>
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from cobra_apply_user_relation
+    where apply_user_relation_id = #{applyUserRelationId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertApplyRoleRelation" parameterType="com.zaijiadd.app.applyflow.entity.ApplyUserRelation" >
+    insert into cobra_apply_user_relation (apply_user_relation_id, userId, roleId, 
+      created_date, updated_date, apply_id, 
+      apply_state, approve_state)
+    values (#{applyUserRelationId,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{roleid,jdbcType=INTEGER}, 
+      #{createdDate,jdbcType=TIMESTAMP}, #{updatedDate,jdbcType=TIMESTAMP}, #{applyId,jdbcType=INTEGER}, 
+      #{applyState,jdbcType=INTEGER}, #{approveState,jdbcType=INTEGER})
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.zaijiadd.app.applyflow.entity.ApplyUserRelation" >
+    update cobra_apply_user_relation
+    <set >
+      <if test="userid != null" >
+        userId = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="roleid != null" >
+        roleId = #{roleid,jdbcType=INTEGER},
+      </if>
+      <if test="createdDate != null" >
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedDate != null" >
+        updated_date = #{updatedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applyId != null" >
+        apply_id = #{applyId,jdbcType=INTEGER},
+      </if>
+      <if test="applyState != null" >
+        apply_state = #{applyState,jdbcType=INTEGER},
+      </if>
+      <if test="approveState != null" >
+        approve_state = #{approveState,jdbcType=INTEGER},
+      </if>
+    </set>
+    where apply_user_relation_id = #{applyUserRelationId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zaijiadd.app.applyflow.entity.ApplyUserRelation" >
+    update cobra_apply_user_relation
+    set userId = #{userid,jdbcType=INTEGER},
+      roleId = #{roleid,jdbcType=INTEGER},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      updated_date = #{updatedDate,jdbcType=TIMESTAMP},
+      apply_id = #{applyId,jdbcType=INTEGER},
+      apply_state = #{applyState,jdbcType=INTEGER},
+      approve_state = #{approveState,jdbcType=INTEGER}
+    where apply_user_relation_id = #{applyUserRelationId,jdbcType=INTEGER}
+  </update>
+</mapper>

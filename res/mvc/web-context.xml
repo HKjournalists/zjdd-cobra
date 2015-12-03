@@ -15,7 +15,20 @@
         <context:include-filter type="regex" expression="com.zaijiadd.app.*.controller.*"/> 
     </context:component-scan>
     <mvc:default-servlet-handler default-servlet-name="default" />
-	<mvc:annotation-driven />
+	<!-- <mvc:annotation-driven /> -->
+	
+	<!-- 处理请求时返回json字符串的中文乱码问题 -->
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>application/json;charset=UTF-8</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
 
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
   
@@ -34,6 +47,6 @@
         </property>
         <property name="ignoreAcceptHeader" value="true" />
     </bean>
-    
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/> 
 </beans>
 

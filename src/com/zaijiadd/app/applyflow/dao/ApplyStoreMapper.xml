@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zaijiadd.app.applyflow.dao.ApplyStoreDao" >
+  <resultMap id="BaseResultMap" type="com.zaijiadd.app.applyflow.entity.ApplyStore" >
+    <id column="apply_store_id" property="applyStoreId" jdbcType="INTEGER" />
+    <result column="apply_type" property="applyType" jdbcType="INTEGER" />
+    <result column="apply_person_type" property="applyPersonType" jdbcType="INTEGER" />
+    <result column="capital" property="capital" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="district" property="district" jdbcType="VARCHAR" />
+    <result column="agency_type" property="agencyType" jdbcType="INTEGER" />
+    <result column="agency_time" property="agencyTime" jdbcType="TIMESTAMP" />
+    <result column="dealership_num" property="dealershipNum" jdbcType="INTEGER" />
+    <result column="apply_name" property="applyName" jdbcType="VARCHAR" />
+    <result column="person_num" property="personNum" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="post_addr" property="postAddr" jdbcType="VARCHAR" />
+    <result column="mai_addr" property="maiAddr" jdbcType="VARCHAR" />
+    <result column="urgency_person" property="urgencyPerson" jdbcType="VARCHAR" />
+    <result column="urgency_phone" property="urgencyPhone" jdbcType="VARCHAR" />
+    <result column="CompanyName" property="companyname" jdbcType="VARCHAR" />
+    <result column="pay_way" property="payWay" jdbcType="INTEGER" />
+    <result column="paymoney_type" property="paymoneyType" jdbcType="INTEGER" />
+    <result column="paid_money" property="paidMoney" jdbcType="DECIMAL" />
+    <result column="need_paymoney" property="needPaymoney" jdbcType="DECIMAL" />
+    <result column="yjs_user_id" property="yjsUserId" jdbcType="INTEGER" />
+    <result column="finance_check" property="financeCheck" jdbcType="INTEGER" />
+    <result column="managers_check" property="managersCheck" jdbcType="INTEGER" />
+    <result column="apply_status" property="applyStatus" jdbcType="INTEGER" />
+    <result column="who_check" property="whoCheck" jdbcType="INTEGER" />
+     <result column="agency_year" property="agencyYear" jdbcType="INTEGER" />
+    <result column="store_numm" property="storeNumm" jdbcType="INTEGER" />
+    <result column="bank_numOne" property="bankNumone" jdbcType="INTEGER" />
+    <result column="bank_numTwo" property="bankNumtwo" jdbcType="INTEGER" />
+      <result column="capital_id" property="capitalId" jdbcType="INTEGER" />
+    <result column="city_id" property="cityId" jdbcType="INTEGER" />
+    <result column="district_id" property="districtId" jdbcType="INTEGER" />
+     <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+    <result column="updated_date" property="updatedDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    apply_store_id as applyStoreId, apply_type as applyType, apply_person_type as applyPersonType, 
+    capital as capital, city as city, district as district, agency_type as agencyType, 
+    agency_time as agencyTime, dealership_num as dealershipNum, apply_name as applyName, person_num as personNum, 
+    phone as phone, post_addr as postAddr, mai_addr as maiAddr, 
+    urgency_person as urgencyPerson, urgency_phone as urgencyPhone, CompanyName as CompanyName, pay_way as payWay,
+     paymoney_type as paymoneyType, paid_money as paidMoney, need_paymoney as needPaymoney,  
+    yjs_user_id as yjsUserId, finance_check as financeCheck, managers_check as managersCheck, apply_status as applyStatus,
+    who_check as whoCheck, agency_year as agencyYear, store_numm as storeNumm, bank_numOne bankNumone, bank_numTwo bankNumtwo,
+    capital_id as capitalId , city_id as cityId, district_id as districtId,created_date as createdDate
+  </sql>
+  
+     <!-- 查询打印信息-->
+   <sql id="Base_Column_order_printContract_List" >
+    apply_store_id as applyStoreId, apply_type as applyType, agency_time as agencyTime, apply_name as applyName, 
+     capital as capital, city as city, district as district, agency_type as agencyType
+  </sql>
+  
+   <!-- 查询订单状态 -->
+   <sql id="Base_Column_order_state_List" >
+    apply_store_id as applyStoreId, apply_type as applyType, agency_time as agencyTime, apply_name as applyName, 
+     paymoney_type as paymoney_type,  apply_status as applyStatus,who_check as whoCheck,created_date as createdDate
+  </sql>
+  
+   <!-- 查询财务的order-->
+   <sql id="Base_Column_approve_finance_state_List" >
+     apply_store_id as applyStoreId, apply_type as applyType, agency_time as agencyTime, apply_name as applyName, 
+     paymoney_type as paymoney_type,need_paymoney as needPaymoney,who_check as whoCheck
+  </sql>
+  
+   <!-- 查询 managers order -->
+   <sql id="Base_Column_approve_managers_state_List" >
+    apply_store_id as applyStoreId, apply_type as applyType, agency_time as agencyTime, apply_name as applyName, 
+     paymoney_type as paymoney_type,  apply_status as applyStatus,who_check as whoCheck
+  </sql>
+     <!-- 查询订单状态 -->
+  <select id="queryAllApplyStoreSate" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+    select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
+    	<where>
+			<if test="yjsUserId != null and yjsUserId !=''">
+				yjs_user_id = #{yjsUserId}
+			</if>
+			<if test="applyStatus != null">
+				and apply_status = #{applyStatus}
+			</if>
+			order by created_date desc
+			limit #{start,jdbcType=INTEGER}, #{end}
+		</where>
+  </select>
+
+  
+    <!-- 查询待审批的 -->
+   <select id="queryApproveStoreSate" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+    select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
+    	<where>
+			<if test="yjsUserId != null and yjsUserId !=''">
+				yjs_user_id = #{yjsUserId}
+			</if>
+			<if test="applyStatus != null">
+				and apply_status = #{applyStatus}
+			</if>
+			order by created_date desc
+			limit #{start,jdbcType=INTEGER}, #{end}
+		</where>
+  </select>
+  
+    <!-- 查询给主管审批的 managers-->
+  <select id="queryManagersApproveStoreTry" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+    select <include refid="Base_Column_approve_managers_state_List" /> from cobra_apply_store
+    	<where>
+			<if test="whoCheck != null and whoCheck !=''">
+				who_check = #{whoCheck}
+			</if>
+			<if test="applyStatus != null">
+				and apply_status = #{applyStatus}
+			</if>
+			order by created_date desc
+			limit #{start,jdbcType=INTEGER}, #{end}
+		</where>
+  </select>
+  <!-- 查询财务待审批的 -->
+  <select id="queryFinanceApproveStoreTry" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+    select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
+    	<where>
+			<if test="whoCheck != null and whoCheck !=''">
+				who_check = #{whoCheck}
+			</if>
+			<if test="applyStatus != null">
+				and apply_status = #{applyStatus}
+			</if>
+			order by created_date desc
+			limit #{start,jdbcType=INTEGER}, #{end}
+		</where>
+  </select>
+  
+   <!-- 查询单子详情-->
+   <select id="queryApplyStoreDetails" resultType="java.util.HashMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from cobra_apply_store
+    where apply_store_id = #{applyStoreId,jdbcType=INTEGER}
+  </select>
+  
+     
+    <!-- 打印合同 -->
+  <select id="printContract" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+    select <include refid="Base_Column_order_printContract_List" /> from cobra_apply_store
+       where yjs_user_id = #{yjsUserId,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 增加单子-->
+  <insert id="addApplyStore" parameterType="com.zaijiadd.app.applyflow.entity.ApplyStore"  useGeneratedKeys="true" keyProperty="applyStoreId">
+    insert into cobra_apply_store (apply_type, apply_person_type, 
+      capital, city, district, 
+      agency_type, agency_time, dealership_num, 
+      apply_name, person_num, phone, 
+      post_addr, mai_addr, urgency_person, 
+      urgency_phone, CompanyName, pay_way, 
+      paymoney_type, paid_money, need_paymoney, 
+      yjs_user_id, finance_check, managers_check, 
+      apply_status,who_check)
+    values ( #{applyType,jdbcType=INTEGER}, #{applyPersonType,jdbcType=INTEGER}, 
+      #{capital,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{district,jdbcType=VARCHAR}, 
+      #{agencyType,jdbcType=INTEGER}, #{agencyTime,jdbcType=TIMESTAMP}, #{dealershipNum,jdbcType=INTEGER}, 
+      #{applyName,jdbcType=VARCHAR}, #{personNum,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
+      #{postAddr,jdbcType=VARCHAR}, #{maiAddr,jdbcType=VARCHAR}, #{urgencyPerson,jdbcType=VARCHAR}, 
+      #{urgencyPhone,jdbcType=VARCHAR}, #{companyname,jdbcType=VARCHAR}, #{payWay,jdbcType=INTEGER}, 
+      #{paymoneyType,jdbcType=INTEGER}, #{paidMoney,jdbcType=DECIMAL}, #{needPaymoney,jdbcType=DECIMAL}, 
+      #{yjsUserId,jdbcType=INTEGER}, #{financeCheck,jdbcType=INTEGER}, #{managersCheck,jdbcType=INTEGER}, 
+      #{applyStatus,jdbcType=INTEGER},#{whoCheck,jdbcType=INTEGER})
+  </insert>
+  
+  <update id="updateApplyStore" parameterType="com.zaijiadd.app.applyflow.entity.ApplyStore" >
+    update cobra_apply_store
+    <set >
+      <if test="applyType != null" >
+        apply_type = #{applyType,jdbcType=INTEGER},
+      </if>
+      <if test="applyPersonType != null" >
+        apply_person_type = #{applyPersonType,jdbcType=INTEGER},
+      </if>
+      <if test="capital != null" >
+        capital = #{capital,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="district != null" >
+        district = #{district,jdbcType=VARCHAR},
+      </if>
+      <if test="agencyType != null" >
+        agency_type = #{agencyType,jdbcType=INTEGER},
+      </if>
+      <if test="agencyTime != null" >
+        agency_time = #{agencyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dealershipNum != null" >
+        dealership_num = #{dealershipNum,jdbcType=INTEGER},
+      </if>
+      <if test="applyName != null" >
+        apply_name = #{applyName,jdbcType=VARCHAR},
+      </if>
+      <if test="personNum != null" >
+        person_num = #{personNum,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="postAddr != null" >
+        post_addr = #{postAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="maiAddr != null" >
+        mai_addr = #{maiAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="urgencyPerson != null" >
+        urgency_person = #{urgencyPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="urgencyPhone != null" >
+        urgency_phone = #{urgencyPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="companyname != null" >
+        CompanyName = #{companyname,jdbcType=VARCHAR},
+      </if>
+      <if test="payWay != null" >
+        pay_way = #{payWay,jdbcType=INTEGER},
+      </if>
+      <if test="paymoneyType != null" >
+        paymoney_type = #{paymoneyType,jdbcType=INTEGER},
+      </if>
+      <if test="paidMoney != null" >
+        paid_money = #{paidMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="needPaymoney != null" >
+        need_paymoney = #{needPaymoney,jdbcType=DECIMAL},
+      </if>
+      <if test="yjsUserId != null" >
+        yjs_user_id = #{yjsUserId,jdbcType=INTEGER},
+      </if>
+      <if test="financeCheck != null" >
+        finance_check = #{financeCheck,jdbcType=INTEGER},
+      </if>
+      <if test="managersCheck != null" >
+        managers_check = #{managersCheck,jdbcType=INTEGER},
+      </if>
+      <if test="applyStatus != null" >
+        apply_status = #{applyStatus,jdbcType=INTEGER},
+      </if>
+       <if test="whoCheck != null" >
+        who_check,
+      </if>
+    </set>
+    where apply_store_id = #{applyStoreId,jdbcType=INTEGER}
+  </update>
+ 
+</mapper>

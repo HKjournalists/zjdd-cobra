@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zaijiadd.app.applyflow.dao.StoreImgDao" >
+  <resultMap id="BaseResultMap" type="com.zaijiadd.app.applyflow.entity.StoreImg" >
+    <id column="img_id" property="imgId" jdbcType="BIGINT" />
+    <result column="store_id" property="storeId" jdbcType="BIGINT" />
+    <result column="img_url" property="imgUrl" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    img_id, store_id, img_url
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from store_img
+    where img_id = #{imgId,jdbcType=BIGINT}
+  </select>
+  
+  <select id="selectByStoreId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from store_img
+    where store_id = #{storeId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from store_img
+    where img_id = #{imgId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.zaijiadd.app.applyflow.entity.StoreImg" >
+    insert into store_img (img_id, store_id, img_url
+      )
+    values (#{imgId,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{imgUrl,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.zaijiadd.app.applyflow.entity.StoreImg" >
+    insert into store_img
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="imgId != null" >
+        img_id,
+      </if>
+      <if test="storeId != null" >
+        store_id,
+      </if>
+      <if test="imgUrl != null" >
+        img_url,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="imgId != null" >
+        #{imgId,jdbcType=BIGINT},
+      </if>
+      <if test="storeId != null" >
+        #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="imgUrl != null" >
+        #{imgUrl,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zaijiadd.app.applyflow.entity.StoreImg" >
+    update store_img
+    <set >
+      <if test="storeId != null" >
+        store_id = #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="imgUrl != null" >
+        img_url = #{imgUrl,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where img_id = #{imgId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zaijiadd.app.applyflow.entity.StoreImg" >
+    update store_img
+    set store_id = #{storeId,jdbcType=BIGINT},
+      img_url = #{imgUrl,jdbcType=VARCHAR}
+    where img_id = #{imgId,jdbcType=BIGINT}
+  </update>
+</mapper>

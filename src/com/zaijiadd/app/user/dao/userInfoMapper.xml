@@ -42,4 +42,32 @@
 			roleid = 2
 	</select>
 	
+	<select id="getUserInfoForLogin" parameterType="map" resultType="userInfoEntity">
+		select
+			user_id userId,
+			mobile mobile,
+			realname realname,
+			password password,
+			email email,
+			roleid roleId,
+			isleader isLeader,
+			orgid orgId,
+			landline_id landlineId,
+			job_id jobId
+		from
+			yjs_user
+		where
+			mobile = #{username} and password = #{password}
+	</select>
+	
+	<update id="changePassword" parameterType="userInfoEntity">
+	 	update yjs_user
+	    <set >
+	      <if test="password != null" >
+	        	password = #{password,jdbcType=VARCHAR},
+	      </if>
+	    </set>
+	    where user_id = #{userId,jdbcType=INTEGER}
+	</update>
+	
 </mapper>

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zaijiadd.app.applyflow.dao.ApplyFlowDao">
+	<resultMap type="inviteUserEntity" id="BaseResultMap">
+		<id column="inviteuser_id" property="inviteUserid"/>
+		<result column="inviteuser_name" property="inviteuserName"/>
+		<result column="inviteuser_mobile" property="inviteuserMobile"/>
+		<result column="visit_time" property="visitTime"/>
+		<result column="referrer" property="referrer"/>
+		<result column="apply_role" property="applyRole"/>
+		<result column="user_state" property="userState"/>
+		<result column="remark" property="remark"/>
+		<result column="created_date" property="createDate"/>
+		<result column="updated_date" property="updatedDate"/>
+		<result column="yjs_user_id" property="yjsUserId"/>
+		<result column="person_number" property="personNumber"/>
+		<result column="fuction_sate" property="fuctionSate"/>
+	</resultMap>
+	<!-- 提取公用的sql片段 -->
+	<sql id="inviteUserEntityLike">
+		inviteuser_id as inviteUserid, inviteuser_name as inviteuserName, apply_role as applyRole, visit_time as visitTime,fuction_sate as fuctionSate,created_date as createDate
+	</sql>
+	<sql id="queryAllInviteUser">
+		inviteuser_id as inviteUserid,inviteuser_name as inviteuserName ,inviteuser_mobile as inviteuserMobile,
+		visit_time as visitTime,referrer as referrer,apply_role as applyRole,user_state as userState,
+		remark as remark,person_number as personNumber,yjs_user_id as yjsUserId,created_date as createDate,
+		updated_date as updatedDate,fuction_sate as fuctionSate
+	</sql>
+	<!-- 查询用户信息报备详情 -->
+	<sql id="Base_Column_queryInviteUserDet_Msg_List" >
+   	inviteuser_id as inviteUserid,inviteuser_name as inviteuserName ,person_number as personNumber,
+   	inviteuser_mobile as inviteuserMobile,apply_role as applyRole
+  	</sql>
+  	<!-- 查询邀约记录详情 -->
+  	<sql id="Base_Column_queryInviteUserDet_List" >
+   	inviteuser_id as inviteUserid,inviteuser_name as inviteuserName ,inviteuser_mobile as inviteuserMobile,visit_time as visitTime
+		apply_role as applyRole,user_state as userState,remark as remark
+  	</sql>
+	<insert id="addInviteUser" parameterType="inviteUserEntity" useGeneratedKeys="true" keyProperty="inviteUserid">
+		insert into
+			cobra_invite_user
+		(inviteuser_name,inviteuser_mobile,visit_time,referrer,apply_role,user_state,remark,person_number,yjs_user_id,created_date,fuction_sate)	
+		values
+		( #{inviteuserName}, #{inviteuserMobile}, #{visitTime}, #{referrer}, #{applyRole},#{userState},#{remark},#{personNumber},#{yjsUserId},now(),#{fuctionSate})
+	</insert>
+	
+
+	<select id="queryInviteUser" parameterType="map" resultMap="BaseResultMap">
+		select * from cobra_invite_user 
+		<where>
+			<if test="inviteuserName != null and inviteuserName !=''">
+				inviteuser_name = #{inviteuserName}
+			</if>
+			<if test="inviteuserMobile != null">
+				and inviteuser_mobile = #{inviteuserMobile}
+			</if>
+			<if test="yjsUserId != null">
+				and yjs_user_id = #{yjsUserId}
+			</if>
+			<if test="fuctionSate != null">
+				and fuction_sate = #{fuctionSate}
+			</if>
+			order by created_date desc
+			limit #{start,jdbcType=INTEGER}, #{end}
+		</where>
+	</select>
+	<!-- 查询用户信息报备详情 -->
+	<select id="queryInviteUserMsgDet" parameterType="map" resultType="java.util.HashMap">
+		select <include refid="Base_Column_queryInviteUserDet_Msg_List"/> from cobra_invite_user 
+		<where>
+			<if test="yjsUserId != null">
+				and yjs_user_id = #{yjsUserId}
+			</if>
+				<if test="inviteUserid != null">
+				and inviteuser_id = #{inviteUserid}
+			</if>
+			<if test="fuctionSate != null">
+				and fuction_sate = #{fuctionSate}
+			</if>
+		</where>
+	</select>
+	
+	<select id="queryInviteUserDet" parameterType="map" resultType="java.util.HashMap">
+		select <include refid="queryAllInviteUser"/> from cobra_invite_user 
+		<where>
+			<if test="yjsUserId != null">
+				and yjs_user_id = #{yjsUserId}
+			</if>
+				<if test="inviteUserid != null">
+				and inviteuser_id = #{inviteUserid}
+			</if>
+			<if test="fuctionSate != null">
+				and fuction_sate = #{fuctionSate}
+			</if>
+		</where>
+	</select>
+	
+	<select id="queryInviteUserMap" parameterType="map" resultType="java.util.HashMap">
+		select <include refid="inviteUserEntityLike"/> from cobra_invite_user 
+		<where>
+			<if test="inviteuserName != null and inviteuserName !=''">
+				inviteuser_name = #{inviteuserName}
+			</if>
+			<if test="inviteuserMobile != null">
+				and inviteuser_mobile = #{inviteuserMobile}
+			</if>
+			<if test="yjsUserId != null">
+				and yjs_user_id = #{yjsUserId}
+			</if>
+			<if test="userState != null">
+				and user_state = #{userState}
+			</if>
+			<if test="fuctionSate != null">
+				and fuction_sate = #{fuctionSate}
+			</if>
+			order by createDate desc
+			limit #{start,jdbcType=INTEGER}, #{end}
+		</where>
+	</select>
+	
+	<select id="queryInviteUserLike" parameterType="map" resultType="java.util.HashMap">
+		select <include refid="inviteUserEntityLike"/> from cobra_invite_user 
+		<where>
+			<if test="yjsUserId != null">
+			  yjs_user_id = #{yjsUserId}
+			</if>
+			<if test="inviteuserName != null">
+				and  inviteuser_name like '%${inviteuserName}%'
+			</if>
+			<if test="fuctionSate != null">
+				and fuction_sate = #{fuctionSate}
+			</if>
+			order by createDate desc
+			limit #{start,jdbcType=INTEGER}, #{end}
+		</where>
+	</select>
+	
+	<update id="updateInviteUserById" parameterType="map">
+		update cobra_invite_user 
+		<set>
+			<if test="userState != null">
+				 user_state = #{userState}
+			</if>
+		</set>
+		where inviteuser_id = #{inviteUserid}
+	</update>
+	
+	<update id="updateInviteUserMsg" parameterType="inviteUserEntity">
+		update cobra_invite_user ciu
+		<set>
+			<if test="inviteuserName != null">
+				ciu.inviteuser_name = #{inviteuserName},
+			</if>
+			<if test="inviteuserMobile != null">
+				ciu.inviteuser_mobile = #{inviteuserMobile},
+			</if>
+			<if test="visitTime != null">
+				ciu.visit_time = #{visitTime},
+			</if>
+			<if test="referrer != null">
+				ciu.referrer = #{referrer},
+			</if>
+			<if test="applyRole != null">
+				ciu.apply_role = #{applyRole},
+			</if>
+			<if test="userState != null">
+				ciu.user_state = #{userState},
+			</if>
+			<if test="remark != null">
+				ciu.remark = #{remark},
+			</if>
+			<if test="createDate != null">
+				ciu.created_date = #{createDate},
+			</if>
+			<if test="updatedDate != null">
+				ciu.updated_date = now(),
+			</if>
+			<if test="personNumber != null">
+				ciu.person_number =#{personNumber},
+			</if>
+		</set>
+		where ciu.inviteuser_id = #{inviteUserid}
+	</update>
+
+</mapper>

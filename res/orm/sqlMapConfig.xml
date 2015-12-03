@@ -25,15 +25,34 @@
     	<typeAlias type="com.zaijiadd.app.dataquery.entity.AllotLogEntity" alias="allotLogEntity"/>
     	<typeAlias type="com.zaijiadd.app.user.dto.CallingLogDTO" alias="callingLogDto"/>
     	<typeAlias type="com.zaijiadd.app.dataquery.dto.YjsReqMsgDTO" alias="yjsReqMsgDto"/>
+
+    	<typeAlias type="com.zaijiadd.app.applyflow.entity.InviteUserEntity" alias="inviteUserEntity"/>
+    	<typeAlias type="com.zaijiadd.app.applyflow.entity.ApplyStore" alias="applyStore"/>
+    	<typeAlias type="com.zaijiadd.app.applyflow.entity.StoreImg" alias="storeImg"/>
+    	<typeAlias type="com.zaijiadd.app.applyflow.entity.StoreInfo" alias="storeInfo"/>
+    	<typeAlias type="com.zaijiadd.app.applyflow.entity.Community" alias="community"/>
+    	<typeAlias type="com.zaijiadd.app.applyflow.entity.ApplyUserRelation" alias="applyUserRelation"/>
     </typeAliases>
 
     <mappers>
     	<mapper resource="com/zaijiadd/app/dataquery/dao/YjsReqMsgMapper.xml"/>
     	<mapper resource="com/zaijiadd/app/dataquery/dao/AllotLogMapper.xml"/>
     	<mapper resource="com/zaijiadd/app/user/dao/userInfoMapper.xml"/>
+    	<mapper resource="com/zaijiadd/app/user/dao/ShopUserInfoMapper.xml"/>
     	<mapper resource="com/zaijiadd/app/user/dao/userCallingDetailMapper.xml"/>
     	<mapper resource="com/zaijiadd/app/dataquery/dao/dataChangeLogMapper.xml"/>
-    	<mapper resource="com/zaijiadd/app/system/dao/systemAreaMapper.xml"/>
-    </mappers>
+    	
+    	<mapper resource="com/zaijiadd/app/applyflow/dao/InviteUserMapper.xml"/>
+    	<mapper resource="com/zaijiadd/app/applyflow/dao/ApplyStoreMapper.xml"/>
+    	<mapper resource="com/zaijiadd/app/applyflow/dao/StoreImgMapper.xml"/>
+    	<mapper resource="com/zaijiadd/app/applyflow/dao/StoreInfoMapper.xml"/>
 
+
+    	<mapper resource="com/zaijiadd/app/applyflow/dao/cityDealershipMapper.xml"/>
+    	<mapper resource="com/zaijiadd/app/applyflow/dao/CommunityMapper.xml"/>
+    	<mapper resource="com/zaijiadd/app/applyflow/dao/ApplyUserRelationMapper.xml"/>
+
+    </mappers>
+	
+	
 </configuration> 

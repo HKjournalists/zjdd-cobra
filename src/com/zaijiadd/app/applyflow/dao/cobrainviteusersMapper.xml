@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zaijiadd.app.applyflow.dao.cobrainviteusersMapper" >
+  <resultMap id="BaseResultMap" type="com.zaijiadd.app.applyflow.entity.cobrainviteusers" >
+    <id column="inviteuser_id" property="inviteuserId" jdbcType="INTEGER" />
+    <result column="inviteuser_name" property="inviteuserName" jdbcType="VARCHAR" />
+    <result column="inviteuser_mobile" property="inviteuserMobile" jdbcType="VARCHAR" />
+    <result column="visit_time" property="visitTime" jdbcType="TIMESTAMP" />
+    <result column="referrer" property="referrer" jdbcType="VARCHAR" />
+    <result column="apply_role" property="applyRole" jdbcType="INTEGER" />
+    <result column="user_state" property="userState" jdbcType="INTEGER" />
+    <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+    <result column="updated_date" property="updatedDate" jdbcType="TIMESTAMP" />
+    <result column="yjs_user_id" property="yjsUserId" jdbcType="INTEGER" />
+    <result column="person_number" property="personNumber" jdbcType="VARCHAR" />
+    <result column="fuction_sate" property="fuctionSate" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.zaijiadd.app.applyflow.entity.cobrainviteusers" extends="BaseResultMap" >
+    <result column="remark" property="remark" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    inviteuser_id, inviteuser_name, inviteuser_mobile, visit_time, referrer, apply_role, 
+    user_state, created_date, updated_date, yjs_user_id, person_number, fuction_sate
+  </sql>
+  <sql id="Blob_Column_List" >
+    remark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from cobra_invite_user
+    where inviteuser_id = #{inviteuserId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from cobra_invite_user
+    where inviteuser_id = #{inviteuserId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zaijiadd.app.applyflow.entity.cobrainviteusers" >
+    insert into cobra_invite_user (inviteuser_id, inviteuser_name, inviteuser_mobile, 
+      visit_time, referrer, apply_role, 
+      user_state, created_date, updated_date, 
+      yjs_user_id, person_number, fuction_sate, 
+      remark)
+    values (#{inviteuserId,jdbcType=INTEGER}, #{inviteuserName,jdbcType=VARCHAR}, #{inviteuserMobile,jdbcType=VARCHAR}, 
+      #{visitTime,jdbcType=TIMESTAMP}, #{referrer,jdbcType=VARCHAR}, #{applyRole,jdbcType=INTEGER}, 
+      #{userState,jdbcType=INTEGER}, #{createdDate,jdbcType=TIMESTAMP}, #{updatedDate,jdbcType=TIMESTAMP}, 
+      #{yjsUserId,jdbcType=INTEGER}, #{personNumber,jdbcType=VARCHAR}, #{fuctionSate,jdbcType=INTEGER}, 
+      #{remark,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zaijiadd.app.applyflow.entity.cobrainviteusers" >
+    insert into cobra_invite_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="inviteuserId != null" >
+        inviteuser_id,
+      </if>
+      <if test="inviteuserName != null" >
+        inviteuser_name,
+      </if>
+      <if test="inviteuserMobile != null" >
+        inviteuser_mobile,
+      </if>
+      <if test="visitTime != null" >
+        visit_time,
+      </if>
+      <if test="referrer != null" >
+        referrer,
+      </if>
+      <if test="applyRole != null" >
+        apply_role,
+      </if>
+      <if test="userState != null" >
+        user_state,
+      </if>
+      <if test="createdDate != null" >
+        created_date,
+      </if>
+      <if test="updatedDate != null" >
+        updated_date,
+      </if>
+      <if test="yjsUserId != null" >
+        yjs_user_id,
+      </if>
+      <if test="personNumber != null" >
+        person_number,
+      </if>
+      <if test="fuctionSate != null" >
+        fuction_sate,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="inviteuserId != null" >
+        #{inviteuserId,jdbcType=INTEGER},
+      </if>
+      <if test="inviteuserName != null" >
+        #{inviteuserName,jdbcType=VARCHAR},
+      </if>
+      <if test="inviteuserMobile != null" >
+        #{inviteuserMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="visitTime != null" >
+        #{visitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="referrer != null" >
+        #{referrer,jdbcType=VARCHAR},
+      </if>
+      <if test="applyRole != null" >
+        #{applyRole,jdbcType=INTEGER},
+      </if>
+      <if test="userState != null" >
+        #{userState,jdbcType=INTEGER},
+      </if>
+      <if test="createdDate != null" >
+        #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedDate != null" >
+        #{updatedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yjsUserId != null" >
+        #{yjsUserId,jdbcType=INTEGER},
+      </if>
+      <if test="personNumber != null" >
+        #{personNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="fuctionSate != null" >
+        #{fuctionSate,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zaijiadd.app.applyflow.entity.cobrainviteusers" >
+    update cobra_invite_user
+    <set >
+      <if test="inviteuserName != null" >
+        inviteuser_name = #{inviteuserName,jdbcType=VARCHAR},
+      </if>
+      <if test="inviteuserMobile != null" >
+        inviteuser_mobile = #{inviteuserMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="visitTime != null" >
+        visit_time = #{visitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="referrer != null" >
+        referrer = #{referrer,jdbcType=VARCHAR},
+      </if>
+      <if test="applyRole != null" >
+        apply_role = #{applyRole,jdbcType=INTEGER},
+      </if>
+      <if test="userState != null" >
+        user_state = #{userState,jdbcType=INTEGER},
+      </if>
+      <if test="createdDate != null" >
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedDate != null" >
+        updated_date = #{updatedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yjsUserId != null" >
+        yjs_user_id = #{yjsUserId,jdbcType=INTEGER},
+      </if>
+      <if test="personNumber != null" >
+        person_number = #{personNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="fuctionSate != null" >
+        fuction_sate = #{fuctionSate,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where inviteuser_id = #{inviteuserId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.zaijiadd.app.applyflow.entity.cobrainviteusers" >
+    update cobra_invite_user
+    set inviteuser_name = #{inviteuserName,jdbcType=VARCHAR},
+      inviteuser_mobile = #{inviteuserMobile,jdbcType=VARCHAR},
+      visit_time = #{visitTime,jdbcType=TIMESTAMP},
+      referrer = #{referrer,jdbcType=VARCHAR},
+      apply_role = #{applyRole,jdbcType=INTEGER},
+      user_state = #{userState,jdbcType=INTEGER},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      updated_date = #{updatedDate,jdbcType=TIMESTAMP},
+      yjs_user_id = #{yjsUserId,jdbcType=INTEGER},
+      person_number = #{personNumber,jdbcType=VARCHAR},
+      fuction_sate = #{fuctionSate,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=LONGVARCHAR}
+    where inviteuser_id = #{inviteuserId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zaijiadd.app.applyflow.entity.cobrainviteusers" >
+    update cobra_invite_user
+    set inviteuser_name = #{inviteuserName,jdbcType=VARCHAR},
+      inviteuser_mobile = #{inviteuserMobile,jdbcType=VARCHAR},
+      visit_time = #{visitTime,jdbcType=TIMESTAMP},
+      referrer = #{referrer,jdbcType=VARCHAR},
+      apply_role = #{applyRole,jdbcType=INTEGER},
+      user_state = #{userState,jdbcType=INTEGER},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      updated_date = #{updatedDate,jdbcType=TIMESTAMP},
+      yjs_user_id = #{yjsUserId,jdbcType=INTEGER},
+      person_number = #{personNumber,jdbcType=VARCHAR},
+      fuction_sate = #{fuctionSate,jdbcType=INTEGER}
+    where inviteuser_id = #{inviteuserId,jdbcType=INTEGER}
+  </update>
+</mapper>
