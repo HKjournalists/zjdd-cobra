@@ -140,6 +140,9 @@ public class ApplyFlowController {
 		param.put("inviteUserid", jsonRequest.getString("inviteUserid"));
 		param.put("fuctionSate", "2");
 		Map<String, Object> inviteUserEntityDet = applyFlowService.queryInviteUserDet(param);
+		Date visitTime = (Date) inviteUserEntityDet.get("visitTime");
+		String sysDateStr = DateUtils.getSysDate(visitTime, "yyyy-MM-dd");
+		inviteUserEntityDet.put("visitTime", sysDateStr);
 		param.put("result", inviteUserEntityDet);
 		return ContainerUtils.buildResSuccessMap(param);
 
@@ -166,7 +169,7 @@ public class ApplyFlowController {
 		List<Map<String, Object>> inviteUserMap = applyFlowService.queryInviteUserMap(param);
 		for (Map<String, Object> map : inviteUserMap) {
 			Date createDate = (Date) map.get("createDate");
-			map.put("createDate", DateUtils.getDateWithPattern(createDate, "yyyy-MM-dd"));
+			map.put("createDate", DateUtils.getSysDate(createDate, "yyyy-MM-dd"));
 		}
 		param.put("result", inviteUserMap);
 		// String visitTime = inviteUserEntity.getVisitTime();
@@ -198,7 +201,7 @@ public class ApplyFlowController {
 		List<Map<String, Object>> inviteUserMap = applyFlowService.queryInviteUserMap(param);
 		for (Map<String, Object> map : inviteUserMap) {
 			Date createDate = (Date) map.get("createDate");
-			map.put("createDate", DateUtils.getDateWithPattern(createDate, "yyyy-MM-dd"));
+			map.put("createDate", DateUtils.getSysDate(createDate, "yyyy-MM-dd"));
 		}
 		param.put("result", inviteUserMap);
 		return ContainerUtils.buildResSuccessMap(param);
@@ -228,7 +231,7 @@ public class ApplyFlowController {
 		List<Map<String, Object>> inviteUseMap = applyFlowService.queryInviteUserLike(param);
 		for (Map<String, Object> map : inviteUseMap) {
 			Date createDate = (Date) map.get("createDate");
-			map.put("createDate", DateUtils.getDateWithPattern(createDate, "yyyy-MM-dd"));
+			map.put("createDate", DateUtils.getSysDate(createDate, "yyyy-MM-dd"));
 		}
 		param.put("result", inviteUseMap);
 		return ContainerUtils.buildResSuccessMap(param);
@@ -258,7 +261,7 @@ public class ApplyFlowController {
 		List<Map<String, Object>> inviteUseMap = applyFlowService.queryInviteUserLike(param);
 		for (Map<String, Object> map : inviteUseMap) {
 			Date createDate = (Date) map.get("createDate");
-			map.put("createDate", DateUtils.getDateWithPattern(createDate, "yyyy-MM-dd"));
+			map.put("createDate", DateUtils.getSysDate(createDate, "yyyy-MM-dd"));
 		}
 		param.put("result", inviteUseMap);
 		return ContainerUtils.buildResSuccessMap(param);
@@ -279,6 +282,24 @@ public class ApplyFlowController {
 		Integer inviteUserId = applyFlowService.updateInviteUser(inviteUserEntity);
 		return ContainerUtils.buildResSuccessMap(param);
 
+	}
+
+	/**
+	 * 邀约记录状态更改
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/updateInviteUserById", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> updateInviteUserById(HttpServletRequest request) {
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		Map<String, Object> param = new HashMap<String, Object>();
+		Integer inviteUserid = jsonRequest.getInteger("inviteUserid");
+		Integer userState = jsonRequest.getInteger("userState");
+		param.put("inviteUserid", inviteUserid);
+		param.put("userState", userState);
+		Integer inviteUserId = applyFlowService.updateInviteUserById(param);
+		return ContainerUtils.buildResSuccessMap(param);
 	}
 
 	/**

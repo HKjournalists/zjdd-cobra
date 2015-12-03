@@ -67,6 +67,24 @@ public class ApplyStore {
 	private Integer cityId;
 
 	private Integer districtId;
+	private String createDate;
+	private String updatedDate;
+
+	public String getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(String createDate) {
+		this.createDate = createDate;
+	}
+
+	public String getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
+	}
 
 	public Integer getCapitalId() {
 		return capitalId;
