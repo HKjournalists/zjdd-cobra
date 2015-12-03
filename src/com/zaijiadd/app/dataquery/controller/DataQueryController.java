@@ -58,6 +58,11 @@ public class DataQueryController {
 		String page = jsonRequest.getString( "page" );
 		String searchStr = jsonRequest.getString( "searchStr" );
 		Integer pageCount = jsonRequest.getInteger( "pageCount" );
+		String beginDate = jsonRequest.getString( "beginDate" );
+		String endDate = jsonRequest.getString( "endDate" );
+		String queryDate = jsonRequest.getString( "queryDate" );
+		Integer memberId = jsonRequest.getInteger( "memberId" );
+		
 		if ( pageCount == null || pageCount == 0 ) {
 			pageCount = 20;
 		}
@@ -73,6 +78,10 @@ public class DataQueryController {
 		param.put( "start", ( Integer.parseInt( page ) - 1 ) * pageCount );
 		param.put( "end", pageCount );
 		param.put( "searchStr", searchStr );
+		param.put( "beginDate", beginDate );
+		param.put( "endDate", endDate );
+		param.put( "queryDate", queryDate );
+		param.put( "memberId", memberId );
 
 		Map<String, Object> user = service.userInfo( param );
 		String roleid = user.get( "roleid" ).toString();
@@ -390,11 +399,13 @@ public class DataQueryController {
 			yjsReqMsgDto.setCcity( 21 );
 		}
 		
+		yjsReqMsgDto.setCreatedType( 2 );
+		
 		service.addMsg( yjsReqMsgDto );
 		
 		String remark = yjsReqMsgDto.getRemark();
 		if ( remark != null && !remark.trim().equals( "" ) ) {
-			dataChangeLogService.addRemarkChangeLog( jsonRequest.getInteger( "userId" ), remark, yjsReqMsgDto.getMsgId() );
+			dataChangeLogService.addRemarkChangeLog( yjsReqMsgDto.getOperatorUserId(), remark, yjsReqMsgDto.getMsgId() );
 		}
 
 		return ContainerUtils.buildResSuccessMap( param );

@@ -39,9 +39,25 @@
 			or wx like CONCAT('%','${searchStr}','%' )
 			)
 		</if>
+		
+		<if test="beginDate != null and beginDate != ''">
+			<![CDATA[ and date_format( protim, '%Y%m%d' ) > #{beginDate}]]>
+		</if>
+		<if test="endDate != null and endDate != ''">
+			<![CDATA[ and date_format( protim, '%Y%m%d' ) < #{endDate}]]>
+		</if>
+		
+		<if test="queryDate != null and queryDate != ''">
+			and date_format( protim, '%Y%m%d' ) = #{queryDate}
+		</if>
+		<if test="memberId != null and memberId != ''">
+			and cuser = #{memberId}
+		</if>
+		<if test="uid != null and uid !=''">
+			or t.operator_user_id = #{uid}
+		</if>
 		order by protim desc
 		limit #{start,jdbcType=INTEGER}, #{end}
-		
 	</select>
 	<select id="queryByParamCount" resultType="java.lang.Integer"
 		parameterType="java.util.HashMap">
@@ -69,6 +85,18 @@
 		</if>
 		<if test="cuser != null and cuser !='' ">
 			and cuser = #{cuser,jdbcType=VARCHAR}
+		</if>
+		<if test="beginDate != null and beginDate != ''">
+			<![CDATA[ and date_format( protim, '%Y%m%d' ) > #{beginDate}]]>
+		</if>
+		<if test="endDate != null and endDate != ''">
+			<![CDATA[ and date_format( protim, '%Y%m%d' ) < #{endDate}]]>
+		</if>
+		<if test="queryDate != null and queryDate != ''">
+			and date_format( protim, '%Y%m%d' ) = #{queryDate}
+		</if>
+		<if test="memberId != null and memberId != ''">
+			and cuser = #{memberId}
 		</if>
 		<if test="searchStr != null and searchStr != ''">
 			and ( name like CONCAT('%','${searchStr}','%' ) 
@@ -192,9 +220,9 @@
 	
 	<insert id="insertYjsReqMsg" parameterType="yjsReqMsgDto" useGeneratedKeys="true" keyProperty="msgId">
 		insert into yjs_req_msg
-		( channel_id, protim, city_id, operator_user_id, province_id, name, phone, wx, qq, custype, remark, status_type, ccity )
+		( channel_id, protim, city_id, operator_user_id, province_id, name, phone, wx, qq, custype, remark, status_type, ccity, created_type )
 		values
-		( #{channelId}, now(), #{cityId}, #{operatorUserId}, #{provinceId}, #{realname}, #{mobile}, #{wechat}, #{qq}, #{coType}, #{remark}, 0, #{ccity} )
+		( #{channelId}, now(), #{cityId}, #{operatorUserId}, #{provinceId}, #{realname}, #{mobile}, #{wechat}, #{qq}, #{coType}, #{remark}, 0, #{ccity}, #{createdType} )
 	</insert>
 	
 </mapper>

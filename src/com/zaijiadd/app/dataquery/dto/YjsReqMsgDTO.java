@@ -14,6 +14,7 @@ public class YjsReqMsgDTO {
 	private Integer operatorUserId;
 	private Integer ccity;
 	private Integer msgId;
+	private Integer createdType;
 	
 	public Integer getProvinceId() {
 		return provinceId;
@@ -86,6 +87,12 @@ public class YjsReqMsgDTO {
 	}
 	public void setMsgId( Integer msgId ) {
 		this.msgId = msgId;
+	}
+	public Integer getCreatedType() {
+		return createdType;
+	}
+	public void setCreatedType( Integer createdType ) {
+		this.createdType = createdType;
 	}
 
 }
