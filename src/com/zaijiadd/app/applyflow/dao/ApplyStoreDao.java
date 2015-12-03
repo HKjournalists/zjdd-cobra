@@ -66,4 +66,28 @@ public interface ApplyStoreDao {
 
 	List<Map<String, Object>> queryAllApplyStoreSate(Map<String, Object> param);
 
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStore
+	 * @return
+	 */
+
+	Integer updateApplyStore(ApplyStore applyStore);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	List<Map<String, Object>> queryApproveMsg(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	List<Map<String, Object>> printContract(Map<String, Object> param);
+
 }

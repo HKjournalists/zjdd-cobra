@@ -107,6 +107,9 @@
 			<if test="yjsUserId != null">
 				and yjs_user_id = #{yjsUserId}
 			</if>
+			<if test="userState != null">
+				and user_state = #{userState}
+			</if>
 			<if test="fuctionSate != null">
 				and fuction_sate = #{fuctionSate}
 			</if>
