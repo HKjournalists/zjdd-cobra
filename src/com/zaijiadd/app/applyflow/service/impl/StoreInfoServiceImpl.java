@@ -76,7 +76,6 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 		//图片审核中
 		storeInfo.setStatus(2);
 		storeInfo.setStoreId(storeId);
-		//storeInfo.setApplicationShopTime(new );
 		this.storeInfoDao.updateByPrimaryKeySelective(storeInfo);
 		
 		for(String fileUrl : fileUrls) {

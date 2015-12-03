@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -95,5 +94,24 @@ public class IndexController {
 
 	}
 
+	/**
+	 * 密码修改
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/changePassword", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> changePassword(HttpServletRequest request) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		try {
+			String password = request.getParameter("password");
+			String newPassword = request.getParameter("newPassword");
+		    systemUserService.changePassword(((UserInfoEntity)request.getSession().getAttribute("user")).getUserId(), password, newPassword);;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ContainerUtils.buildResFailMap();
+		}
+		return ContainerUtils.buildResSuccessMap(param);
 
+	}
 }
