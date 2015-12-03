@@ -5,7 +5,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.zaijiadd.app.common.utils.ContainerUtils;
 import com.zaijiadd.app.system.service.SystemUserService;
+import com.zaijiadd.app.user.dto.UserInfoDTO;
 import com.zaijiadd.app.user.entity.UserInfoEntity;
 
 @RestController
@@ -33,8 +36,13 @@ public class IndexController {
 			String username = request.getParameter("username");
 			String password = request.getParameter("password");
 			UserInfoEntity userInfoEntity = systemUserService.getUserInfoForLogin(username, password);
+			UserInfoDTO userInfoDTO = new UserInfoDTO();
+			if(userInfoEntity == null) {
+				return ContainerUtils.buildResFailMap();
+			}
+			PropertyUtils.copyProperties(userInfoDTO, userInfoEntity);
 			request.getSession().setAttribute("user", userInfoEntity);
-			param.put("userInfo", userInfoEntity);
+			param.put("userInfo", userInfoDTO);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ContainerUtils.buildResFailMap();

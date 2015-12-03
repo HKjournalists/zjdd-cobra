@@ -4,20 +4,30 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 public class StoreApprovalDTO {
-	
+
 	private String applyName;
 
-    private int paymoneyType;
+	private int paymoneyType;
 
-    private BigDecimal paidMoney;
-   
-    private Timestamp applicationTime;
-    
-    private Timestamp addressApprovalTime;
-    
-    private Timestamp imgsApprovalTime;
-    
-    private Timestamp applicationShopTime;
+	private BigDecimal paidMoney;
+
+	private Timestamp applicationTime;
+
+	private Timestamp addressApprovalTime;
+
+	private Timestamp imgsApprovalTime;
+
+	private Timestamp applicationShopTime;
+
+	private Long storeId;
+
+	public Long getStoreId() {
+		return storeId;
+	}
+
+	public void setStoreId(Long storeId) {
+		this.storeId = storeId;
+	}
 
 	public Timestamp getApplicationShopTime() {
 		return applicationShopTime;
@@ -34,7 +44,6 @@ public class StoreApprovalDTO {
 	public void setApplyName(String applyName) {
 		this.applyName = applyName;
 	}
-
 
 	public int getPaymoneyType() {
 		return paymoneyType;
@@ -75,6 +84,5 @@ public class StoreApprovalDTO {
 	public void setImgsApprovalTime(Timestamp imgsApprovalTime) {
 		this.imgsApprovalTime = imgsApprovalTime;
 	}
-	
-   
+
 }

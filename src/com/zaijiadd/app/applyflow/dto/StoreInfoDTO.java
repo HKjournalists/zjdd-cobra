@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 
 public class StoreInfoDTO {
 	
+	private Long storeId;
+
 	private String applyName;
 
     private String phone;
@@ -18,6 +20,14 @@ public class StoreInfoDTO {
     
     private Timestamp applicationShopTime;
 
+    public Long getStoreId() {
+		return storeId;
+	}
+
+	public void setStoreId(Long storeId) {
+		this.storeId = storeId;
+	}
+	
 	public Timestamp getApplicationShopTime() {
 		return applicationShopTime;
 	}
