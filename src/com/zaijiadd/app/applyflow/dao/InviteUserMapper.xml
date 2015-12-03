@@ -132,7 +132,17 @@
 		</where>
 	</select>
 	
-	<update id="updateInviteUser" parameterType="inviteUserEntity">
+	<update id="updateInviteUserById" parameterType="map">
+		update cobra_invite_user 
+		<set>
+			<if test="userState != null">
+				 user_state = #{userState}
+			</if>
+		</set>
+		where inviteuser_id = #{inviteUserid}
+	</update>
+	
+	<update id="updateInviteUserMsg" parameterType="inviteUserEntity">
 		update cobra_invite_user ciu
 		<set>
 			<if test="inviteuserName != null">

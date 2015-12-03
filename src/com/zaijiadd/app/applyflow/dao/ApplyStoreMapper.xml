@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.zaijiadd.app.applyflow.dao.ApplyStoreMapper" >
+<mapper namespace="com.zaijiadd.app.applyflow.dao.ApplyStoreDao" >
   <resultMap id="BaseResultMap" type="com.zaijiadd.app.applyflow.entity.ApplyStore" >
     <id column="apply_store_id" property="applyStoreId" jdbcType="INTEGER" />
     <result column="apply_type" property="applyType" jdbcType="INTEGER" />
@@ -35,6 +35,8 @@
       <result column="capital_id" property="capitalId" jdbcType="INTEGER" />
     <result column="city_id" property="cityId" jdbcType="INTEGER" />
     <result column="district_id" property="districtId" jdbcType="INTEGER" />
+     <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+    <result column="updated_date" property="updatedDate" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     apply_store_id as applyStoreId, apply_type as applyType, apply_person_type as applyPersonType, 
@@ -45,7 +47,7 @@
      paymoney_type as paymoneyType, paid_money as paidMoney, need_paymoney as needPaymoney,  
     yjs_user_id as yjsUserId, finance_check as financeCheck, managers_check as managersCheck, apply_status as applyStatus,
     who_check as whoCheck, agency_year as agencyYear, store_numm as storeNumm, bank_numOne bankNumone, bank_numTwo bankNumtwo,
-    capital_id as capitalId , city_id as cityId, district_id as districtId
+    capital_id as capitalId , city_id as cityId, district_id as districtId,created_date as createdDate
   </sql>
   
      <!-- 查询打印信息-->
@@ -57,7 +59,7 @@
    <!-- 查询订单状态 -->
    <sql id="Base_Column_order_state_List" >
     apply_store_id as applyStoreId, apply_type as applyType, agency_time as agencyTime, apply_name as applyName, 
-     paymoney_type as paymoney_type,  apply_status as applyStatus,who_check as whoCheck
+     paymoney_type as paymoney_type,  apply_status as applyStatus,who_check as whoCheck,created_date as createdDate
   </sql>
   
    <!-- 查询财务的order-->
@@ -72,7 +74,7 @@
      paymoney_type as paymoney_type,  apply_status as applyStatus,who_check as whoCheck
   </sql>
      <!-- 查询订单状态 -->
-  <select id="queryAllApplyStoreSate" resultMap="java.util.HashMap" parameterType="java.util.HashMap" >
+  <select id="queryAllApplyStoreSate" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
     select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
     	<where>
 			<if test="yjsUserId != null and yjsUserId !=''">
@@ -88,8 +90,8 @@
 
   
     <!-- 查询待审批的 -->
-   <select id="queryApproveStoreSate" resultMap="java.util.HashMap" parameterType="java.util.HashMap" >
-    select <include refid="Base_Column_state_List" /> from cobra_apply_store
+   <select id="queryApproveStoreSate" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+    select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
     	<where>
 			<if test="yjsUserId != null and yjsUserId !=''">
 				yjs_user_id = #{yjsUserId}
@@ -103,7 +105,7 @@
   </select>
   
     <!-- 查询给主管审批的 managers-->
-  <select id="queryManagersApproveStoreTry" resultMap="java.util.HashMap" parameterType="java.util.HashMap" >
+  <select id="queryManagersApproveStoreTry" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
     select <include refid="Base_Column_approve_managers_state_List" /> from cobra_apply_store
     	<where>
 			<if test="whoCheck != null and whoCheck !=''">
@@ -117,8 +119,8 @@
 		</where>
   </select>
   <!-- 查询财务待审批的 -->
-  <select id="queryFinanceApproveStoreTry" resultMap="java.util.HashMap" parameterType="java.util.HashMap" >
-    select <include refid="Base_Column_state_List" /> from cobra_apply_store
+  <select id="queryFinanceApproveStoreTry" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+    select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
     	<where>
 			<if test="whoCheck != null and whoCheck !=''">
 				who_check = #{whoCheck}
@@ -132,7 +134,7 @@
   </select>
   
    <!-- 查询单子详情-->
-   <select id="queryApplyStoreDetails" resultMap="java.util.HashMap" parameterType="java.lang.Integer" >
+   <select id="queryApplyStoreDetails" resultType="java.util.HashMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from cobra_apply_store
@@ -141,16 +143,13 @@
   
      
     <!-- 打印合同 -->
-  <select id="printContract" resultMap="java.util.HashMap" parameterType="java.lang.Integer" >
+  <select id="printContract" resultType="java.util.HashMap" parameterType="java.lang.Integer" >
     select <include refid="Base_Column_order_printContract_List" /> from cobra_apply_store
        where yjs_user_id = #{yjsUserId,jdbcType=INTEGER}
   </select>
   
   <!-- 增加单子-->
-  <insert id="addApplyStore" parameterType="com.zaijiadd.app.applyflow.entity.ApplyStore" >
-  	<selectKey keyProperty="personId" order="AFTER" resultType="int">
-			select LAST_INSERT_ID()
-	</selectKey>
+  <insert id="addApplyStore" parameterType="com.zaijiadd.app.applyflow.entity.ApplyStore"  useGeneratedKeys="true" keyProperty="applyStoreId">
     insert into cobra_apply_store (apply_type, apply_person_type, 
       capital, city, district, 
       agency_type, agency_time, dealership_num, 

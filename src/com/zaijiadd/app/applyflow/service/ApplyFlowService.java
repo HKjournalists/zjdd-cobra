@@ -164,4 +164,12 @@ public interface ApplyFlowService {
 
 	Map<String, Object> queryInviteUserMsgDet(Map<String, Object> param);
 
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	Integer updateInviteUserById(Map<String, Object> param);
+
 }

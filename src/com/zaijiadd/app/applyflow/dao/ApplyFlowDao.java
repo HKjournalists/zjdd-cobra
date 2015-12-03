@@ -137,4 +137,28 @@ public interface ApplyFlowDao {
 
 	public Map<String, Object> queryInviteUserMsgDet(Map<String, Object> param);
 
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	public Integer updateInviteUserById(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStore
+	 * @return
+	 */
+
+	public Integer updateApplyStore(ApplyStore applyStore);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	public List<Map<String, Object>> applyStoreDao(Map<String, Object> param);
+
 }
