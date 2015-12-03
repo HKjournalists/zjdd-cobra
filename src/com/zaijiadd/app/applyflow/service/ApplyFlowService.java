@@ -130,7 +130,7 @@ public interface ApplyFlowService {
 	 * @return
 	 */
 
-	Integer approveStore(Map<String, Object> param);
+	Integer roleApproveStore(Map<String, Object> param);
 
 	/**
 	 * (用一句话描述方法的主要功能)
@@ -146,7 +146,7 @@ public interface ApplyFlowService {
 	 * @return
 	 */
 
-	List<Map<String, Object>> printContract(Integer userId);
+	List<Map<String, Object>> printContract(Map<String, Object> userId);
 
 	/**
 	 * (用一句话描述方法的主要功能)

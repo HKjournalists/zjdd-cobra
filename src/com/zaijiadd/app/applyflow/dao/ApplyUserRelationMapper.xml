@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.zaijiadd.app.applyflow.dao.ApplyUserRelationMapper" >
+<mapper namespace="com.zaijiadd.app.applyflow.dao.ApplyUserRelationDao" >
   <resultMap id="BaseResultMap" type="com.zaijiadd.app.applyflow.entity.ApplyUserRelation" >
     <id column="apply_user_relation_id" property="applyUserRelationId" jdbcType="INTEGER" />
     <result column="userId" property="userid" jdbcType="INTEGER" />
@@ -22,10 +22,9 @@
     where apply_user_relation_id = #{applyUserRelationId,jdbcType=INTEGER}
   </select>
   
-   <select id="queryAllApplyStore" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+   <select id="queryApproveMsg" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
     select 
-    <include refid="Base_Column_List" />
-    from cobra_apply_user_relation
+    <include refid="Base_Column_List" /> from cobra_apply_user_relation
     	<where>
 			<if test="roleId != null and yjsUserId !=''">
 				roleId = #{roleId}
@@ -36,7 +35,6 @@
 			order by created_date desc
 			limit #{start,jdbcType=INTEGER}, #{end}
 		</where>
-    where apply_user_relation_id = #{applyUserRelationId,jdbcType=INTEGER}
   </select>
   
   

@@ -116,10 +116,11 @@ public interface ApplyFlowDao {
 
 	/**
 	 * (用一句话描述方法的主要功能)
+	 * @param userId
 	 * @return
 	 */
 
-	public List<Map<String, Object>> printContract();
+	public List<Map<String, Object>> printContract(Integer userId);
 
 	/**
 	 * (用一句话描述方法的主要功能)

@@ -160,12 +160,15 @@ public class ApplyFlowController {
 		Integer userId = user.getUserId();
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
 		Map<String, Object> param = new HashMap<String, Object>();
+		Integer userState = jsonRequest.getInteger("userState");// 邀约状态
 		String page = jsonRequest.getString("page");// 当前页
 		Integer pageCount = jsonRequest.getInteger("pageCount");// 每页的数量
 		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
 		param.put("end", pageCount);
 		param.put("yjsUserId", userId);
 		param.put("fuctionSate", "1");
+		param.put("userState", userState);
+
 		List<Map<String, Object>> inviteUserMap = applyFlowService.queryInviteUserMap(param);
 		for (Map<String, Object> map : inviteUserMap) {
 			Date createDate = (Date) map.get("createDate");
@@ -194,10 +197,12 @@ public class ApplyFlowController {
 		Map<String, Object> param = new HashMap<String, Object>();
 		String page = jsonRequest.getString("page");// 当前页
 		Integer pageCount = jsonRequest.getInteger("pageCount");// 每页的数量
+		Integer userState = jsonRequest.getInteger("userState");// 邀约状态
 		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
 		param.put("end", pageCount);
 		param.put("yjsUserId", userId);
 		param.put("fuctionSate", "2");
+		param.put("userState", userState);
 		List<Map<String, Object>> inviteUserMap = applyFlowService.queryInviteUserMap(param);
 		for (Map<String, Object> map : inviteUserMap) {
 			Date createDate = (Date) map.get("createDate");
@@ -482,7 +487,7 @@ public class ApplyFlowController {
 		param.put("roleId", roleId);
 		param.put("applyStoreId", jsonRequest.getInteger("applyStoreId"));
 		param.put("applyStatus", jsonRequest.getInteger("applyStatus"));// 状态
-		Integer applyStoreMap = applyFlowService.approveStore(param);
+		Integer applyStoreMap = applyFlowService.roleApproveStore(param);
 		param.put("result", applyStoreMap);
 		return ContainerUtils.buildResSuccessMap(param);
 	}
@@ -505,7 +510,6 @@ public class ApplyFlowController {
 		UserInfoEntity user = (UserInfoEntity) request.getSession().getAttribute("user");
 		Integer roleId = user.getRoleId();
 		param.put("roleId", roleId);
-		param.put("approveState", ConstantStorePower.approve_state_succ);
 		List<Map<String, Object>> applyStoreMap = applyFlowService.queryApproveMsg(param);
 		param.put("result", applyStoreMap);
 		return ContainerUtils.buildResSuccessMap(param);
@@ -536,10 +540,12 @@ public class ApplyFlowController {
 	public Map<String, Object> printContract(HttpServletRequest request) {
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
 		Map<String, Object> param = new HashMap<String, Object>();
-
+		Integer applyStoreId = jsonRequest.getInteger("applyStoreId");
 		UserInfoEntity user = (UserInfoEntity) request.getSession().getAttribute("user");
 		Integer userId = user.getUserId();
-		List<Map<String, Object>> printApply = applyFlowService.printContract(userId);
+		param.put("applyStoreId", applyStoreId);
+		param.put("userId", userId);
+		List<Map<String, Object>> printApply = applyFlowService.printContract(param);
 		param.put("result", printApply);
 		return ContainerUtils.buildResSuccessMap(param);
 	}

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.zaijiadd.app.applyflow.dao.ApplyFlowDao;
 import com.zaijiadd.app.applyflow.dao.ApplyStoreDao;
+import com.zaijiadd.app.applyflow.dao.ApplyUserRelationDao;
 import com.zaijiadd.app.applyflow.dao.CityMapper;
 import com.zaijiadd.app.applyflow.entity.ApplyStore;
 import com.zaijiadd.app.applyflow.entity.ApplyUserRelation;
@@ -40,6 +41,8 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	ApplyFlowDao applyFlowDao;
 	@Autowired
 	ApplyStoreDao applyStoreDao;
+	@Autowired
+	ApplyUserRelationDao applyUserRelationDao;
 	@Autowired
 	private UserInfoDAO userInfoDao;
 	@Autowired
@@ -76,42 +79,21 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	@Override
 	public Integer addApplyStore(ApplyStore applyStore) {
 		Integer applyType = applyStore.getApplyType();
-		// 用户支付的
-		// BigDecimal paidMoney = applyStore.getPaidMoney();
-		// BigDecimal needPaymoney = applyStore.getNeedPaymoney();
-		// BigDecimal personPaymoneyCount = paidMoney.add(needPaymoney);
-		//
-		// if (applyType.equals(ConstantStorePower.APPLY_TYPE_DEALERSHIP)) {//
-		// 经销权
-		// // 应该支付
-		// Integer cityId = applyStore.getCityId();
-		// Integer dealershipNum = applyStore.getDealershipNum();
-		// BigDecimal dealershipNumBig = new BigDecimal(dealershipNum);
-		// BigDecimal cityMoney = this.getCityDealershipMoney(cityId);
-		// BigDecimal needPaymoneyCount =
-		// cityMoney.multiply(dealershipNumBig);// 乘
-		//
-		// if (personPaymoneyCount.compareTo(needPaymoneyCount) < 0) {//
-		// 实际付的金额比应收的金额小，那么给主管审批
-		// applyStore.setWhoCheck(ConstantsRole.ROLE_MANAGERS);
-		// } else {// 实际付的金额比应收的金额 相等，给财务
-		// applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
-		// }
-		// applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);
-		// } else if
-		// (applyType.equals(ConstantStorePower.apply_type_SMALLSTORE)) {// 小店
-		// Integer storeNumm = applyStore.getStoreNumm();
-		// BigDecimal bigDecimalBig = new BigDecimal(storeNumm);
-		// BigDecimal needPaymoneyCount =
-		// ConstantStorePower.store_money.multiply(bigDecimalBig);
-		// if (personPaymoneyCount.compareTo(needPaymoneyCount) < 0) {//
-		// 实际付的金额比应收的金额小，那么给主管审批
-		// applyStore.setWhoCheck(ConstantsRole.ROLE_MANAGERS);
-		// } else {// 实际付的金额比应收的金额 相等，给财务
-		// applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
-		// }
-		// applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
-		// }
+		if (applyType.equals(ConstantStorePower.APPLY_TYPE_DEALERSHIP)) {// 经销权
+			if (3 < 4) {
+				// 实际付的金额比应收的金额小，那么给主管审批
+				applyStore.setWhoCheck(ConstantsRole.ROLE_MANAGERS);
+			} else {// 实际付的金额比应收的金额 相等，给财务
+				applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
+			}
+		} else if (applyType.equals(ConstantStorePower.apply_type_SMALLSTORE)) {// 小店
+			if (3 < 4) {
+				// 实际付的金额比应收的金额小，那么给主管审批
+				applyStore.setWhoCheck(ConstantsRole.ROLE_MANAGERS);
+			} else {// 实际付的金额比应收的金额 相等，给财务
+				applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
+			}
+		}
 
 		return applyStoreDao.addApplyStore(applyStore);
 	}
@@ -149,7 +131,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 
 	@Override
 	public Integer updateApplyStore(ApplyStore applyStore) {
-		return applyFlowDao.updateApplyStore(applyStore);
+		return applyStoreDao.updateApplyStore(applyStore);
 	}
 
 	/**
@@ -215,11 +197,11 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	}
 
 	/**
-	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#approveStore(java.util.Map)
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#roleApproveStore(java.util.Map)
 	 */
 
 	@Override
-	public Integer approveStore(Map<String, Object> param) {
+	public Integer roleApproveStore(Map<String, Object> param) {
 		Integer roleId = (Integer) param.get("roleId");
 		Integer userId = (Integer) param.get("userId");
 		Integer applyStoreId = (Integer) param.get("applyStoreId");
@@ -229,7 +211,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		applyUserRelation.setApplyId(applyStoreId);
 		applyUserRelation.setUserid(userId);// userId
 		if (ConstantsRole.ROLE_FINANCE.equals(roleId)) {// 财务
-			if (approveState == ConstantStorePower.approve_state_succ) {// 已经审核
+			if (approveState == ConstantStorePower.approve_state_succ) {// 财务同意
 				applyUserRelation.setApplyState(ConstantStorePower.apply_state_succ);
 				applyUserRelation.setApproveState(approveState);
 				this.insertApplyRoleRelation(applyUserRelation);
@@ -241,15 +223,15 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 
 		} else if (ConstantsRole.ROLE_MANAGERS.equals(roleId)) {// 主管
 			applyUserRelation.setApproveState(approveState);
-			if (approveState == ConstantStorePower.approve_state_succ) {// 已经审核
+			if (approveState == ConstantStorePower.approve_state_succ) {// 主管同意
 				applyUserRelation.setApplyState(ConstantStorePower.apply_state_succ);
 				applyUserRelation.setApproveState(approveState);
 				this.insertApplyRoleRelation(applyUserRelation);
 
 				ApplyStore applyStore = new ApplyStore();
-				applyStore.setApplyStatus(ConstantStorePower.apply_state_succ);
+				applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);
 				this.updateApplyStore(applyStore);
-			} else if (approveState == ConstantStorePower.approve_state_fail) {// 拒绝
+			} else if (approveState == ConstantStorePower.approve_state_fail) {// 主管拒绝
 				applyUserRelation.setApplyState(ConstantStorePower.apply_state_fail);
 				applyUserRelation.setApproveState(approveState);
 				this.insertApplyRoleRelation(applyUserRelation);
@@ -269,16 +251,16 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 
 	@Override
 	public List<Map<String, Object>> queryApproveMsg(Map<String, Object> param) {
-		return applyFlowDao.queryApproveMsg(param);
+		return applyUserRelationDao.queryApproveMsg(param);
 	}
 
 	/**
-	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#printContract(java.lang.Integer)
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#printContract(Map)
 	 */
 
 	@Override
-	public List<Map<String, Object>> printContract(Integer userId) {
-		return applyFlowDao.printContract();
+	public List<Map<String, Object>> printContract(Map<String, Object> param) {
+		return applyStoreDao.printContract(param);
 	}
 
 	/**
