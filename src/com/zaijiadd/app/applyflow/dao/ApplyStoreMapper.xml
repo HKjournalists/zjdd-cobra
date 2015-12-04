@@ -28,7 +28,6 @@
     <result column="managers_check" property="managersCheck" jdbcType="INTEGER" />
     <result column="apply_status" property="applyStatus" jdbcType="INTEGER" />
     <result column="who_check" property="whoCheck" jdbcType="INTEGER" />
-     <result column="agency_year" property="agencyYear" jdbcType="INTEGER" />
     <result column="store_numm" property="storeNumm" jdbcType="INTEGER" />
     <result column="bank_numOne" property="bankNumone" jdbcType="INTEGER" />
     <result column="bank_numTwo" property="bankNumtwo" jdbcType="INTEGER" />
@@ -37,6 +36,14 @@
     <result column="district_id" property="districtId" jdbcType="INTEGER" />
      <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
     <result column="updated_date" property="updatedDate" jdbcType="TIMESTAMP" />
+    
+     <result column="whether_self" property="whetherSelf" jdbcType="INTEGER" />
+    <result column="pay_bank" property="payBank" jdbcType="INTEGER" />
+    <result column="pay_subbranch_bank" property="paySubbranchBank" jdbcType="INTEGER" />
+    <result column="pay_person_name" property="payPersonName" jdbcType="VARCHAR" />
+    <result column="pay_alipay_num" property="payAlipayNum" jdbcType="VARCHAR" />
+    <result column="poss_num" property="possNum" jdbcType="VARCHAR" />
+    <result column="whether_start_apply" property="whetherStartApply" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     apply_store_id as applyStoreId, apply_type as applyType, apply_person_type as applyPersonType, 
@@ -46,8 +53,10 @@
     urgency_person as urgencyPerson, urgency_phone as urgencyPhone, CompanyName as CompanyName, pay_way as payWay,
      paymoney_type as paymoneyType, paid_money as paidMoney, need_paymoney as needPaymoney,  
     yjs_user_id as yjsUserId, finance_check as financeCheck, managers_check as managersCheck, apply_status as applyStatus,
-    who_check as whoCheck, agency_year as agencyYear, store_numm as storeNumm, bank_numOne bankNumone, bank_numTwo bankNumtwo,
-    capital_id as capitalId , city_id as cityId, district_id as districtId,created_date as createdDate
+    who_check as whoCheck,  store_numm as storeNumm, bank_numOne bankNumone, bank_numTwo bankNumtwo,
+    capital_id as capitalId , city_id as cityId, district_id as districtId,created_date as createdDate,
+     whether_self, pay_bank, pay_subbranch_bank, pay_person_name, pay_alipay_num, 
+    poss_num, whether_start_apply
   </sql>
   
      <!-- 查询打印信息-->
@@ -60,27 +69,27 @@
    <!-- 查询订单状态 -->
    <sql id="Base_Column_order_state_List" >
     apply_store_id as applyStoreId, apply_name as applyName, apply_type as applyType, phone as phone,
-    paymoney_type as paymoney_type, created_date as createdDate, 
-    apply_status as applyStatus
+    paymoney_type as paymoneyType, created_date as createdDate, 
+    apply_status as applyStatus,whether_start_apply as whetherStartApply
   </sql>
   
    <!-- 审批首页 -->
    <sql id="Base_Column_Role_Approve_state" >
     apply_store_id as applyStoreId, apply_name as applyName,need_paymoney as needPaymoney,apply_type as applyType, phone as phone,
-    paymoney_type as paymoney_type,created_date as createdDate, 
+    paymoney_type as paymoneyType,created_date as createdDate, 
     apply_status as applyStatus
   </sql>
   
    <!-- 查询财务的order-->
    <sql id="Base_Column_approve_finance_state_List" >
      apply_store_id as applyStoreId, apply_type as applyType, agency_time as agencyTime, apply_name as applyName, 
-     paymoney_type as paymoney_type,need_paymoney as needPaymoney,who_check as whoCheck
+     paymoney_type as paymoneyType,need_paymoney as needPaymoney,who_check as whoCheck
   </sql>
   
    <!-- 查询 managers order -->
    <sql id="Base_Column_approve_managers_state_List" >
     apply_store_id as applyStoreId, apply_type as applyType, agency_time as agencyTime, apply_name as applyName, 
-     paymoney_type as paymoney_type,  apply_status as applyStatus,who_check as whoCheck
+     paymoney_type as paymoneyType,  apply_status as applyStatus,who_check as whoCheck
   </sql>
      <!-- 查询订单状态 -->
   <select id="queryAllApplyStoreSate" resultType="java.util.HashMap" parameterType="java.util.HashMap" >

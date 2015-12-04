@@ -83,34 +83,40 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	@Override
 	public Integer addApplyStore(ApplyStore applyStore) {
 		Integer applyType = applyStore.getApplyType();
-		Integer cityId = applyStore.getCityId();
-		BigDecimal paidMoney = applyStore.getPaidMoney();// 已付金额
-		BigDecimal needPaymoney = applyStore.getNeedPaymoney();// 应付金额
-		BigDecimal personPaymoneyCount = paidMoney.add(needPaymoney);// 个人现在已经付的金额
 
-		if (applyType.equals(ConstantStorePower.APPLY_TYPE_DEALERSHIP)) {// 经销权
-			// 经销权价格计算
-			Integer dealershipNum = applyStore.getDealershipNum();
-			BigDecimal dealershipNumBig = new BigDecimal(dealershipNum);
-			CityDealership cityDealership = cityDealershipMapper.getCityMoneyByCityId(cityId);
-			BigDecimal cityDealershipMoney = cityDealership.getCityDealershipMoney();
-			BigDecimal needPaymoneyCount = cityDealershipMoney.multiply(dealershipNumBig);// 每个城市的价格X个数，需支付的
-			if (personPaymoneyCount.compareTo(needPaymoneyCount) < 0) {// 没有支付全额
-				// 实际付的金额比应收的金额小，那么给主管审批
-				applyStore.setWhoCheck(ConstantsRole.ROLE_MANAGERS);
-			} else {// 实际付的金额比应收的金额 相等，给财务
-				applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
-			}
-		} else if (applyType.equals(ConstantStorePower.APPLY_TYPE_SMALLSTORE)) {// 小店
-			// 小店价格计算
-			Integer storeNumm = applyStore.getStoreNumm();
-			BigDecimal storeNummBig = new BigDecimal(storeNumm);
-			BigDecimal needPaymoneyCount = ConstantStorePower.STORE_MONEY.multiply(storeNummBig);
-			if (personPaymoneyCount.compareTo(needPaymoneyCount) < 0) {// 没有支付全额
-				// 实际付的金额比应收的金额小，那么给主管审批
-				applyStore.setWhoCheck(ConstantsRole.ROLE_MANAGERS);
-			} else {// 实际付的金额比应收的金额 相等，给财务
-				applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
+		Integer paymoneyType = applyStore.getPaymoneyType();
+		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金直接给财务
+			applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
+		} else {// 全额
+			Integer cityId = applyStore.getCityId();
+			BigDecimal paidMoney = applyStore.getPaidMoney();// 已付金额
+			BigDecimal needPaymoney = applyStore.getNeedPaymoney();// 应付金额
+			BigDecimal personPaymoneyCount = paidMoney.add(needPaymoney);// 个人现在已经付的金额
+
+			if (applyType.equals(ConstantStorePower.APPLY_TYPE_DEALERSHIP)) {// 经销权
+				// 经销权价格计算
+				Integer dealershipNum = applyStore.getDealershipNum();
+				BigDecimal dealershipNumBig = new BigDecimal(dealershipNum);
+				CityDealership cityDealership = cityDealershipMapper.getCityMoneyByCityId(cityId);
+				BigDecimal cityDealershipMoney = cityDealership.getCityDealershipMoney();
+				BigDecimal needPaymoneyCount = cityDealershipMoney.multiply(dealershipNumBig);// 每个城市的价格X个数，需支付的
+				if (personPaymoneyCount.compareTo(needPaymoneyCount) < 0) {// 没有支付全额
+					// 实际付的金额比应收的金额小，那么给主管审批
+					applyStore.setWhoCheck(ConstantsRole.ROLE_MANAGERS);
+				} else {// 实际付的金额比应收的金额 相等，给财务
+					applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
+				}
+			} else if (applyType.equals(ConstantStorePower.APPLY_TYPE_SMALLSTORE)) {// 小店
+				// 小店价格计算
+				Integer storeNumm = applyStore.getStoreNumm();
+				BigDecimal storeNummBig = new BigDecimal(storeNumm);
+				BigDecimal needPaymoneyCount = ConstantStorePower.STORE_MONEY.multiply(storeNummBig);
+				if (personPaymoneyCount.compareTo(needPaymoneyCount) < 0) {// 没有支付全额
+					// 实际付的金额比应收的金额小，那么给主管审批
+					applyStore.setWhoCheck(ConstantsRole.ROLE_MANAGERS);
+				} else {// 实际付的金额比应收的金额 相等，给财务
+					applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
+				}
 			}
 		}
 

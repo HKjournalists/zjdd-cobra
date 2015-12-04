@@ -70,6 +70,76 @@ public class ApplyStore {
 	private String createDate;
 	private String updatedDate;
 
+	private Integer whetherSelf;
+
+	private Integer payBank;
+
+	private Integer paySubbranchBank;
+
+	private String payPersonName;
+
+	private String payAlipayNum;
+
+	private String possNum;
+
+	private Integer whetherStartApply;
+
+	public Integer getWhetherSelf() {
+		return whetherSelf;
+	}
+
+	public void setWhetherSelf(Integer whetherSelf) {
+		this.whetherSelf = whetherSelf;
+	}
+
+	public Integer getPayBank() {
+		return payBank;
+	}
+
+	public void setPayBank(Integer payBank) {
+		this.payBank = payBank;
+	}
+
+	public Integer getPaySubbranchBank() {
+		return paySubbranchBank;
+	}
+
+	public void setPaySubbranchBank(Integer paySubbranchBank) {
+		this.paySubbranchBank = paySubbranchBank;
+	}
+
+	public String getPayPersonName() {
+		return payPersonName;
+	}
+
+	public void setPayPersonName(String payPersonName) {
+		this.payPersonName = payPersonName;
+	}
+
+	public String getPayAlipayNum() {
+		return payAlipayNum;
+	}
+
+	public void setPayAlipayNum(String payAlipayNum) {
+		this.payAlipayNum = payAlipayNum;
+	}
+
+	public String getPossNum() {
+		return possNum;
+	}
+
+	public void setPossNum(String possNum) {
+		this.possNum = possNum;
+	}
+
+	public Integer getWhetherStartApply() {
+		return whetherStartApply;
+	}
+
+	public void setWhetherStartApply(Integer whetherStartApply) {
+		this.whetherStartApply = whetherStartApply;
+	}
+
 	public String getCreateDate() {
 		return createDate;
 	}
