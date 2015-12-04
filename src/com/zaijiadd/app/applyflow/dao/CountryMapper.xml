@@ -26,12 +26,18 @@
     where country_id = #{countryId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.zaijiadd.app.applyflow.entity.Country" >
+  <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="countryId">
+		SELECT LAST_INSERT_ID() AS id
+	</selectKey>
     insert into country (country_id, country_name, city_id
       )
     values (#{countryId,jdbcType=INTEGER}, #{countryName,jdbcType=VARCHAR}, #{cityId,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.zaijiadd.app.applyflow.entity.Country" >
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="countryId">
+		SELECT LAST_INSERT_ID() AS id
+	</selectKey>
     insert into country
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="countryId != null" >

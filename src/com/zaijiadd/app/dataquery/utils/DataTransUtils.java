@@ -12,7 +12,7 @@ public class DataTransUtils {
 		dto.setCityId( data.getInteger( "cityId" ) );
 		dto.setCoType( data.getInteger( "coType" ) );
 		dto.setMobile( data.getString( "phone" ) );
-		dto.setOperatorUserId( data.getInteger( "operatorUserId" ) );
+		dto.setOperatorUserId( data.getInteger( "userId" ) );
 		dto.setProvinceId( data.getInteger( "provinceId" ) );
 		dto.setQq( data.getString( "qq" ) );
 		dto.setRealname( data.getString( "name" ) );
