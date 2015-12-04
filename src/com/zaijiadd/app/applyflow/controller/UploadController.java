@@ -40,7 +40,7 @@ public class UploadController {
 					String newFileName = new Date().getTime() + files[i].getOriginalFilename();
 					File targetFile = new File(path, newFileName);  
 				        if(!targetFile.exists()) {
-				            targetFile.mkdirs();  
+				            targetFile.mkdirs();
 				        }  
 				  files[i].transferTo(targetFile);
 				  fileUrlList.add(ConstantsForAccount.IMG_URL + request.getContextPath() + "/upload/" + userId + "/" + newFileName);

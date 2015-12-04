@@ -3,7 +3,7 @@ package com.zaijiadd.app.applyflow.service;
 import java.util.List;
 import java.util.Map;
 
-import com.zaijiadd.app.applyflow.dto.StoreInfoDTO;
+import com.alibaba.fastjson.JSONArray;
 import com.zaijiadd.app.applyflow.entity.StoreImg;
 import com.zaijiadd.app.applyflow.entity.StoreInfo;
 
@@ -24,7 +24,7 @@ public interface StoreInfoService {
 
 	  int updateByPrimaryKeySelective(StoreInfo record) throws Exception;
 	  
-	  void applicationShop(String[] fileUrls, Long storeId) throws Exception;
+	  void applicationShop(JSONArray fileUrls, Long storeId, Integer userId) throws Exception;
 	  
 	  List<StoreImg> selectImgsByStoreId(Long storeId) throws Exception;
 	  

@@ -15,11 +15,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.zaijiadd.app.applyflow.dto.StoreAddressDTO;
 import com.zaijiadd.app.applyflow.dto.StoreInfoVO;
 import com.zaijiadd.app.applyflow.entity.StoreInfo;
 import com.zaijiadd.app.applyflow.service.StoreInfoService;
 import com.zaijiadd.app.common.utils.ContainerUtils;
+import com.zaijiadd.app.common.utils.ParseUtils;
 import com.zaijiadd.app.user.entity.UserInfoEntity;
 
 /**
@@ -45,13 +48,16 @@ public class StoreInfoController {
 	public Map<String, Object> add(StoreInfo info, HttpServletRequest request) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		try {
+			JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
+			info = jsonRequest.parseObject(jsonRequest.toJSONString(), StoreInfo.class);
+			Integer userId = Integer.parseInt(jsonRequest.getString("userId"));
 			UserInfoEntity userInfoEntity = (UserInfoEntity) request.getSession().getAttribute("user");
-			info.setApplicant(userInfoEntity.getUserId());
+			info.setApplicant(userId);
 			info.setApplicantTime(new Timestamp(new Date().getTime()));
 			StoreInfoVO storeInfoVO = new StoreInfoVO();
+			this.storeInfoService.insert(info);
 			PropertyUtils.copyProperties(storeInfoVO, info);
 			param.put("detail", storeInfoVO);
-			this.storeInfoService.insert(info);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ContainerUtils.buildResFailMap();
@@ -116,9 +122,12 @@ public class StoreInfoController {
 	public Map<String, Object> addInviteUserMsg(HttpServletRequest request) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		try {
-			String[] fileUrls = request.getParameterValues("fileUrls");
-			Long storeId = Long.valueOf(request.getParameter("storeId"));
-			this.storeInfoService.applicationShop(fileUrls, storeId);
+			JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
+			JSONArray fileUrls = jsonRequest.getJSONArray("fileUrls");
+			//String[] fileUrls = request.getParameterValues("fileUrls");
+			Long storeId = jsonRequest.getLong("storeId");
+			Integer userId = jsonRequest.getInteger("userId");
+			this.storeInfoService.applicationShop(fileUrls, storeId, userId);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ContainerUtils.buildResFailMap();
@@ -150,19 +159,20 @@ public class StoreInfoController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/addressAudit ", method = RequestMethod.PUT)
+	@RequestMapping(value = "/addressAudit ", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> addressAudit(HttpServletRequest request) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		try {
+			JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
 			//店铺ID
-			Long storeId = Long.parseLong(request.getParameter("storeId"));
-			String auditOpinion = request.getParameter("auditOpinion");
+			Long storeId = jsonRequest.getLong("storeId");
+			String auditOpinion = jsonRequest.getString("auditOpinion");
 			//1：通过，0：不通过
 			StoreInfo storeInfo = new StoreInfo();
 			storeInfo.setAddressAuditOpinion(auditOpinion);
 			storeInfo.setStoreId(storeId);
-			int status = Integer.parseInt(request.getParameter("status"));
+			int status = jsonRequest.getIntValue("status");
 			storeInfo.setStatus(1);
 			//地址审核通过
 			if(status == 1) {
@@ -171,7 +181,8 @@ public class StoreInfoController {
 				storeInfo.setAddressAuditStatus(-1);
 			}
 			storeInfo.setAddressApprovalTime(new Timestamp(new Date().getTime()));
-			storeInfo.setAddressApprover(((UserInfoEntity)request.getSession().getAttribute("user")).getUserId());
+			storeInfo.setAddressApprover(jsonRequest.getInteger("userId"));
+			//storeInfo.setAddressApprover(((UserInfoEntity)request.getSession().getAttribute("user")).getUserId());
 			this.storeInfoService.updateByPrimaryKeySelective(storeInfo);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -186,20 +197,21 @@ public class StoreInfoController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/imgAudit ", method = RequestMethod.PUT)
+	@RequestMapping(value = "/imgAudit ", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> imgAudit(HttpServletRequest request) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		try {
+			JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
 			//店铺ID
-			Long storeId = Long.parseLong(request.getParameter("storeId"));
-			String auditOpinion = request.getParameter("auditOpinion");
+			Long storeId = jsonRequest.getLong("storeId");
+			String auditOpinion = jsonRequest.getString("auditOpinion");
 			
 			StoreInfo storeInfo = new StoreInfo();
 			storeInfo.setImgsAuditOpinion(auditOpinion);
 			storeInfo.setStoreId(storeId);
 			//1：通过，0：不通过
-			int status = Integer.parseInt(request.getParameter("status"));
+			int status = jsonRequest.getIntValue("status");
 			storeInfo.setStatus(3);
 			//图片审核通过
 			if(status == 1) {
@@ -208,7 +220,8 @@ public class StoreInfoController {
 				storeInfo.setImgsAuditStatus(-1);
 			}
 			storeInfo.setImgsApprovalTime(new Timestamp(new Date().getTime()));
-			storeInfo.setImgsApprover(((UserInfoEntity)request.getSession().getAttribute("user")).getUserId());
+			//storeInfo.setImgsApprover(((UserInfoEntity)request.getSession().getAttribute("user")).getUserId());
+			storeInfo.setImgsApprover(jsonRequest.getInteger("userId"));
 			this.storeInfoService.updateByPrimaryKeySelective(storeInfo);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -224,14 +237,17 @@ public class StoreInfoController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/applicationAccount/list/{type}", method = RequestMethod.GET)
+	@RequestMapping(value = "/applicationAccount/list", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> applicationList(@PathVariable int type, HttpServletRequest request) {
+	public Map<String, Object> applicationList(HttpServletRequest request) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
+			JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
+			int type = jsonRequest.getIntValue("type");
 			Map<String, Object> param = new HashMap<String, Object>();
 			param.put("status", type);
-			param.put("applicant",  ((UserInfoEntity)request.getSession().getAttribute("user")).getUserId());
+			//param.put("applicant",  ((UserInfoEntity)request.getSession().getAttribute("user")).getUserId());
+			param.put("userId",  jsonRequest.getString("userId"));
 			result.put("result", this.storeInfoService.selectByApplicant(param));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -245,21 +261,23 @@ public class StoreInfoController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/applicationShop/list/{type}", method = RequestMethod.GET)
+	@RequestMapping(value = "/applicationShop/list", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> applicationShop(@PathVariable int type, HttpServletRequest request) {
+	public Map<String, Object> applicationShop(HttpServletRequest request) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
+			JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
+			int type = jsonRequest.getIntValue("type");
 			Map<String, Object> param = new HashMap<String, Object>();
 			param.put("status", type);
-			param.put("applicant",  ((UserInfoEntity)request.getSession().getAttribute("user")).getUserId());
+			param.put("applicant",  jsonRequest.getString("userId"));
+			//param.put("applicant",  ((UserInfoEntity)request.getSession().getAttribute("user")).getUserId());
 			result.put("result", this.storeInfoService.selectByApplicant(param));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ContainerUtils.buildResFailMap();
 		}
 		return ContainerUtils.buildResSuccessMap(result);
-
 	}
 	
 	/**
@@ -267,14 +285,16 @@ public class StoreInfoController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/myApproval/list/{type}", method = RequestMethod.GET)
+	@RequestMapping(value = "/myApproval/list", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> myApproval(@PathVariable int type, HttpServletRequest request) {
+	public Map<String, Object> myApproval(HttpServletRequest request) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
 			Map<String, Object> param = new HashMap<String, Object>();
+			JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
+			int type = jsonRequest.getIntValue("type");
 			param.put("type", type);
-			param.put("userId",  ((UserInfoEntity)request.getSession().getAttribute("user")).getUserId());
+			param.put("userId",  jsonRequest.getString("userId"));
 			result.put("result", this.storeInfoService.getMyApproval(param));
 		} catch (Exception e) {
 			e.printStackTrace();

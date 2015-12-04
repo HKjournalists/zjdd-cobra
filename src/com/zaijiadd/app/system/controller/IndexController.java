@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONObject;
 import com.zaijiadd.app.common.utils.ContainerUtils;
+import com.zaijiadd.app.common.utils.ParseUtils;
 import com.zaijiadd.app.system.service.SystemUserService;
 import com.zaijiadd.app.user.dto.UserInfoDTO;
 import com.zaijiadd.app.user.entity.UserInfoEntity;
@@ -32,8 +34,9 @@ public class IndexController {
 	public Map<String, Object> login(HttpServletRequest request) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		try {
-			String username = request.getParameter("username");
-			String password = request.getParameter("password");
+			JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
+			String username = jsonRequest.getString("username");
+			String password = jsonRequest.getString("password");
 			UserInfoEntity userInfoEntity = systemUserService.getUserInfoForLogin(username, password);
 			UserInfoDTO userInfoDTO = new UserInfoDTO();
 			if(userInfoEntity == null) {

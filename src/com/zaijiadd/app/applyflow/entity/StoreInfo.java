@@ -65,9 +65,19 @@ public class StoreInfo implements Serializable {
     private Timestamp applicationShopTime;
     
     private Timestamp applicationTime;
+    
+    private Integer shopApplicant;
    
 
-    public Timestamp getApplicationTime() {
+    public Integer getShopApplicant() {
+		return shopApplicant;
+	}
+
+	public void setShopApplicant(Integer shopApplicant) {
+		this.shopApplicant = shopApplicant;
+	}
+
+	public Timestamp getApplicationTime() {
 		return applicationTime;
 	}
 

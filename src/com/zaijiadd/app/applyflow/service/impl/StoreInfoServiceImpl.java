@@ -1,5 +1,6 @@
 package com.zaijiadd.app.applyflow.service.impl;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.zaijiadd.app.applyflow.dao.CityMapper;
 import com.zaijiadd.app.applyflow.dao.CountryMapper;
 import com.zaijiadd.app.applyflow.dao.ProvinceMapper;
@@ -71,16 +73,18 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 	}
 
 	@Override
-	public void applicationShop(String[] fileUrls, Long storeId) throws Exception {
+	public void applicationShop(JSONArray fileUrls, Long storeId, Integer userId) throws Exception {
 		StoreInfo storeInfo = new StoreInfo();
 		//图片审核中
 		storeInfo.setStatus(2);
 		storeInfo.setStoreId(storeId);
+		storeInfo.setApplicationShopTime(new Timestamp(new Date().getTime()));
+		storeInfo.setShopApplicant(userId);
 		this.storeInfoDao.updateByPrimaryKeySelective(storeInfo);
 		
-		for(String fileUrl : fileUrls) {
+		for(Object fileUrl : fileUrls) {
 			StoreImg storeImg = new StoreImg();
-			storeImg.setImgUrl(fileUrl);
+			storeImg.setImgUrl(fileUrl.toString());
 			storeImg.setStoreId(storeId);
 			this.storeImgDao.insert(storeImg);
 		}
@@ -98,29 +102,37 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 			case -1:
 				break;
 			case 0: //开户申请中
+				map.put("applicant", map.get("userId"));
 				return groupByDay(this.storeInfoDao.selectByApplicant(map), 0);
 			case 1://开户成功
 				map.put("status", 1);
 				map.put("addressAuditStatus", 1);
+				map.put("applicant", map.get("userId"));
 				return groupByDay(this.storeInfoDao.selectByApplicant(map), 0);
 			case 2://开户失败
 				map.put("status", 1);
 				map.put("addressAuditStatus", -1);
+				map.put("applicant", map.get("userId"));
 				return groupByDay(this.storeInfoDao.selectByApplicant(map), 0);
 			case 3://开店待申请
 				map.put("status", 1);
 				map.put("addressAuditStatus", 1);
+				map.put("applicant", map.get("userId"));
 				return groupByDay(this.storeInfoDao.selectByApplicant(map), 1);
 			case 4: //开店申请中
 				map.put("status", 2);
+				map.put("shopApplicant", map.get("userId"));
+				map.remove("applicant");
 				return groupByDay(this.storeInfoDao.selectByApplicant(map), 2);
 			case 5://开店审核成功
 				map.put("status", 3);
 				map.put("imgsAuditStatus", 1);
+				map.put("shopApplicant", map.get("userId"));
 				return groupByDay(this.storeInfoDao.selectByApplicant(map), 2);
 			case 6://开店审核失败
 				map.put("status", 3);
 				map.put("imgsAuditStatus", -1);
+				map.put("shopApplicant", map.get("userId"));
 				return groupByDay(this.storeInfoDao.selectByApplicant(map), 2);
 				default:
 					break;
