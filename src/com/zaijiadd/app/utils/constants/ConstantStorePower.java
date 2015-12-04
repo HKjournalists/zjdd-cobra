@@ -37,7 +37,7 @@ public class ConstantStorePower {
 	public final static Integer APPLY_PAY_WAY_SWIPING_CARD = 2;// 刷卡
 	public final static Integer APPLY_PAY_WAY_CASH = 3;// 现金
 	// 付款类型
-	public final static Integer APPLY_PAYMONEY_NOTALL = 0;// 不是全额
+	public final static Integer APPLY_PAYMONEY_NOTALL = 0;// 定金
 	public final static Integer APPLY_PAYMONEY_ALL = 1;// 全额
 
 }
