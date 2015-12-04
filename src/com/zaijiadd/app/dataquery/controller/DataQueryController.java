@@ -207,7 +207,6 @@ public class DataQueryController {
 	public Map<String, Object> dispatchGroupWork( HttpServletRequest request ) {
 
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
-
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put( "wid", jsonRequest.getString( "wid" ) );
 		param.put( "orgid", jsonRequest.getString( "orgid" ) );
@@ -272,10 +271,9 @@ public class DataQueryController {
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put( "passwd", password );
 		param.put( "mobile", uid );
-		Map<String, Object> user = service.userInfo( param );
+		Map<String, Object> user = service.userInfo(param);
 
 		if ( user == null || user.size() == 0 ) {
-
 			return ContainerUtils.buildHeadMap( res, -1, "用户不存在" );
 
 		}
