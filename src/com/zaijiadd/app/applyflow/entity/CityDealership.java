@@ -3,7 +3,7 @@ package com.zaijiadd.app.applyflow.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class cityDealership {
+public class CityDealership {
     private Integer cityDealershipId;
 
     private String cityType;
@@ -12,7 +12,7 @@ public class cityDealership {
 
     private Integer sellDealershipNum;
 
-    private BigDecimal cityDealershipNum;
+    private BigDecimal cityDealershipMoney;
 
     private Date createdDate;
 
@@ -50,12 +50,12 @@ public class cityDealership {
         this.sellDealershipNum = sellDealershipNum;
     }
 
-    public BigDecimal getCityDealershipNum() {
-        return cityDealershipNum;
+    public BigDecimal getCityDealershipMoney() {
+        return cityDealershipMoney;
     }
 
-    public void setCityDealershipNum(BigDecimal cityDealershipNum) {
-        this.cityDealershipNum = cityDealershipNum;
+    public void setCityDealershipMoney(BigDecimal cityDealershipMoney) {
+        this.cityDealershipMoney = cityDealershipMoney;
     }
 
     public Date getCreatedDate() {
