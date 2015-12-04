@@ -32,7 +32,6 @@
     	<typeAlias type="com.zaijiadd.app.applyflow.entity.StoreInfo" alias="storeInfo"/>
     	<typeAlias type="com.zaijiadd.app.applyflow.entity.Community" alias="community"/>
     	<typeAlias type="com.zaijiadd.app.applyflow.entity.ApplyUserRelation" alias="applyUserRelation"/>
-    	<typeAlias type="com.zaijiadd.app.applyflow.entity.CityDealership" alias="cityDealership"/>
     </typeAliases>
 
     <mappers>
