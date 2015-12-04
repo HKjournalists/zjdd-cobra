@@ -165,7 +165,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	 */
 
 	private void insertApplyRoleRelation(ApplyUserRelation applyUserRelation) {
-		// TODO 该方法尚未实现
+		applyUserRelationDao.insertApplyRoleRelation(applyUserRelation);
 
 	}
 
@@ -212,8 +212,8 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		applyUserRelation.setUserid(userId);// userId
 		if (ConstantsRole.ROLE_FINANCE.equals(roleId)) {// 财务
 			if (approveState == ConstantStorePower.approve_state_succ) {// 财务同意
-				applyUserRelation.setApplyState(ConstantStorePower.apply_state_succ);
-				applyUserRelation.setApproveState(approveState);
+				applyUserRelation.setApplyId(ConstantStorePower.apply_state_succ);
+				applyUserRelation.setCaurApproveState(approveState);
 				this.insertApplyRoleRelation(applyUserRelation);
 
 				ApplyStore applyStore = new ApplyStore();
@@ -222,22 +222,22 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 			}
 
 		} else if (ConstantsRole.ROLE_MANAGERS.equals(roleId)) {// 主管
-			applyUserRelation.setApproveState(approveState);
+			applyUserRelation.setCaurApproveState(approveState);
 			if (approveState == ConstantStorePower.approve_state_succ) {// 主管同意
-				applyUserRelation.setApplyState(ConstantStorePower.apply_state_succ);
-				applyUserRelation.setApproveState(approveState);
+				applyUserRelation.setApplyId(ConstantStorePower.apply_state_succ);
+				applyUserRelation.setCaurApproveState(approveState);
 				this.insertApplyRoleRelation(applyUserRelation);
 
 				ApplyStore applyStore = new ApplyStore();
 				applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);
 				this.updateApplyStore(applyStore);
 			} else if (approveState == ConstantStorePower.approve_state_fail) {// 主管拒绝
-				applyUserRelation.setApplyState(ConstantStorePower.apply_state_fail);
-				applyUserRelation.setApproveState(approveState);
+				applyUserRelation.setApplyId(ConstantStorePower.apply_state_fail);
+				applyUserRelation.setCaurApproveState(approveState);
 				this.insertApplyRoleRelation(applyUserRelation);
 
 				ApplyStore applyStore = new ApplyStore();
-				applyStore.setApplyStatus(ConstantStorePower.apply_state_fail);
+				applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);
 				this.updateApplyStore(applyStore);
 
 			}
@@ -288,6 +288,15 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	@Override
 	public Integer updateInviteUserById(Map<String, Object> param) {
 		return applyFlowDao.updateInviteUserById(param);
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#queryRoleApproveStoreTry(java.util.Map)
+	 */
+
+	@Override
+	public List<Map<String, Object>> queryRoleApproveStoreTry(Map<String, Object> param) {
+		return applyStoreDao.queryRoleApproveStoreTry(param);
 	}
 
 }

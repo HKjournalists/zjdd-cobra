@@ -172,4 +172,12 @@ public interface ApplyFlowService {
 
 	Integer updateInviteUserById(Map<String, Object> param);
 
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	List<Map<String, Object>> queryRoleApproveStoreTry(Map<String, Object> param);
+
 }

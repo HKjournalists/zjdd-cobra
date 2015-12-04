@@ -1,56 +1,111 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.zaijiadd.app.applyflow.dao.ApplyUserRelationDao" >
-  <resultMap id="BaseResultMap" type="com.zaijiadd.app.applyflow.entity.ApplyUserRelation" >
+   <resultMap id="BaseResultMap" type="com.zaijiadd.app.applyflow.entity.ApplyUserRelation" >
     <id column="apply_user_relation_id" property="applyUserRelationId" jdbcType="INTEGER" />
     <result column="userId" property="userid" jdbcType="INTEGER" />
     <result column="roleId" property="roleid" jdbcType="INTEGER" />
-    <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
-    <result column="updated_date" property="updatedDate" jdbcType="TIMESTAMP" />
+    <result column="caur_created_date" property="caurCreatedDate" jdbcType="TIMESTAMP" />
+    <result column="caur_updated_date" property="caurUpdatedDate" jdbcType="TIMESTAMP" />
     <result column="apply_id" property="applyId" jdbcType="INTEGER" />
-    <result column="apply_state" property="applyState" jdbcType="INTEGER" />
-    <result column="approve_state" property="approveState" jdbcType="INTEGER" />
+    <result column="caur_apply_state" property="caurApplyState" jdbcType="INTEGER" />
+    <result column="caur_approve_state" property="caurApproveState" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    apply_user_relation_id as applyUserRelationId, userId as userid,  roleId as roleid, created_date as createdDate , 
-    updated_date as updatedDate, apply_id as applyId, approve_state as approveState
+    apply_user_relation_id as applyUserRelationId, userId as userid , roleId as roleid, caur_created_date, as caurCreatedDate
+     caur_updated_date as caurUpdatedDate, apply_id as applyId, 
+    caur_apply_state as caurApplyState, caur_approve_state as caurApproveState
   </sql>
-  <select id="queryAllApplyStore" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  
+    <sql id="Base_Column_queryApproveMsg_List" >
+    cpur.apply_user_relation_id as applyUserRelationId, cpur.userId as userid,  
+    cpur.roleId as roleid, cpur.caur_created_date as caurCreatedDate
+     cpur.caur_updated_date as caurUpdatedDate, cpur.apply_id as applyId, 
+     cpur.caur_apply_state as caurApplyState,  cpur.caur_approve_state as caurApproveState
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from cobra_apply_user_relation
     where apply_user_relation_id = #{applyUserRelationId,jdbcType=INTEGER}
   </select>
-  
    <select id="queryApproveMsg" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
-    select 
-    <include refid="Base_Column_List" /> from cobra_apply_user_relation
-    	<where>
-			<if test="roleId != null and yjsUserId !=''">
-				roleId = #{roleId}
-			</if>
-			<if test="approveState != null">
-				and approve_state = #{approveState}
-			</if>
-			order by created_date desc
-			limit #{start,jdbcType=INTEGER}, #{end}
-		</where>
+    select * from
+   	(select *  from cobra_apply_user_relation cpur
+   	 LEFT JOIN cobra_apply_store cas ON cpur.apply_id=cas.apply_store_id 
+   	 where cpur.roleId = #{roleId}
+	limit #{start,jdbcType=INTEGER}, #{end}
+   	) as a 
   </select>
-  
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from cobra_apply_user_relation
     where apply_user_relation_id = #{applyUserRelationId,jdbcType=INTEGER}
   </delete>
   <insert id="insertApplyRoleRelation" parameterType="com.zaijiadd.app.applyflow.entity.ApplyUserRelation" >
-    insert into cobra_apply_user_relation (apply_user_relation_id, userId, roleId, 
-      created_date, updated_date, apply_id, 
-      apply_state, approve_state)
-    values (#{applyUserRelationId,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{roleid,jdbcType=INTEGER}, 
-      #{createdDate,jdbcType=TIMESTAMP}, #{updatedDate,jdbcType=TIMESTAMP}, #{applyId,jdbcType=INTEGER}, 
-      #{applyState,jdbcType=INTEGER}, #{approveState,jdbcType=INTEGER})
+    insert into cobra_apply_user_relation (userId, roleId, 
+      caur_created_date, caur_updated_date, apply_id, 
+      caur_apply_state, caur_approve_state)
+    values ( #{userid,jdbcType=INTEGER}, #{roleid,jdbcType=INTEGER}, 
+      #{caurCreatedDate,jdbcType=TIMESTAMP}, #{caurUpdatedDate,jdbcType=TIMESTAMP}, #{applyId,jdbcType=INTEGER}, 
+      #{caurApplyState,jdbcType=INTEGER}, #{caurApproveState,jdbcType=INTEGER})
   </insert>
-  
+  <insert id="insertSelective" parameterType="com.zaijiadd.app.applyflow.entity.ApplyUserRelation" >
+    insert into cobra_apply_user_relation
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="applyUserRelationId != null" >
+        apply_user_relation_id,
+      </if>
+      <if test="userid != null" >
+        userId,
+      </if>
+      <if test="roleid != null" >
+        roleId,
+      </if>
+      <if test="caurCreatedDate != null" >
+        caur_created_date,
+      </if>
+      <if test="caurUpdatedDate != null" >
+        caur_updated_date,
+      </if>
+      <if test="applyId != null" >
+        apply_id,
+      </if>
+      <if test="caurApplyState != null" >
+        caur_apply_state,
+      </if>
+      <if test="caurApproveState != null" >
+        caur_approve_state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="applyUserRelationId != null" >
+        #{applyUserRelationId,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="roleid != null" >
+        #{roleid,jdbcType=INTEGER},
+      </if>
+      <if test="caurCreatedDate != null" >
+        #{caurCreatedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="caurUpdatedDate != null" >
+        #{caurUpdatedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applyId != null" >
+        #{applyId,jdbcType=INTEGER},
+      </if>
+      <if test="caurApplyState != null" >
+        #{caurApplyState,jdbcType=INTEGER},
+      </if>
+      <if test="caurApproveState != null" >
+        #{caurApproveState,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.zaijiadd.app.applyflow.entity.ApplyUserRelation" >
     update cobra_apply_user_relation
     <set >
@@ -60,20 +115,20 @@
       <if test="roleid != null" >
         roleId = #{roleid,jdbcType=INTEGER},
       </if>
-      <if test="createdDate != null" >
-        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      <if test="caurCreatedDate != null" >
+        caur_created_date = #{caurCreatedDate,jdbcType=TIMESTAMP},
       </if>
-      <if test="updatedDate != null" >
-        updated_date = #{updatedDate,jdbcType=TIMESTAMP},
+      <if test="caurUpdatedDate != null" >
+        caur_updated_date = #{caurUpdatedDate,jdbcType=TIMESTAMP},
       </if>
       <if test="applyId != null" >
         apply_id = #{applyId,jdbcType=INTEGER},
       </if>
-      <if test="applyState != null" >
-        apply_state = #{applyState,jdbcType=INTEGER},
+      <if test="caurApplyState != null" >
+        caur_apply_state = #{caurApplyState,jdbcType=INTEGER},
       </if>
-      <if test="approveState != null" >
-        approve_state = #{approveState,jdbcType=INTEGER},
+      <if test="caurApproveState != null" >
+        caur_approve_state = #{caurApproveState,jdbcType=INTEGER},
       </if>
     </set>
     where apply_user_relation_id = #{applyUserRelationId,jdbcType=INTEGER}
@@ -82,11 +137,11 @@
     update cobra_apply_user_relation
     set userId = #{userid,jdbcType=INTEGER},
       roleId = #{roleid,jdbcType=INTEGER},
-      created_date = #{createdDate,jdbcType=TIMESTAMP},
-      updated_date = #{updatedDate,jdbcType=TIMESTAMP},
+      caur_created_date = #{caurCreatedDate,jdbcType=TIMESTAMP},
+      caur_updated_date = #{caurUpdatedDate,jdbcType=TIMESTAMP},
       apply_id = #{applyId,jdbcType=INTEGER},
-      apply_state = #{applyState,jdbcType=INTEGER},
-      approve_state = #{approveState,jdbcType=INTEGER}
+      caur_apply_state = #{caurApplyState,jdbcType=INTEGER},
+      caur_approve_state = #{caurApproveState,jdbcType=INTEGER}
     where apply_user_relation_id = #{applyUserRelationId,jdbcType=INTEGER}
   </update>
 </mapper>

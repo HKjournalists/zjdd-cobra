@@ -132,7 +132,20 @@
 			limit #{start,jdbcType=INTEGER}, #{end}
 		</where>
   </select>
-  
+    <!-- 查询审批总-->
+  <select id="queryRoleApproveStoreTry" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+    select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
+    	<where>
+			<if test="whoCheck != null and whoCheck !=''">
+				who_check = #{whoCheck}
+			</if>
+			<if test="applyStatus != null">
+				and apply_status = #{applyStatus}
+			</if>
+			order by created_date desc
+			limit #{start,jdbcType=INTEGER}, #{end}
+		</where>
+  </select>
    <!-- 查询单子详情-->
    <select id="queryApplyStoreDetails" resultType="java.util.HashMap" parameterType="java.lang.Integer" >
     select 
@@ -145,7 +158,7 @@
     <!-- 打印合同 -->
   <select id="printContract" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
     select <include refid="Base_Column_order_printContract_List" /> from cobra_apply_store
-       where yjs_user_id = #{yjsUserId,jdbcType=INTEGER}
+       where apply_store_id = #{applyStoreId,jdbcType=INTEGER}
   </select>
   
   <!-- 增加单子-->
