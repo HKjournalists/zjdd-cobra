@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import com.zaijiadd.app.common.utils.ContainerUtils;
 import com.zaijiadd.app.common.utils.ParseUtils;
 import com.zaijiadd.app.system.service.SystemUserService;
@@ -20,6 +22,7 @@ import com.zaijiadd.app.user.dto.UserInfoDTO;
 import com.zaijiadd.app.user.entity.UserInfoEntity;
 
 @RestController
+@Api(value = "用户API", description = "用户相关API")
 public class IndexController {
 	
 	@Autowired
@@ -29,6 +32,7 @@ public class IndexController {
 	 * @param request
 	 * @return
 	 */
+	@ApiOperation(httpMethod = "POST", value = "创建用户")
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> login(HttpServletRequest request) {
