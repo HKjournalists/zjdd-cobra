@@ -80,16 +80,15 @@ public class ApplyFlowController {
 		UserInfoEntity user = new UserInfoEntity();
 		Integer userId = jsonRequest.getInteger("userId");
 		Integer roleId = jsonRequest.getInteger("roleId");
-		// UserInfoEntity userSeesion = (UserInfoEntity)
-		// request.getSession().getAttribute("user");
-		// if (userId != null) {
-		// user.setUserId(userId);
-		// user.setRoleId(roleId);
-		// } else {
-		//
-		// userId = userSeesion.getUserId();
-		// roleId = userSeesion.getRoleId();
-		// }
+		UserInfoEntity userSeesion = (UserInfoEntity) request.getSession().getAttribute("user");
+		Integer userId2 = userSeesion.getUserId();
+		Integer roleId2 = userSeesion.getRoleId();
+		if (userId == null) {
+			userId = userId2;
+		}
+		if (roleId == null) {
+			roleId = roleId2;
+		}
 		user.setRoleId(roleId);
 		user.setUserId(userId);
 		return user;

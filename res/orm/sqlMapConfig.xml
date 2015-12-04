@@ -32,6 +32,7 @@
     	<typeAlias type="com.zaijiadd.app.applyflow.entity.StoreInfo" alias="storeInfo"/>
     	<typeAlias type="com.zaijiadd.app.applyflow.entity.Community" alias="community"/>
     	<typeAlias type="com.zaijiadd.app.applyflow.entity.ApplyUserRelation" alias="applyUserRelation"/>
+    	<typeAlias type="com.zaijiadd.app.applyflow.entity.CityDealership" alias="cityDealership"/>
     </typeAliases>
 
     <mappers>
@@ -48,7 +49,7 @@
     	<mapper resource="com/zaijiadd/app/applyflow/dao/StoreInfoMapper.xml"/>
 
 
-    	<mapper resource="com/zaijiadd/app/applyflow/dao/cityDealershipMapper.xml"/>
+    	<mapper resource="com/zaijiadd/app/applyflow/dao/CityDealershipMapper.xml"/>
     	<mapper resource="com/zaijiadd/app/applyflow/dao/CommunityMapper.xml"/>
     	<mapper resource="com/zaijiadd/app/applyflow/dao/ApplyUserRelationMapper.xml"/>
 

@@ -5,6 +5,7 @@
 
 package com.zaijiadd.app.applyflow.controller;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,6 +27,28 @@ public class Tets {
 	 */
 
 	public static void main(String[] args) {
+		// testTime();
+		testBigDecimal();
+
+	}
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 */
+
+	private static void testBigDecimal() {
+		BigDecimal bigDecimal1 = new BigDecimal(0);
+		BigDecimal bigDecimal2 = new BigDecimal(2);
+		BigDecimal add = bigDecimal1.add(bigDecimal2);
+		System.out.println(add);
+
+	}
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 */
+
+	private static void testTime() {
 		String visitTime = "2015-12-01 09:46:26";
 		Date transStringToDate = DateUtils.transStringToDate(visitTime, "yyyy-MM-dd ");
 		String string = transStringToDate.toString();
@@ -46,6 +69,5 @@ public class Tets {
 		Date date = new Date(date2.getTime());
 		String format3 = format.format(date);
 		System.err.println("format3" + format3);
-
 	}
 }

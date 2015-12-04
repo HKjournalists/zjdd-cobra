@@ -16,10 +16,12 @@ import org.springframework.stereotype.Service;
 import com.zaijiadd.app.applyflow.dao.ApplyFlowDao;
 import com.zaijiadd.app.applyflow.dao.ApplyStoreDao;
 import com.zaijiadd.app.applyflow.dao.ApplyUserRelationDao;
+import com.zaijiadd.app.applyflow.dao.CityDealershipMapper;
 import com.zaijiadd.app.applyflow.dao.CityMapper;
 import com.zaijiadd.app.applyflow.entity.ApplyStore;
 import com.zaijiadd.app.applyflow.entity.ApplyUserRelation;
 import com.zaijiadd.app.applyflow.entity.City;
+import com.zaijiadd.app.applyflow.entity.CityDealership;
 import com.zaijiadd.app.applyflow.entity.InviteUserEntity;
 import com.zaijiadd.app.applyflow.service.ApplyFlowService;
 import com.zaijiadd.app.user.dao.UserInfoDAO;
@@ -41,6 +43,8 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	ApplyFlowDao applyFlowDao;
 	@Autowired
 	ApplyStoreDao applyStoreDao;
+	@Autowired
+	CityDealershipMapper cityDealershipMapper;
 	@Autowired
 	ApplyUserRelationDao applyUserRelationDao;
 	@Autowired
@@ -79,15 +83,30 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	@Override
 	public Integer addApplyStore(ApplyStore applyStore) {
 		Integer applyType = applyStore.getApplyType();
+		Integer cityId = applyStore.getCityId();
+		BigDecimal paidMoney = applyStore.getPaidMoney();// 已付金额
+		BigDecimal needPaymoney = applyStore.getNeedPaymoney();// 应付金额
+		BigDecimal personPaymoneyCount = paidMoney.add(needPaymoney);// 个人现在已经付的金额
+
 		if (applyType.equals(ConstantStorePower.APPLY_TYPE_DEALERSHIP)) {// 经销权
-			if (3 < 4) {
+			// 经销权价格计算
+			Integer dealershipNum = applyStore.getDealershipNum();
+			BigDecimal dealershipNumBig = new BigDecimal(dealershipNum);
+			CityDealership cityDealership = cityDealershipMapper.getCityMoneyByCityId(cityId);
+			BigDecimal cityDealershipMoney = cityDealership.getCityDealershipMoney();
+			BigDecimal needPaymoneyCount = cityDealershipMoney.multiply(dealershipNumBig);// 每个城市的价格X个数，需支付的
+			if (personPaymoneyCount.compareTo(needPaymoneyCount) < 0) {// 没有支付全额
 				// 实际付的金额比应收的金额小，那么给主管审批
 				applyStore.setWhoCheck(ConstantsRole.ROLE_MANAGERS);
 			} else {// 实际付的金额比应收的金额 相等，给财务
 				applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 			}
 		} else if (applyType.equals(ConstantStorePower.apply_type_SMALLSTORE)) {// 小店
-			if (3 < 4) {
+			// 小店价格计算
+			Integer storeNumm = applyStore.getStoreNumm();
+			BigDecimal storeNummBig = new BigDecimal(storeNumm);
+			BigDecimal needPaymoneyCount = ConstantStorePower.STORE_MONEY.multiply(storeNummBig);
+			if (personPaymoneyCount.compareTo(needPaymoneyCount) < 0) {// 没有支付全额
 				// 实际付的金额比应收的金额小，那么给主管审批
 				applyStore.setWhoCheck(ConstantsRole.ROLE_MANAGERS);
 			} else {// 实际付的金额比应收的金额 相等，给财务

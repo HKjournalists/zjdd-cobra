@@ -20,6 +20,14 @@
     from city_dealership
     where city_dealership_id = #{cityDealershipId,jdbcType=INTEGER}
   </select>
+  
+   <select id="getCityMoneyByCityId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from city_dealership
+    where city_id = #{cityId,jdbcType=INTEGER}
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from city_dealership
     where city_dealership_id = #{cityDealershipId,jdbcType=INTEGER}

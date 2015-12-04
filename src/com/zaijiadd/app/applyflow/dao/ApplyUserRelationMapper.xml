@@ -48,7 +48,7 @@
       caur_created_date, caur_updated_date, apply_id, 
       caur_apply_state, caur_approve_state)
     values ( #{userid,jdbcType=INTEGER}, #{roleid,jdbcType=INTEGER}, 
-      #{caurCreatedDate,jdbcType=TIMESTAMP}, #{caurUpdatedDate,jdbcType=TIMESTAMP}, #{applyId,jdbcType=INTEGER}, 
+      now(), #{caurUpdatedDate,jdbcType=TIMESTAMP}, #{applyId,jdbcType=INTEGER}, 
       #{caurApplyState,jdbcType=INTEGER}, #{caurApproveState,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.zaijiadd.app.applyflow.entity.ApplyUserRelation" >
