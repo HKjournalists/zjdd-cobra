@@ -5,6 +5,7 @@
 
 package com.zaijiadd.app.applyflow.controller;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -80,9 +81,14 @@ public class ApplyFlowController {
 		UserInfoEntity user = new UserInfoEntity();
 		Integer userId = jsonRequest.getInteger("userId");
 		Integer roleId = jsonRequest.getInteger("roleId");
+		Integer userId2 = null;
+		Integer roleId2 = null;
 		UserInfoEntity userSeesion = (UserInfoEntity) request.getSession().getAttribute("user");
-		Integer userId2 = userSeesion.getUserId();
-		Integer roleId2 = userSeesion.getRoleId();
+		if (userSeesion != null) {
+			userId2 = userSeesion.getUserId();
+			roleId2 = userSeesion.getRoleId();
+		}
+
 		if (userId == null) {
 			userId = userId2;
 		}
@@ -221,9 +227,9 @@ public class ApplyFlowController {
 	@RequestMapping(value = "/queryAllInviteUser", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> queryAllInviteUser(HttpServletRequest request) {
-		UserInfoEntity user = (UserInfoEntity) request.getSession().getAttribute("user");
-		Integer userId = user.getUserId();
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		UserInfoEntity user = getUserMsg(request, jsonRequest);// 用户信息
+		Integer userId = user.getUserId();
 		Map<String, Object> param = new HashMap<String, Object>();
 		String page = jsonRequest.getString("page");// 当前页
 		Integer pageCount = jsonRequest.getInteger("pageCount");// 每页的数量
@@ -251,10 +257,10 @@ public class ApplyFlowController {
 	@RequestMapping(value = "/queryInviteUserMsgLike", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> queryInviteUserMsgLike(HttpServletRequest request) {
-		UserInfoEntity user = (UserInfoEntity) request.getSession().getAttribute("user");
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		UserInfoEntity user = getUserMsg(request, jsonRequest);// 用户信息
 		Integer userId = user.getUserId();
 
-		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
 		Map<String, Object> param = new HashMap<String, Object>();
 		String page = jsonRequest.getString("page");// 当前页
 		Integer pageCount = jsonRequest.getInteger("pageCount");// 每页的数量
@@ -382,6 +388,9 @@ public class ApplyFlowController {
 		Map<String, Object> param = new HashMap<String, Object>();
 		Integer applyStoreId = jsonRequest.getInteger("applyStoreId");
 		Map<String, Object> applyStoreMap = applyFlowService.queryApplyStoreDetails(applyStoreId);
+		Date createDate = (Date) applyStoreMap.get("createDate");
+		String createDateStr = DateUtils.getSysDate(createDate, "yyyy-MM-dd");
+		applyStoreMap.put("createDate", createDateStr);
 		param.put("result", applyStoreMap);
 		return ContainerUtils.buildResSuccessMap(param);
 	}
@@ -407,8 +416,22 @@ public class ApplyFlowController {
 		param.put("yjsUserId", userId);
 		param.put("applyStatus", applyStatus);
 		List<Map<String, Object>> applyStoreOrderMap = applyFlowService.queryAllApplyStoreSate(param);
+		mapListValueToDate(applyStoreOrderMap);
 		param.put("result", applyStoreOrderMap);
 		return ContainerUtils.buildResSuccessMap(param);
+	}
+
+	/**
+	 * createDate
+	 * @param applyStoreOrderMap
+	 */
+
+	private void mapListValueToDate(List<Map<String, Object>> applyStoreOrderMap) {
+		for (Map<String, Object> map : applyStoreOrderMap) {
+			Date createDate = (Date) map.get("createDate");
+			String createDateStr = DateUtils.getSysDate(createDate, "yyyy-MM-dd");
+			map.put("createDate", createDateStr);
+		}
 	}
 
 	/**
@@ -522,6 +545,7 @@ public class ApplyFlowController {
 		Integer whoCheck = jsonRequest.getInteger("whoCheck");
 		param.put("whoCheck", whoCheck);// 谁审批
 		List<Map<String, Object>> applyStoreMap = applyFlowService.queryRoleApproveStoreTry(param);
+		mapListValueToDate(applyStoreMap);
 		param.put("result", applyStoreMap);
 		return ContainerUtils.buildResSuccessMap(param);
 	}
@@ -589,6 +613,11 @@ public class ApplyFlowController {
 		Integer roleId = user.getRoleId();
 		param.put("roleId", roleId);
 		List<Map<String, Object>> applyStoreMap = applyFlowService.queryApproveMsg(param);
+		for (Map<String, Object> map : applyStoreMap) {
+			Date createDate = (Date) map.get("caurCreatedDate");
+			String createDateStr = DateUtils.getSysDate(createDate, "yyyy-MM-dd");
+			map.put("caurCreatedDate", createDateStr);
+		}
 		param.put("result", applyStoreMap);
 		return ContainerUtils.buildResSuccessMap(param);
 	}
@@ -623,7 +652,11 @@ public class ApplyFlowController {
 		Integer userId = user.getUserId();
 		param.put("applyStoreId", applyStoreId);
 		param.put("userId", userId);
-		List<Map<String, Object>> printApply = applyFlowService.printContract(param);
+		Map<String, Object> printApply = applyFlowService.printContract(param);
+		BigDecimal paidMoney = (BigDecimal) printApply.get("paidMoney");
+		BigDecimal needPaymoney = (BigDecimal) printApply.get("needPaymoney");
+		BigDecimal allMoney = needPaymoney.add(paidMoney);
+		printApply.put("allMoney", allMoney);
 		param.put("result", printApply);
 		return ContainerUtils.buildResSuccessMap(param);
 	}

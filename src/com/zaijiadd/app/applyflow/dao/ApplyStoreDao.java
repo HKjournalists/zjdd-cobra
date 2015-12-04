@@ -88,7 +88,7 @@ public interface ApplyStoreDao {
 	 * @return
 	 */
 
-	List<Map<String, Object>> printContract(Map<String, Object> param);
+	Map<String, Object> printContract(Map<String, Object> param);
 
 	/**
 	 * (用一句话描述方法的主要功能)

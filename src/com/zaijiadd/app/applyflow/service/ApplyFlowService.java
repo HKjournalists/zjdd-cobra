@@ -146,7 +146,7 @@ public interface ApplyFlowService {
 	 * @return
 	 */
 
-	List<Map<String, Object>> printContract(Map<String, Object> userId);
+	Map<String, Object> printContract(Map<String, Object> userId);
 
 	/**
 	 * (用一句话描述方法的主要功能)
