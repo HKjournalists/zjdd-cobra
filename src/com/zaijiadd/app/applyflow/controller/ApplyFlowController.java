@@ -364,6 +364,8 @@ public class ApplyFlowController {
 
 		applyStore.setYjsUserId(userId);
 		Integer addApplyStoreId = applyFlowService.addApplyStore(applyStore);
+		Integer applyStoreId = applyStore.getApplyStoreId();
+		param.put("applyStoreId", applyStoreId);
 		return ContainerUtils.buildResSuccessMap(param);
 
 	}

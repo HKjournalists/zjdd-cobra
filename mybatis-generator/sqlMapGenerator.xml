@@ -30,20 +30,20 @@
 		>
 		</table>
 		-->
-		<!-- 
-		<table schema="" tableName="cobra_apply_store" domainObjectName="ApplyStores" enableCountByExample="false"
-			enableUpdateByExample="false" enableDeleteByExample="false"
-			enableSelectByExample="false" selectByExampleQueryId="false"
-		>
-		</table>
-		-->
-	
-		<table schema="" tableName="cobra_apply_user_relation" domainObjectName="ApplyUserRelationss" enableCountByExample="false"
+	 
+		<table schema="" tableName="cobra_apply_store" domainObjectName="ApplyStoresss" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" selectByExampleQueryId="false"
 		>
 		</table>
 		
+	<!-- 
+		<table schema="" tableName="cobra_apply_user_relation" domainObjectName="ApplyUserRelationss" enableCountByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false"
+			enableSelectByExample="false" selectByExampleQueryId="false"
+		>
+		</table>
+		-->
 		
 		<!--
 		<table schema="" tableName="city" domainObjectName="citys" enableCountByExample="false"
