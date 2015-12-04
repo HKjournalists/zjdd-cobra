@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.zaijiadd.app.common.utils.ContainerUtils;
-import com.zaijiadd.app.user.entity.UserInfoEntity;
 import com.zaijiadd.app.utils.constants.ConstantsForAccount;
 
 
