@@ -388,11 +388,23 @@ public class ApplyFlowController {
 		Map<String, Object> param = new HashMap<String, Object>();
 		Integer applyStoreId = jsonRequest.getInteger("applyStoreId");
 		Map<String, Object> applyStoreMap = applyFlowService.queryApplyStoreDetails(applyStoreId);
-		Date createDate = (Date) applyStoreMap.get("createDate");
-		String createDateStr = DateUtils.getSysDate(createDate, "yyyy-MM-dd");
-		applyStoreMap.put("createDate", createDateStr);
+		applyStoreMapDateToString(applyStoreMap);
 		param.put("result", applyStoreMap);
 		return ContainerUtils.buildResSuccessMap(param);
+	}
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStoreMap
+	 */
+
+	void applyStoreMapDateToString(Map<String, Object> applyStoreMap) {
+		if (applyStoreMap != null) {
+			Date createDate = (Date) applyStoreMap.get("createdDate");
+			String createDateStr = DateUtils.getSysDate(createDate, "yyyy-MM-dd");
+			applyStoreMap.put("createdDate", createDateStr);
+		}
+
 	}
 
 	/**
@@ -428,9 +440,7 @@ public class ApplyFlowController {
 
 	private void mapListValueToDate(List<Map<String, Object>> applyStoreOrderMap) {
 		for (Map<String, Object> map : applyStoreOrderMap) {
-			Date createDate = (Date) map.get("createDate");
-			String createDateStr = DateUtils.getSysDate(createDate, "yyyy-MM-dd");
-			map.put("createDate", createDateStr);
+			applyStoreMapDateToString(map);
 		}
 	}
 
@@ -653,10 +663,13 @@ public class ApplyFlowController {
 		param.put("applyStoreId", applyStoreId);
 		param.put("userId", userId);
 		Map<String, Object> printApply = applyFlowService.printContract(param);
-		BigDecimal paidMoney = (BigDecimal) printApply.get("paidMoney");
-		BigDecimal needPaymoney = (BigDecimal) printApply.get("needPaymoney");
-		BigDecimal allMoney = needPaymoney.add(paidMoney);
-		printApply.put("allMoney", allMoney);
+		if (printApply != null) {
+			BigDecimal paidMoney = (BigDecimal) printApply.get("paidMoney");
+			BigDecimal needPaymoney = (BigDecimal) printApply.get("needPaymoney");
+			BigDecimal allMoney = needPaymoney.add(paidMoney);
+			printApply.put("allMoney", allMoney);
+		}
+
 		param.put("result", printApply);
 		return ContainerUtils.buildResSuccessMap(param);
 	}
