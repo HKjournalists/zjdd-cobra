@@ -112,6 +112,10 @@
     where store_id = #{storeId,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.zaijiadd.app.applyflow.entity.StoreInfo" >
+  
+  	<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="storeId">
+		SELECT LAST_INSERT_ID() AS id
+	</selectKey>
     insert into store_info (store_id, capital, city, 
       district, apply_store_id, apply_name, 
       person_num, phone, street, 
@@ -128,7 +132,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.zaijiadd.app.applyflow.entity.StoreInfo" >
-  <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="countryId">
+  <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="storeId">
 		SELECT LAST_INSERT_ID() AS id
 	</selectKey>
     insert into store_info
