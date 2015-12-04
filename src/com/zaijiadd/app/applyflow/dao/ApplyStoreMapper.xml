@@ -52,14 +52,23 @@
   
      <!-- 查询打印信息-->
    <sql id="Base_Column_order_printContract_List" >
-    apply_store_id as applyStoreId, apply_type as applyType, agency_time as agencyTime, apply_name as applyName, 
-     capital as capital, city as city, district as district, agency_type as agencyType
+    apply_store_id as applyStoreId, apply_name as applyName,capital as capital, city as city, district as district,
+    apply_type as applyType,agency_type as agencyType,apply_person_type as applyPersonType,
+    paid_money as paidMoney, need_paymoney as needPaymoney
   </sql>
   
    <!-- 查询订单状态 -->
    <sql id="Base_Column_order_state_List" >
-    apply_store_id as applyStoreId, apply_type as applyType, agency_time as agencyTime, apply_name as applyName, 
-     paymoney_type as paymoney_type,  apply_status as applyStatus,who_check as whoCheck,created_date as createdDate
+    apply_store_id as applyStoreId, apply_name as applyName, apply_type as applyType, phone as phone,
+    paymoney_type as paymoney_type, created_date as createdDate, 
+    apply_status as applyStatus
+  </sql>
+  
+   <!-- 审批首页 -->
+   <sql id="Base_Column_Role_Approve_state" >
+    apply_store_id as applyStoreId, apply_name as applyName,need_paymoney as needPaymoney,apply_type as applyType, phone as phone,
+    paymoney_type as paymoney_type,created_date as createdDate, 
+    apply_status as applyStatus
   </sql>
   
    <!-- 查询财务的order-->
@@ -89,7 +98,7 @@
   </select>
 
   
-    <!-- 查询待审批的 -->
+    <!-- 查询待审批的 不用-->
    <select id="queryApproveStoreSate" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
     select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
     	<where>
@@ -134,7 +143,7 @@
   </select>
     <!-- 查询审批总-->
   <select id="queryRoleApproveStoreTry" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
-    select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
+    select <include refid="Base_Column_Role_Approve_state" /> from cobra_apply_store
     	<where>
 			<if test="whoCheck != null and whoCheck !=''">
 				who_check = #{whoCheck}

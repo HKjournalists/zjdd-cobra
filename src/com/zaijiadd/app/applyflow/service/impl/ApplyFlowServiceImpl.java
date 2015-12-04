@@ -101,7 +101,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 			} else {// 实际付的金额比应收的金额 相等，给财务
 				applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 			}
-		} else if (applyType.equals(ConstantStorePower.apply_type_SMALLSTORE)) {// 小店
+		} else if (applyType.equals(ConstantStorePower.APPLY_TYPE_SMALLSTORE)) {// 小店
 			// 小店价格计算
 			Integer storeNumm = applyStore.getStoreNumm();
 			BigDecimal storeNummBig = new BigDecimal(storeNumm);
@@ -278,7 +278,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	 */
 
 	@Override
-	public List<Map<String, Object>> printContract(Map<String, Object> param) {
+	public Map<String, Object> printContract(Map<String, Object> param) {
 		return applyStoreDao.printContract(param);
 	}
 
