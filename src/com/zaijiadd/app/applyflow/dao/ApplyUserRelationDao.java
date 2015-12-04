@@ -8,6 +8,8 @@ package com.zaijiadd.app.applyflow.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.zaijiadd.app.applyflow.entity.ApplyUserRelation;
+
 /**
  * (用一句话描述类的主要功能)
  * @author chentao
@@ -23,5 +25,12 @@ public interface ApplyUserRelationDao {
 	 */
 
 	List<Map<String, Object>> queryApproveMsg(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyUserRelation
+	 */
+
+	void insertApplyRoleRelation(ApplyUserRelation applyUserRelation);
 
 }

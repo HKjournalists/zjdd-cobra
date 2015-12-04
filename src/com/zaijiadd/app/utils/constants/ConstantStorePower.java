@@ -25,7 +25,7 @@ public class ConstantStorePower {
 	public final static Integer approve_state_fail = 2;//
 
 	public final static BigDecimal store_money = new BigDecimal(70000);//
-	public final static Integer APPLY_TYPE_DEALERSHIP = 1;// 经销权
-	public final static Integer apply_type_SMALLSTORE = 2;// 小店
+	public final static Integer APPLY_TYPE_DEALERSHIP = 0;// 经销权
+	public final static Integer apply_type_SMALLSTORE = 1;// 小店
 
 }

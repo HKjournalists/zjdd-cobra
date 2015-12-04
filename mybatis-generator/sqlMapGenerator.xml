@@ -30,15 +30,15 @@
 		>
 		</table>
 		-->
-		<!-- 
-		<table schema="" tableName="cobra_apply_store" domainObjectName="ApplyStores" enableCountByExample="false"
+	 
+		<table schema="" tableName="cobra_apply_store" domainObjectName="ApplyStoresss" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" selectByExampleQueryId="false"
 		>
 		</table>
-		-->
-		<!--
-		<table schema="" tableName="cobra_apply_user_relation" domainObjectName="ApplyUserRelation" enableCountByExample="false"
+		
+	<!-- 
+		<table schema="" tableName="cobra_apply_user_relation" domainObjectName="ApplyUserRelationss" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" selectByExampleQueryId="false"
 		>
@@ -59,10 +59,12 @@
 		>
 		</table>
 		-->
+		<!--
 		<table schema="" tableName="cobra_invite_user" domainObjectName="cobrainviteusers" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" selectByExampleQueryId="false"
 		>
 		</table>
+		-->
 	</context>
 </generatorConfiguration>

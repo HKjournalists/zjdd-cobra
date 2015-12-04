@@ -3,83 +3,84 @@ package com.zaijiadd.app.applyflow.entity;
 import java.util.Date;
 
 public class ApplyUserRelation {
-    private Integer applyUserRelationId;
 
-    private Integer userid;
+	private Integer applyUserRelationId;
 
-    private Integer roleid;
+	private Integer userid;
 
-    private Date createdDate;
+	private Integer roleid;
 
-    private Date updatedDate;
+	private Date caurCreatedDate;
 
-    private Integer applyId;
+	private Date caurUpdatedDate;
 
-    private Integer applyState;
+	private Integer applyId;
 
-    private Integer approveState;
+	private Integer caurApplyState;
 
-    public Integer getApplyUserRelationId() {
-        return applyUserRelationId;
-    }
+	private Integer caurApproveState;
 
-    public void setApplyUserRelationId(Integer applyUserRelationId) {
-        this.applyUserRelationId = applyUserRelationId;
-    }
+	public Integer getApplyUserRelationId() {
+		return applyUserRelationId;
+	}
 
-    public Integer getUserid() {
-        return userid;
-    }
+	public void setApplyUserRelationId(Integer applyUserRelationId) {
+		this.applyUserRelationId = applyUserRelationId;
+	}
 
-    public void setUserid(Integer userid) {
-        this.userid = userid;
-    }
+	public Integer getUserid() {
+		return userid;
+	}
 
-    public Integer getRoleid() {
-        return roleid;
-    }
+	public void setUserid(Integer userid) {
+		this.userid = userid;
+	}
 
-    public void setRoleid(Integer roleid) {
-        this.roleid = roleid;
-    }
+	public Integer getRoleid() {
+		return roleid;
+	}
 
-    public Date getCreatedDate() {
-        return createdDate;
-    }
+	public void setRoleid(Integer roleid) {
+		this.roleid = roleid;
+	}
 
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
+	public Date getCaurCreatedDate() {
+		return caurCreatedDate;
+	}
 
-    public Date getUpdatedDate() {
-        return updatedDate;
-    }
+	public void setCaurCreatedDate(Date caurCreatedDate) {
+		this.caurCreatedDate = caurCreatedDate;
+	}
 
-    public void setUpdatedDate(Date updatedDate) {
-        this.updatedDate = updatedDate;
-    }
+	public Date getCaurUpdatedDate() {
+		return caurUpdatedDate;
+	}
 
-    public Integer getApplyId() {
-        return applyId;
-    }
+	public void setCaurUpdatedDate(Date caurUpdatedDate) {
+		this.caurUpdatedDate = caurUpdatedDate;
+	}
 
-    public void setApplyId(Integer applyId) {
-        this.applyId = applyId;
-    }
+	public Integer getApplyId() {
+		return applyId;
+	}
 
-    public Integer getApplyState() {
-        return applyState;
-    }
+	public void setApplyId(Integer applyId) {
+		this.applyId = applyId;
+	}
 
-    public void setApplyState(Integer applyState) {
-        this.applyState = applyState;
-    }
+	public Integer getCaurApplyState() {
+		return caurApplyState;
+	}
 
-    public Integer getApproveState() {
-        return approveState;
-    }
+	public void setCaurApplyState(Integer caurApplyState) {
+		this.caurApplyState = caurApplyState;
+	}
 
-    public void setApproveState(Integer approveState) {
-        this.approveState = approveState;
-    }
+	public Integer getCaurApproveState() {
+		return caurApproveState;
+	}
+
+	public void setCaurApproveState(Integer caurApproveState) {
+		this.caurApproveState = caurApproveState;
+	}
 }

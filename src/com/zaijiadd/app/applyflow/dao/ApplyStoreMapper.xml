@@ -132,7 +132,20 @@
 			limit #{start,jdbcType=INTEGER}, #{end}
 		</where>
   </select>
-  
+    <!-- 查询审批总-->
+  <select id="queryRoleApproveStoreTry" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+    select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
+    	<where>
+			<if test="whoCheck != null and whoCheck !=''">
+				who_check = #{whoCheck}
+			</if>
+			<if test="applyStatus != null">
+				and apply_status = #{applyStatus}
+			</if>
+			order by created_date desc
+			limit #{start,jdbcType=INTEGER}, #{end}
+		</where>
+  </select>
    <!-- 查询单子详情-->
    <select id="queryApplyStoreDetails" resultType="java.util.HashMap" parameterType="java.lang.Integer" >
     select 
@@ -145,7 +158,7 @@
     <!-- 打印合同 -->
   <select id="printContract" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
     select <include refid="Base_Column_order_printContract_List" /> from cobra_apply_store
-       where yjs_user_id = #{yjsUserId,jdbcType=INTEGER}
+       where apply_store_id = #{applyStoreId,jdbcType=INTEGER}
   </select>
   
   <!-- 增加单子-->
@@ -158,7 +171,9 @@
       urgency_phone, CompanyName, pay_way, 
       paymoney_type, paid_money, need_paymoney, 
       yjs_user_id, finance_check, managers_check, 
-      apply_status,who_check)
+      apply_status,who_check,store_numm, bank_numOne, 
+      bank_numTwo, capital_id, city_id, 
+      district_id, created_date, updated_date)
     values ( #{applyType,jdbcType=INTEGER}, #{applyPersonType,jdbcType=INTEGER}, 
       #{capital,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{district,jdbcType=VARCHAR}, 
       #{agencyType,jdbcType=INTEGER}, #{agencyTime,jdbcType=TIMESTAMP}, #{dealershipNum,jdbcType=INTEGER}, 
@@ -167,7 +182,9 @@
       #{urgencyPhone,jdbcType=VARCHAR}, #{companyname,jdbcType=VARCHAR}, #{payWay,jdbcType=INTEGER}, 
       #{paymoneyType,jdbcType=INTEGER}, #{paidMoney,jdbcType=DECIMAL}, #{needPaymoney,jdbcType=DECIMAL}, 
       #{yjsUserId,jdbcType=INTEGER}, #{financeCheck,jdbcType=INTEGER}, #{managersCheck,jdbcType=INTEGER}, 
-      #{applyStatus,jdbcType=INTEGER},#{whoCheck,jdbcType=INTEGER})
+      #{applyStatus,jdbcType=INTEGER},#{whoCheck,jdbcType=INTEGER}, #{storeNumm,jdbcType=INTEGER}, #{bankNumone,jdbcType=INTEGER}, 
+      #{bankNumtwo,jdbcType=INTEGER}, #{capitalId,jdbcType=INTEGER}, #{cityId,jdbcType=INTEGER}, 
+      #{districtId,jdbcType=INTEGER}, now(), #{updatedDate,jdbcType=TIMESTAMP})
   </insert>
   
   <update id="updateApplyStore" parameterType="com.zaijiadd.app.applyflow.entity.ApplyStore" >
