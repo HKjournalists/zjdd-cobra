@@ -9,10 +9,17 @@
     <result column="city_dealership_money" property="cityDealershipMoney" jdbcType="DECIMAL" />
     <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
     <result column="updated_date" property="updatedDate" jdbcType="TIMESTAMP" />
+     <result column="dealership_num_able" property="dealershipNumAble" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    city_dealership_id, city_type, city_id, sell_dealership_num, city_dealership_money, 
-    created_date, updated_date
+    city_dealership_id as cityDealershipId, city_type as cityType, city_id as cityId , sell_dealership_num as sellDealershipNum,
+     city_dealership_money as cityDealershipMoney, created_date createdDate, updated_date as updatedDate ,dealership_num_able as dealershipNumAble
+  </sql>
+  
+  
+  <sql id="queryDealershipNumAble" >
+    city_dealership_id as cityDealershipId,  city_id as cityId , sell_dealership_num as sellDealershipNum,
+   dealership_num_able as dealershipNumAble
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -27,6 +34,15 @@
     from city_dealership
     where city_id = #{cityId,jdbcType=INTEGER}
   </select>
+  
+  
+   <select id="queryDealershipNumAble" resultType="java.util.HashMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="queryDealershipNumAble" />
+    from city_dealership
+    where city_id = #{cityId,jdbcType=INTEGER}
+  </select>
+  
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from city_dealership

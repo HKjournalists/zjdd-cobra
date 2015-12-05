@@ -366,6 +366,7 @@ public class ApplyFlowController {
 		UserInfoEntity user = getUserMsg(request, jsonRequest);// 用户信息
 		Map<String, Object> param = new HashMap<String, Object>();
 		ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
+		applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 待申请状态
 		Integer userId = user.getUserId();
 
 		applyStore.setYjsUserId(userId);
@@ -633,6 +634,38 @@ public class ApplyFlowController {
 	}
 
 	/**
+	 * 查询银行信息--列表
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryBankList", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> queryBankList(HttpServletRequest request) {
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		Map<String, Object> param = new HashMap<String, Object>();
+		List<Map<String, Object>> bankList = applyFlowService.queryBankList(param);
+		param.put("result", bankList);
+		return ContainerUtils.buildResSuccessMap(param);
+	}
+
+	/**
+	 * 查询城市可以买的经销权个数
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/queryDealershipNumAble", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> queryDealershipNumAble(HttpServletRequest request) {
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		Map<String, Object> param = new HashMap<String, Object>();
+		Integer cityId = jsonRequest.getInteger("cityId");// 每页的数量
+		param.put("cityId", cityId);
+		Map<String, Object> cityDealership = applyFlowService.queryDealershipNumAble(cityId);
+		param.put("result", cityDealership);
+		return ContainerUtils.buildResSuccessMap(param);
+	}
+
+	/**
 	 * 更新开店申请
 	 * @param request
 	 * @return
@@ -644,6 +677,21 @@ public class ApplyFlowController {
 		Map<String, Object> param = new HashMap<String, Object>();
 		ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
 		Integer applyStoreId = applyFlowService.updateApplyStore(applyStore);
+		return ContainerUtils.buildResSuccessMap(param);
+	}
+
+	/**
+	 * 更新是否发起申请
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/updateWhetherStartApply", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> updateWhetherStartApply(HttpServletRequest request) {
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		Map<String, Object> param = new HashMap<String, Object>();
+		ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
+		Integer applyStoreId = applyFlowService.updateWhetherStartApply(applyStore);
 		return ContainerUtils.buildResSuccessMap(param);
 	}
 

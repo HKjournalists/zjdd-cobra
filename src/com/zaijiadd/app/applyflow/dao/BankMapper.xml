@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zaijiadd.app.applyflow.dao.BankMapper" >
+  <resultMap id="BaseResultMap" type="com.zaijiadd.app.applyflow.entity.Bank" >
+    <id column="bank_msg_id" property="bankMsgId" jdbcType="INTEGER" />
+    <result column="bank_name" property="bankName" jdbcType="VARCHAR" />
+    <result column="bank_updated_date" property="bankUpdatedDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    bank_msg_id, bank_name, bank_updated_date
+  </sql>
+    <sql id="Base_Column_queryBankList_List" >
+    bank_msg_id as bankMsgId, bank_name as bankName, bank_updated_date as bankUpdatedDate
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from bank_msg
+    where bank_msg_id = #{bankMsgId,jdbcType=INTEGER}
+  </select>
+  
+    <select id="queryBankList" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+    select 
+    <include refid="Base_Column_queryBankList_List" />
+    from bank_msg
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from bank_msg
+    where bank_msg_id = #{bankMsgId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zaijiadd.app.applyflow.entity.Bank" >
+    insert into bank_msg (bank_msg_id, bank_name, bank_updated_date
+      )
+    values (#{bankMsgId,jdbcType=INTEGER}, #{bankName,jdbcType=VARCHAR}, #{bankUpdatedDate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.zaijiadd.app.applyflow.entity.Bank" >
+    insert into bank_msg
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="bankMsgId != null" >
+        bank_msg_id,
+      </if>
+      <if test="bankName != null" >
+        bank_name,
+      </if>
+      <if test="bankUpdatedDate != null" >
+        bank_updated_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="bankMsgId != null" >
+        #{bankMsgId,jdbcType=INTEGER},
+      </if>
+      <if test="bankName != null" >
+        #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankUpdatedDate != null" >
+        #{bankUpdatedDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zaijiadd.app.applyflow.entity.Bank" >
+    update bank_msg
+    <set >
+      <if test="bankName != null" >
+        bank_name = #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankUpdatedDate != null" >
+        bank_updated_date = #{bankUpdatedDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where bank_msg_id = #{bankMsgId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zaijiadd.app.applyflow.entity.Bank" >
+    update bank_msg
+    set bank_name = #{bankName,jdbcType=VARCHAR},
+      bank_updated_date = #{bankUpdatedDate,jdbcType=TIMESTAMP}
+    where bank_msg_id = #{bankMsgId,jdbcType=INTEGER}
+  </update>
+</mapper>

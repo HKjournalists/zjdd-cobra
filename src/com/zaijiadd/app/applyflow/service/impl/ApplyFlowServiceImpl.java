@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.zaijiadd.app.applyflow.dao.ApplyFlowDao;
 import com.zaijiadd.app.applyflow.dao.ApplyStoreDao;
 import com.zaijiadd.app.applyflow.dao.ApplyUserRelationDao;
+import com.zaijiadd.app.applyflow.dao.BankMapper;
 import com.zaijiadd.app.applyflow.dao.CityDealershipMapper;
 import com.zaijiadd.app.applyflow.dao.CityMapper;
 import com.zaijiadd.app.applyflow.entity.ApplyStore;
@@ -43,6 +44,8 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	ApplyFlowDao applyFlowDao;
 	@Autowired
 	ApplyStoreDao applyStoreDao;
+	@Autowired
+	BankMapper bankMapper;
 	@Autowired
 	CityDealershipMapper cityDealershipMapper;
 	@Autowired
@@ -84,7 +87,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	public Integer addApplyStore(ApplyStore applyStore) {
 		Integer applyType = applyStore.getApplyType();
 
-		Integer paymoneyType = applyStore.getPaymoneyType();
+		Integer paymoneyType = applyStore.getPaymoneyType();// 付款类型
 		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金直接给财务
 			applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 		} else {// 全额
@@ -95,11 +98,19 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 
 			if (applyType.equals(ConstantStorePower.APPLY_TYPE_DEALERSHIP)) {// 经销权
 				// 经销权价格计算
-				Integer dealershipNum = applyStore.getDealershipNum();
+				Integer dealershipNum = applyStore.getDealershipNum();// 经销权个数
 				BigDecimal dealershipNumBig = new BigDecimal(dealershipNum);
+				BigDecimal cityDealershipMoney = new BigDecimal(1);
 				CityDealership cityDealership = cityDealershipMapper.getCityMoneyByCityId(cityId);
-				BigDecimal cityDealershipMoney = cityDealership.getCityDealershipMoney();
-				BigDecimal needPaymoneyCount = cityDealershipMoney.multiply(dealershipNumBig);// 每个城市的价格X个数，需支付的
+				if (cityDealership != null) {
+					cityDealershipMoney = cityDealership.getCityDealershipMoney();
+				}
+				BigDecimal needPaymoneyCount = new BigDecimal(0);
+				if (dealershipNumBig.compareTo(BigDecimal.ZERO) == 0) {
+					needPaymoneyCount = cityDealershipMoney;
+				} else {
+					needPaymoneyCount = cityDealershipMoney.multiply(dealershipNumBig);// 每个城市的价格X个数，需支付的
+				}
 				if (personPaymoneyCount.compareTo(needPaymoneyCount) < 0) {// 没有支付全额
 					// 实际付的金额比应收的金额小，那么给主管审批
 					applyStore.setWhoCheck(ConstantsRole.ROLE_MANAGERS);
@@ -235,11 +246,14 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		ApplyUserRelation applyUserRelation = new ApplyUserRelation();
 		applyUserRelation.setApplyId(applyStoreId);
 		applyUserRelation.setUserid(userId);// userId
+
 		if (ConstantsRole.ROLE_FINANCE.equals(roleId)) {// 财务
 			if (approveState == ConstantStorePower.approve_state_succ) {// 财务同意
 				applyUserRelation.setApplyId(ConstantStorePower.apply_state_succ);
 				applyUserRelation.setCaurApproveState(approveState);
 				this.insertApplyRoleRelation(applyUserRelation);
+
+				updateDealershipNum(applyStoreId);
 
 				ApplyStore applyStore = new ApplyStore();
 				applyStore.setApplyStatus(ConstantStorePower.apply_state_succ);
@@ -268,6 +282,28 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * 更新城市的经销权个数
+	 * @param applyStoreId
+	 */
+
+	void updateDealershipNum(Integer applyStoreId) {
+		Map<String, Object> queryApplyStoreDetails = applyStoreDao.queryApplyStoreDetails(applyStoreId);
+		Integer cityId = (Integer) queryApplyStoreDetails.get("cityId");// 用户的城市id
+		Integer dealershipNum = (Integer) queryApplyStoreDetails.get("dealershipNum");// 用户的经销权个数
+		if (dealershipNum != null && dealershipNum != 0) {
+			CityDealership cityDealership = cityDealershipMapper.getCityMoneyByCityId(cityId);
+			Integer sellDealershipNum = cityDealership.getSellDealershipNum();// 城市经销权总的个数
+			Integer dealershipNumAble = sellDealershipNum - dealershipNum;
+			if (cityDealership != null) {
+				CityDealership cityDealership2 = new CityDealership(cityDealership.getCityDealershipId(), cityId,
+						dealershipNumAble);
+				cityDealershipMapper.updateCityDealership(cityDealership2);
+			}
+		}
+
 	}
 
 	/**
@@ -322,6 +358,33 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	@Override
 	public List<Map<String, Object>> queryRoleApproveStoreTry(Map<String, Object> param) {
 		return applyStoreDao.queryRoleApproveStoreTry(param);
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#queryBankList(java.util.Map)
+	 */
+
+	@Override
+	public List<Map<String, Object>> queryBankList(Map<String, Object> param) {
+		return bankMapper.queryBankList(param);
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#updateWhetherStartApply(com.zaijiadd.app.applyflow.entity.ApplyStore)
+	 */
+
+	@Override
+	public Integer updateWhetherStartApply(ApplyStore applyStore) {
+		return applyStoreDao.updateWhetherStartApply(applyStore);
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#queryDealershipNumAble(java.lang.Integer)
+	 */
+
+	@Override
+	public Map<String, Object> queryDealershipNumAble(Integer cityId) {
+		return cityDealershipMapper.queryDealershipNumAble(cityId);
 	}
 
 }

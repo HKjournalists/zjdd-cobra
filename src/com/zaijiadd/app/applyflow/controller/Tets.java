@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONObject;
+import com.zaijiadd.app.applyflow.entity.ApplyStore;
 import com.zaijiadd.app.common.utils.DateUtils;
 
 /**
@@ -28,8 +30,19 @@ public class Tets {
 
 	public static void main(String[] args) {
 		// testTime();
-		testBigDecimal();
+		// testBigDecimal();
+		testJson();
 
+	}
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 */
+
+	private static void testJson() {
+		ApplyStore applyStore = new ApplyStore();
+		String jsonString = JSONObject.toJSONString(applyStore);
+		System.out.println(jsonString);
 	}
 
 	/**

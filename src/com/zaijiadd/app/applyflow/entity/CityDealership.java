@@ -4,73 +4,103 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class CityDealership {
-    private Integer cityDealershipId;
 
-    private String cityType;
+	/**
+	 * @param cityDealershipId
+	 * @param cityId
+	 * @param dealershipNumAble
+	 */
 
-    private Integer cityId;
+	public CityDealership(Integer cityDealershipId, Integer cityId, Integer dealershipNumAble) {
+		super();
+		this.cityDealershipId = cityDealershipId;
+		this.cityId = cityId;
+		this.dealershipNumAble = dealershipNumAble;
+	}
 
-    private Integer sellDealershipNum;
+	/**
+	 */
 
-    private BigDecimal cityDealershipMoney;
+	public CityDealership() {
+		super();
+	}
 
-    private Date createdDate;
+	private Integer cityDealershipId;
 
-    private Date updatedDate;
+	private String cityType;
 
-    public Integer getCityDealershipId() {
-        return cityDealershipId;
-    }
+	private Integer cityId;
 
-    public void setCityDealershipId(Integer cityDealershipId) {
-        this.cityDealershipId = cityDealershipId;
-    }
+	private Integer sellDealershipNum;
 
-    public String getCityType() {
-        return cityType;
-    }
+	private BigDecimal cityDealershipMoney;
 
-    public void setCityType(String cityType) {
-        this.cityType = cityType;
-    }
+	private Date createdDate;
 
-    public Integer getCityId() {
-        return cityId;
-    }
+	private Date updatedDate;
+	private Integer dealershipNumAble;
 
-    public void setCityId(Integer cityId) {
-        this.cityId = cityId;
-    }
+	public Integer getDealershipNumAble() {
+		return dealershipNumAble;
+	}
 
-    public Integer getSellDealershipNum() {
-        return sellDealershipNum;
-    }
+	public void setDealershipNumAble(Integer dealershipNumAble) {
+		this.dealershipNumAble = dealershipNumAble;
+	}
 
-    public void setSellDealershipNum(Integer sellDealershipNum) {
-        this.sellDealershipNum = sellDealershipNum;
-    }
+	public Integer getCityDealershipId() {
+		return cityDealershipId;
+	}
 
-    public BigDecimal getCityDealershipMoney() {
-        return cityDealershipMoney;
-    }
+	public void setCityDealershipId(Integer cityDealershipId) {
+		this.cityDealershipId = cityDealershipId;
+	}
 
-    public void setCityDealershipMoney(BigDecimal cityDealershipMoney) {
-        this.cityDealershipMoney = cityDealershipMoney;
-    }
+	public String getCityType() {
+		return cityType;
+	}
 
-    public Date getCreatedDate() {
-        return createdDate;
-    }
+	public void setCityType(String cityType) {
+		this.cityType = cityType;
+	}
 
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
+	public Integer getCityId() {
+		return cityId;
+	}
 
-    public Date getUpdatedDate() {
-        return updatedDate;
-    }
+	public void setCityId(Integer cityId) {
+		this.cityId = cityId;
+	}
 
-    public void setUpdatedDate(Date updatedDate) {
-        this.updatedDate = updatedDate;
-    }
+	public Integer getSellDealershipNum() {
+		return sellDealershipNum;
+	}
+
+	public void setSellDealershipNum(Integer sellDealershipNum) {
+		this.sellDealershipNum = sellDealershipNum;
+	}
+
+	public BigDecimal getCityDealershipMoney() {
+		return cityDealershipMoney;
+	}
+
+	public void setCityDealershipMoney(BigDecimal cityDealershipMoney) {
+		this.cityDealershipMoney = cityDealershipMoney;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
 }
