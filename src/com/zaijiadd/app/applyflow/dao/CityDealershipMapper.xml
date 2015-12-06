@@ -105,7 +105,17 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.zaijiadd.app.applyflow.entity.CityDealership" >
+   <update id="updateCityDealership" parameterType="com.zaijiadd.app.applyflow.entity.CityDealership" >
+    update city_dealership
+    <set >  
+       <if test="dealershipNumAble != null" >
+        dealership_num_able = #{dealershipNumAble,jdbcType=INTEGER},
+      </if>
+    
+    </set>
+    where city_dealership_id = #{cityDealershipId,jdbcType=INTEGER}
+  </update>
+  <update id="updateCityDealershipss" parameterType="com.zaijiadd.app.applyflow.entity.CityDealership" >
     update city_dealership
     <set >
       <if test="cityType != null" >
@@ -116,6 +126,9 @@
       </if>
       <if test="sellDealershipNum != null" >
         sell_dealership_num = #{sellDealershipNum,jdbcType=INTEGER},
+      </if>
+       <if test="dealershipNumAble != null" >
+        dealership_num_able = #{dealershipNumAble,jdbcType=INTEGER},
       </if>
       <if test="cityDealershipMoney != null" >
         city_dealership_money = #{cityDealershipMoney,jdbcType=DECIMAL},
