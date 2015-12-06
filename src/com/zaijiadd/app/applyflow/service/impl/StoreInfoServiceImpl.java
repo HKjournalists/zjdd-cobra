@@ -96,50 +96,67 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 	}
 
 	@Override
-	public List<Map<String, Object>> selectByApplicant(Map<String, Object> map) throws Exception {
+	public Map<String, Object> selectByApplicant(Map<String, Object> map) throws Exception {
 		int type = Integer.parseInt(map.get("status").toString());
+		Map<String, Object> resultMap = new HashMap<String, Object>();
 		switch(type) {
 			case -1:
 				break;
 			case 0: //开户申请中
 				map.put("applicant", map.get("userId"));
-				return groupByDay(this.storeInfoDao.selectByApplicant(map), 0);
+				resultMap.put("data", this.storeInfoDao.selectByApplicant(map));
+				resultMap.put("total", this.storeInfoDao.applicantCount(map));
+				return resultMap;
 			case 1://开户成功
 				map.put("status", 1);
 				map.put("addressAuditStatus", 1);
 				map.put("applicant", map.get("userId"));
-				return groupByDay(this.storeInfoDao.selectByApplicant(map), 0);
+				resultMap.put("data", this.storeInfoDao.selectByApplicant(map));
+				resultMap.put("total", this.storeInfoDao.applicantCount(map));
+				return resultMap;
 			case 2://开户失败
 				map.put("status", 1);
 				map.put("addressAuditStatus", -1);
 				map.put("applicant", map.get("userId"));
-				return groupByDay(this.storeInfoDao.selectByApplicant(map), 0);
+				resultMap.put("data", this.storeInfoDao.selectByApplicant(map));
+				resultMap.put("total", this.storeInfoDao.applicantCount(map));
+				return resultMap;
 			case 3://开店待申请
 				map.put("status", 1);
 				map.put("addressAuditStatus", 1);
 				map.put("applicant", map.get("userId"));
-				return groupByDay(this.storeInfoDao.selectByApplicant(map), 1);
+				resultMap.put("data", this.storeInfoDao.selectByApplicant(map));
+				resultMap.put("total", this.storeInfoDao.applicantCount(map));
+				return resultMap;
 			case 4: //开店申请中
 				map.put("status", 2);
 				map.put("shopApplicant", map.get("userId"));
 				map.remove("applicant");
-				return groupByDay(this.storeInfoDao.selectByApplicant(map), 2);
+				resultMap.put("data", this.storeInfoDao.selectByApplicant(map));
+				resultMap.put("total", this.storeInfoDao.applicantCount(map));
+				return resultMap;
 			case 5://开店审核成功
 				map.put("status", 3);
 				map.put("imgsAuditStatus", 1);
 				map.put("shopApplicant", map.get("userId"));
-				return groupByDay(this.storeInfoDao.selectByApplicant(map), 2);
+				resultMap.put("data", this.storeInfoDao.selectByApplicant(map));
+				resultMap.put("total", this.storeInfoDao.applicantCount(map));
+				return resultMap;
 			case 6://开店审核失败
 				map.put("status", 3);
 				map.put("imgsAuditStatus", -1);
 				map.put("shopApplicant", map.get("userId"));
-				return groupByDay(this.storeInfoDao.selectByApplicant(map), 2);
+				resultMap.put("data", this.storeInfoDao.selectByApplicant(map));
+				resultMap.put("total", this.storeInfoDao.applicantCount(map));
+				return resultMap;
 				default:
 					break;
 		}
 		return null;
 	}
 
+	
+	
 	private List<Map<String, Object>> groupByDay(List<StoreInfoDTO> list, int type) {
 		List<Map<String, Object>> returnList = new ArrayList<>();
 		HashSet<String> daySet = new HashSet<>();

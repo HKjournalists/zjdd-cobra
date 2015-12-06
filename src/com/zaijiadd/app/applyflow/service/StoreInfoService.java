@@ -34,7 +34,7 @@ public interface StoreInfoService {
 	   * @return
 	   * @throws Exception
 	   */
-	  List<Map<String, Object>> selectByApplicant(Map<String, Object> map) throws Exception;
+	  Map<String, Object> selectByApplicant(Map<String, Object> map) throws Exception;
 	  /**
 	   * 我的申请列表
 	   * @param map
