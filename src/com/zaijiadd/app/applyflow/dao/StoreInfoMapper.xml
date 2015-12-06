@@ -82,6 +82,29 @@
      <if test="imgsAuditStatus != null" >
         and imgs_audit_status = #{imgsAuditStatus,jdbcType=INTEGER}
      </if>
+     order by application_time desc
+			limit #{start,jdbcType=INTEGER}, #{end}
+  </select>
+  
+  <select id="applicantCount" resultType="Integer" parameterType="map" >
+    select  count(t1.store_id) from store_info t1  
+    
+	where 1=1
+	<if test="status != null" >
+        and status = #{status,jdbcType=INTEGER}
+     </if>
+     <if test="addressAuditStatus != null" >
+        and address_audit_status = #{addressAuditStatus,jdbcType=INTEGER}
+     </if>
+     <if test="applicant != null" >
+        and applicant = #{applicant,jdbcType=INTEGER}
+     </if>
+     <if test="shopApplicant != null" >
+        and shop_applicant = #{shopApplicant,jdbcType=INTEGER}
+     </if>
+     <if test="imgsAuditStatus != null" >
+        and imgs_audit_status = #{imgsAuditStatus,jdbcType=INTEGER}
+     </if>
   </select>
   
    <select id="getMyApproval" resultMap="ApprovalResultMap" parameterType="map" >
@@ -106,6 +129,31 @@
      <if test="imgsAuditStatus != null" >
         and imgs_audit_status = #{imgsAuditStatus,jdbcType=INTEGER}
      </if>
+  </select>
+  
+   <select id="approvalCount" resultType="Integer" parameterType="map" >
+    select  count(t1.store_id) from store_info t1  
+	where 1=1
+	<if test="status != null" >
+        and status = #{status,jdbcType=INTEGER}
+     </if>
+     <if test="addressAuditStatus != null" >
+        and address_audit_status = #{addressAuditStatus,jdbcType=INTEGER}
+     </if>
+     
+     <if test="addressApprover != null" >
+        	and address_approver = #{addressApprover,jdbcType=INTEGER}
+     </if>
+     
+     <if test="imgsApprover != null" >
+        	and imgs_approver = #{imgsApprover,jdbcType=INTEGER}
+     </if>
+     
+     <if test="imgsAuditStatus != null" >
+        and imgs_audit_status = #{imgsAuditStatus,jdbcType=INTEGER}
+     </if>
+      order by application_time desc
+			limit #{start,jdbcType=INTEGER}, #{end}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from store_info

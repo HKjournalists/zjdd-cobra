@@ -49,4 +49,13 @@ public class SystemUserServiceImpl implements SystemUserService {
 		this.userInfoDAO.changePassword(userInfoEntity);
 	}
 
+	@Override
+	public UserInfoEntity getLeader(Integer userId) throws Exception {
+		Map<String, Object> map = new HashMap<>();
+		UserInfoEntity userInfoEntity = this.userInfoDAO.getUserInfoById(userId);
+		map.put("roleId", userInfoEntity.getRoleId());
+		map.put("orgId", userInfoEntity.getOrgId());
+		return this.userInfoDAO.getLeader(map);
+	}
+
 }

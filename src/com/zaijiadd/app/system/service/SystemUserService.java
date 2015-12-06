@@ -9,5 +9,7 @@ public interface SystemUserService {
 	void changePassword(int userId, String password, String newPassword) throws Exception;
 	
 	UserInfoEntity registerUser(String mobile) throws Exception;
+	
+	UserInfoEntity getLeader(Integer userId) throws Exception;
 
 }
