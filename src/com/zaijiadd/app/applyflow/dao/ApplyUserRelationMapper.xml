@@ -36,7 +36,7 @@
 				cpur.roleId = #{roleId}
 			</if>
 			<if test="userId != null and userId !=''">
-				cpur.userId = #{userId}
+				and cpur.userId = #{userId}
 			</if>
 			order by caur_created_date desc
 			limit #{start,jdbcType=INTEGER}, #{end}
