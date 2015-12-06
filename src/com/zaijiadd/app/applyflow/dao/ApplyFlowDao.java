@@ -162,4 +162,28 @@ public interface ApplyFlowDao {
 
 	public List<Map<String, Object>> applyStoreDao(Map<String, Object> param);
 
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	public Integer updateUserAddFlagById(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	public List<Map<String, Object>> queryAllInviteUserMsg(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	public List<Map<String, Object>> queryInviteUserMsgLike(Map<String, Object> param);
+
 }

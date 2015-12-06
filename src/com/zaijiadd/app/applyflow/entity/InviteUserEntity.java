@@ -29,6 +29,15 @@ public class InviteUserEntity {
 	private int yjsUserId;// 用户id
 	private String personNumber;// 身份证
 	private int fuctionSate;// 功能
+	private Integer userAddFlag;
+
+	public Integer getUserAddFlag() {
+		return userAddFlag;
+	}
+
+	public void setUserAddFlag(Integer userAddFlag) {
+		this.userAddFlag = userAddFlag;
+	}
 
 	public Integer getInviteUserid() {
 		return inviteUserid;

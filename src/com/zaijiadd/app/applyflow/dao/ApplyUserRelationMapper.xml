@@ -17,13 +17,11 @@
     caur_apply_state as caurApplyState, caur_approve_state as caurApproveState
   </sql>
   
-    <sql id="Base_Column_queryApproveMsg_List" >
-    cpur.apply_user_relation_id as applyUserRelationId, cpur.userId as userid,  
-    cpur.roleId as roleid, cpur.caur_created_date as caurCreatedDate
-     cpur.caur_updated_date as caurUpdatedDate, cpur.apply_id as applyId, 
-     cpur.caur_apply_state as caurApplyState,  cpur.caur_approve_state as caurApproveState
+   <!-- 查询审批信息 -->
+   <sql id="Base_Column_query_ApproveMsg_List" >
+   apply_id as applyId,caur_approve_state as applyState,apply_name as applyName,paid_money as paidMoney,
+   paymoney_type as paymoneyType,caur_created_date as createdDate
   </sql>
-  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
@@ -31,12 +29,15 @@
     where apply_user_relation_id = #{applyUserRelationId,jdbcType=INTEGER}
   </select>
    <select id="queryApproveMsg" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
-    select * from
-   	(select *  from cobra_apply_user_relation cpur
+   	select <include refid="Base_Column_query_ApproveMsg_List" />  from cobra_apply_user_relation cpur
    	 LEFT JOIN cobra_apply_store cas ON cpur.apply_id=cas.apply_store_id 
-   	 where cpur.roleId = #{roleId}
-	limit #{start,jdbcType=INTEGER}, #{end}
-   	) as a 
+   	 <where>
+			<if test="roleId != null and roleId !=''">
+				cpur.roleId = #{roleId}
+			</if>
+			order by caur_created_date desc
+			limit #{start,jdbcType=INTEGER}, #{end}
+		</where>
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

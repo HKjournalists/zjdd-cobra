@@ -10,7 +10,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
+import com.alibaba.fastjson.JSONObject;
+import com.zaijiadd.app.applyflow.entity.ApplyStore;
 import com.zaijiadd.app.common.utils.DateUtils;
 
 /**
@@ -28,8 +31,33 @@ public class Tets {
 
 	public static void main(String[] args) {
 		// testTime();
-		testBigDecimal();
+		// testBigDecimal();
+		// testJson();
+		testrand();
 
+	}
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 */
+
+	private static void testrand() {
+		Random r = new Random();
+		Double d = r.nextDouble();
+		System.out.println(d);
+		String s = d + "";
+		s = s.substring(3, 3 + 6);
+		System.out.println(s);
+	}
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 */
+
+	private static void testJson() {
+		ApplyStore applyStore = new ApplyStore();
+		String jsonString = JSONObject.toJSONString(applyStore);
+		System.out.println(jsonString);
 	}
 
 	/**

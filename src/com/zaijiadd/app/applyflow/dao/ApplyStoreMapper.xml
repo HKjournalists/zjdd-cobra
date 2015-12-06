@@ -28,7 +28,6 @@
     <result column="managers_check" property="managersCheck" jdbcType="INTEGER" />
     <result column="apply_status" property="applyStatus" jdbcType="INTEGER" />
     <result column="who_check" property="whoCheck" jdbcType="INTEGER" />
-     <result column="agency_year" property="agencyYear" jdbcType="INTEGER" />
     <result column="store_numm" property="storeNumm" jdbcType="INTEGER" />
     <result column="bank_numOne" property="bankNumone" jdbcType="INTEGER" />
     <result column="bank_numTwo" property="bankNumtwo" jdbcType="INTEGER" />
@@ -37,17 +36,33 @@
     <result column="district_id" property="districtId" jdbcType="INTEGER" />
      <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
     <result column="updated_date" property="updatedDate" jdbcType="TIMESTAMP" />
+    
+     <result column="whether_self" property="whetherSelf" jdbcType="INTEGER" />
+    <result column="pay_bank" property="payBank" jdbcType="INTEGER" />
+      <result column="pay_subbranch_bank" property="paySubbranchBank" jdbcType="VARCHAR" />
+    <result column="pay_person_name" property="payPersonName" jdbcType="VARCHAR" />
+    <result column="pay_alipay_num" property="payAlipayNum" jdbcType="VARCHAR" />
+    <result column="poss_num" property="possNum" jdbcType="VARCHAR" />
+    <result column="whether_start_apply" property="whetherStartApply" jdbcType="INTEGER" />
+    <result column="pay_bank_name" property="payBankName" jdbcType="VARCHAR" />
+    <result column="contract_Amount" property="contractAmount" jdbcType="DECIMAL" />
+    <result column="pay_bank_code" property="payBankCode" jdbcType="VARCHAR" />
+      
   </resultMap>
   <sql id="Base_Column_List" >
     apply_store_id as applyStoreId, apply_type as applyType, apply_person_type as applyPersonType, 
     capital as capital, city as city, district as district, agency_type as agencyType, 
     agency_time as agencyTime, dealership_num as dealershipNum, apply_name as applyName, person_num as personNum, 
     phone as phone, post_addr as postAddr, mai_addr as maiAddr, 
-    urgency_person as urgencyPerson, urgency_phone as urgencyPhone, CompanyName as CompanyName, pay_way as payWay,
+    urgency_person as urgencyPerson, urgency_phone as urgencyPhone, CompanyName as companyName, pay_way as payWay,
      paymoney_type as paymoneyType, paid_money as paidMoney, need_paymoney as needPaymoney,  
-    yjs_user_id as yjsUserId, finance_check as financeCheck, managers_check as managersCheck, apply_status as applyStatus,
-    who_check as whoCheck, agency_year as agencyYear, store_numm as storeNumm, bank_numOne bankNumone, bank_numTwo bankNumtwo,
-    capital_id as capitalId , city_id as cityId, district_id as districtId,created_date as createdDate
+    yjs_user_id as userId, finance_check as financeCheck, managers_check as managersCheck, apply_status as applyStatus,
+    who_check as whoCheck,  store_numm as storeNumm, bank_numOne bankNumone, bank_numTwo bankNumtwo,
+    capital_id as capitalId , city_id as cityId, district_id as districtId,created_date as createdDate,
+     whether_self as whetherSelf , pay_bank as payBank, pay_subbranch_bank as paySubbranchBank, 
+     pay_person_name as payPersonName, pay_alipay_num as payAlipayNum, 
+    poss_num as possNum , whether_start_apply as whetherStartApply,pay_bank_name as payBankName,contract_Amount as contractAmount,
+    pay_bank_code as payBankCode
   </sql>
   
      <!-- 查询打印信息-->
@@ -60,27 +75,27 @@
    <!-- 查询订单状态 -->
    <sql id="Base_Column_order_state_List" >
     apply_store_id as applyStoreId, apply_name as applyName, apply_type as applyType, phone as phone,
-    paymoney_type as paymoney_type, created_date as createdDate, 
-    apply_status as applyStatus
+    paymoney_type as paymoneyType, created_date as createdDate, 
+    apply_status as applyStatus,whether_start_apply as whetherStartApply
   </sql>
   
    <!-- 审批首页 -->
    <sql id="Base_Column_Role_Approve_state" >
     apply_store_id as applyStoreId, apply_name as applyName,need_paymoney as needPaymoney,apply_type as applyType, phone as phone,
-    paymoney_type as paymoney_type,created_date as createdDate, 
+    paymoney_type as paymoneyType,created_date as createdDate, 
     apply_status as applyStatus
   </sql>
   
    <!-- 查询财务的order-->
    <sql id="Base_Column_approve_finance_state_List" >
      apply_store_id as applyStoreId, apply_type as applyType, agency_time as agencyTime, apply_name as applyName, 
-     paymoney_type as paymoney_type,need_paymoney as needPaymoney,who_check as whoCheck
+     paymoney_type as paymoneyType,need_paymoney as needPaymoney,who_check as whoCheck
   </sql>
   
    <!-- 查询 managers order -->
    <sql id="Base_Column_approve_managers_state_List" >
     apply_store_id as applyStoreId, apply_type as applyType, agency_time as agencyTime, apply_name as applyName, 
-     paymoney_type as paymoney_type,  apply_status as applyStatus,who_check as whoCheck
+     paymoney_type as paymoneyType,  apply_status as applyStatus,who_check as whoCheck
   </sql>
      <!-- 查询订单状态 -->
   <select id="queryAllApplyStoreSate" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
@@ -151,6 +166,9 @@
 			<if test="applyStatus != null">
 				and apply_status = #{applyStatus}
 			</if>
+			<if test="whetherStartApply != null">
+				and whether_start_apply = #{whetherStartApply}
+			</if>
 			order by created_date desc
 			limit #{start,jdbcType=INTEGER}, #{end}
 		</where>
@@ -180,24 +198,34 @@
       urgency_phone, CompanyName, pay_way, 
       paymoney_type, paid_money, need_paymoney, 
       yjs_user_id, finance_check, managers_check, 
-      apply_status,who_check,store_numm, bank_numOne, 
-      bank_numTwo, capital_id, city_id, 
-      district_id, created_date, updated_date)
-    values ( #{applyType,jdbcType=INTEGER}, #{applyPersonType,jdbcType=INTEGER}, 
+      apply_status, approve_state, who_check, 
+      store_numm, bank_numOne, bank_numTwo, 
+      capital_id, city_id, district_id, 
+      created_date, updated_date, whether_self, 
+      pay_bank, pay_subbranch_bank, pay_person_name, 
+      pay_alipay_num, poss_num, whether_start_apply, 
+      pay_bank_name, contract_Amount, pay_bank_code
+      )
+    values (#{applyType,jdbcType=INTEGER}, #{applyPersonType,jdbcType=INTEGER}, 
       #{capital,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{district,jdbcType=VARCHAR}, 
-      #{agencyType,jdbcType=INTEGER}, #{agencyTime,jdbcType=TIMESTAMP}, #{dealershipNum,jdbcType=INTEGER}, 
+      #{agencyType,jdbcType=INTEGER}, #{agencyTime,jdbcType=INTEGER}, #{dealershipNum,jdbcType=INTEGER}, 
       #{applyName,jdbcType=VARCHAR}, #{personNum,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
       #{postAddr,jdbcType=VARCHAR}, #{maiAddr,jdbcType=VARCHAR}, #{urgencyPerson,jdbcType=VARCHAR}, 
       #{urgencyPhone,jdbcType=VARCHAR}, #{companyname,jdbcType=VARCHAR}, #{payWay,jdbcType=INTEGER}, 
       #{paymoneyType,jdbcType=INTEGER}, #{paidMoney,jdbcType=DECIMAL}, #{needPaymoney,jdbcType=DECIMAL}, 
       #{yjsUserId,jdbcType=INTEGER}, #{financeCheck,jdbcType=INTEGER}, #{managersCheck,jdbcType=INTEGER}, 
-      #{applyStatus,jdbcType=INTEGER},#{whoCheck,jdbcType=INTEGER}, #{storeNumm,jdbcType=INTEGER}, #{bankNumone,jdbcType=INTEGER}, 
-      #{bankNumtwo,jdbcType=INTEGER}, #{capitalId,jdbcType=INTEGER}, #{cityId,jdbcType=INTEGER}, 
-      #{districtId,jdbcType=INTEGER}, now(), #{updatedDate,jdbcType=TIMESTAMP})
+      #{applyStatus,jdbcType=INTEGER}, #{approveState,jdbcType=INTEGER}, #{whoCheck,jdbcType=INTEGER}, 
+      #{storeNumm,jdbcType=INTEGER}, #{bankNumone,jdbcType=INTEGER}, #{bankNumtwo,jdbcType=INTEGER}, 
+      #{capitalId,jdbcType=INTEGER}, #{cityId,jdbcType=INTEGER}, #{districtId,jdbcType=INTEGER}, 
+      #{createdDate,jdbcType=TIMESTAMP}, #{updatedDate,jdbcType=TIMESTAMP}, #{whetherSelf,jdbcType=INTEGER}, 
+      #{payBank,jdbcType=INTEGER}, #{paySubbranchBank,jdbcType=VARCHAR}, #{payPersonName,jdbcType=VARCHAR}, 
+      #{payAlipayNum,jdbcType=VARCHAR}, #{possNum,jdbcType=VARCHAR}, #{whetherStartApply,jdbcType=INTEGER}, 
+      #{payBankName,jdbcType=VARCHAR}, #{contractAmount,jdbcType=DECIMAL}, #{payBankCode,jdbcType=VARCHAR}
+      )
   </insert>
-  
+ 
   <update id="updateApplyStore" parameterType="com.zaijiadd.app.applyflow.entity.ApplyStore" >
-    update cobra_apply_store
+   update cobra_apply_store
     <set >
       <if test="applyType != null" >
         apply_type = #{applyType,jdbcType=INTEGER},
@@ -218,7 +246,7 @@
         agency_type = #{agencyType,jdbcType=INTEGER},
       </if>
       <if test="agencyTime != null" >
-        agency_time = #{agencyTime,jdbcType=TIMESTAMP},
+        agency_time = #{agencyTime,jdbcType=INTEGER},
       </if>
       <if test="dealershipNum != null" >
         dealership_num = #{dealershipNum,jdbcType=INTEGER},
@@ -271,11 +299,78 @@
       <if test="applyStatus != null" >
         apply_status = #{applyStatus,jdbcType=INTEGER},
       </if>
-       <if test="whoCheck != null" >
-        who_check,
+      <if test="approveState != null" >
+        approve_state = #{approveState,jdbcType=INTEGER},
+      </if>
+      <if test="whoCheck != null" >
+        who_check = #{whoCheck,jdbcType=INTEGER},
+      </if>
+      <if test="storeNumm != null" >
+        store_numm = #{storeNumm,jdbcType=INTEGER},
+      </if>
+      <if test="bankNumone != null" >
+        bank_numOne = #{bankNumone,jdbcType=INTEGER},
+      </if>
+      <if test="bankNumtwo != null" >
+        bank_numTwo = #{bankNumtwo,jdbcType=INTEGER},
+      </if>
+      <if test="capitalId != null" >
+        capital_id = #{capitalId,jdbcType=INTEGER},
+      </if>
+      <if test="cityId != null" >
+        city_id = #{cityId,jdbcType=INTEGER},
+      </if>
+      <if test="districtId != null" >
+        district_id = #{districtId,jdbcType=INTEGER},
+      </if>
+      <if test="createdDate != null" >
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedDate != null" >
+        updated_date = #{updatedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="whetherSelf != null" >
+        whether_self = #{whetherSelf,jdbcType=INTEGER},
+      </if>
+      <if test="payBank != null" >
+        pay_bank = #{payBank,jdbcType=INTEGER},
+      </if>
+      <if test="paySubbranchBank != null" >
+        pay_subbranch_bank = #{paySubbranchBank,jdbcType=VARCHAR},
+      </if>
+      <if test="payPersonName != null" >
+        pay_person_name = #{payPersonName,jdbcType=VARCHAR},
+      </if>
+      <if test="payAlipayNum != null" >
+        pay_alipay_num = #{payAlipayNum,jdbcType=VARCHAR},
+      </if>
+      <if test="possNum != null" >
+        poss_num = #{possNum,jdbcType=VARCHAR},
+      </if>
+      <if test="whetherStartApply != null" >
+        whether_start_apply = #{whetherStartApply,jdbcType=INTEGER},
+      </if>
+      <if test="payBankName != null" >
+        pay_bank_name = #{payBankName,jdbcType=VARCHAR},
+      </if>
+      <if test="contractAmount != null" >
+        contract_Amount = #{contractAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="payBankCode != null" >
+        pay_bank_code = #{payBankCode,jdbcType=VARCHAR},
       </if>
     </set>
     where apply_store_id = #{applyStoreId,jdbcType=INTEGER}
   </update>
- 
+  
+  
+  <update id="updateWhetherStartApply" parameterType="com.zaijiadd.app.applyflow.entity.ApplyStore" >
+    update cobra_apply_store
+    <set >
+      <if test="whetherStartApply != null" >
+        whether_start_apply = #{whetherStartApply,jdbcType=INTEGER},
+      </if>
+    </set>
+    where apply_store_id = #{applyStoreId,jdbcType=INTEGER}
+  </update>
 </mapper>

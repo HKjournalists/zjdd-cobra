@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zaijiadd.app.applyflow.dao.BankMapper" >
+  <resultMap id="BaseResultMap" type="com.zaijiadd.app.applyflow.entity.Bank" >
+    <id column="bank_code" property="bankCode" jdbcType="VARCHAR" />
+    <result column="bank_name" property="bankName" jdbcType="VARCHAR" />
+    <result column="short_name" property="shortName" jdbcType="VARCHAR" />
+    <result column="bank_org" property="bankOrg" jdbcType="VARCHAR" />
+    <result column="use_flag" property="useFlag" jdbcType="INTEGER" />
+    <result column="order_b" property="orderB" jdbcType="INTEGER" />
+    <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+    <result column="updated_date" property="updatedDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    bank_code, bank_name, short_name, bank_org, use_flag, order_b, created_date, updated_date
+  </sql>
+  
+   <sql id="Base_Column_queryBankList_List" >
+    bank_name as bankName, short_name as shortName, bank_org as bankCode, use_flag as useFlag
+  </sql>
+   <select id="queryBankList" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+    select 
+    <include refid="Base_Column_queryBankList_List" />
+    from system_bank_define
+    where use_flag = 1 
+    order by order_b
+    
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from system_bank_define
+    where bank_code = #{bankCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from system_bank_define
+    where bank_code = #{bankCode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.zaijiadd.app.applyflow.entity.Bank" >
+    insert into system_bank_define (bank_code, bank_name, short_name, 
+      bank_org, use_flag, order_b, 
+      created_date, updated_date)
+    values (#{bankCode,jdbcType=VARCHAR}, #{bankName,jdbcType=VARCHAR}, #{shortName,jdbcType=VARCHAR}, 
+      #{bankOrg,jdbcType=VARCHAR}, #{useFlag,jdbcType=INTEGER}, #{orderB,jdbcType=INTEGER}, 
+      #{createdDate,jdbcType=TIMESTAMP}, #{updatedDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zaijiadd.app.applyflow.entity.Bank" >
+    insert into system_bank_define
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="bankCode != null" >
+        bank_code,
+      </if>
+      <if test="bankName != null" >
+        bank_name,
+      </if>
+      <if test="shortName != null" >
+        short_name,
+      </if>
+      <if test="bankOrg != null" >
+        bank_org,
+      </if>
+      <if test="useFlag != null" >
+        use_flag,
+      </if>
+      <if test="orderB != null" >
+        order_b,
+      </if>
+      <if test="createdDate != null" >
+        created_date,
+      </if>
+      <if test="updatedDate != null" >
+        updated_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="bankCode != null" >
+        #{bankCode,jdbcType=VARCHAR},
+      </if>
+      <if test="bankName != null" >
+        #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="shortName != null" >
+        #{shortName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankOrg != null" >
+        #{bankOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="useFlag != null" >
+        #{useFlag,jdbcType=INTEGER},
+      </if>
+      <if test="orderB != null" >
+        #{orderB,jdbcType=INTEGER},
+      </if>
+      <if test="createdDate != null" >
+        #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedDate != null" >
+        #{updatedDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zaijiadd.app.applyflow.entity.Bank" >
+    update system_bank_define
+    <set >
+      <if test="bankName != null" >
+        bank_name = #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="shortName != null" >
+        short_name = #{shortName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankOrg != null" >
+        bank_org = #{bankOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="useFlag != null" >
+        use_flag = #{useFlag,jdbcType=INTEGER},
+      </if>
+      <if test="orderB != null" >
+        order_b = #{orderB,jdbcType=INTEGER},
+      </if>
+      <if test="createdDate != null" >
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedDate != null" >
+        updated_date = #{updatedDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where bank_code = #{bankCode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zaijiadd.app.applyflow.entity.Bank" >
+    update system_bank_define
+    set bank_name = #{bankName,jdbcType=VARCHAR},
+      short_name = #{shortName,jdbcType=VARCHAR},
+      bank_org = #{bankOrg,jdbcType=VARCHAR},
+      use_flag = #{useFlag,jdbcType=INTEGER},
+      order_b = #{orderB,jdbcType=INTEGER},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      updated_date = #{updatedDate,jdbcType=TIMESTAMP}
+    where bank_code = #{bankCode,jdbcType=VARCHAR}
+  </update>
+</mapper>

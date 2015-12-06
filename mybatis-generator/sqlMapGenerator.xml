@@ -30,14 +30,14 @@
 		>
 		</table>
 		-->
-	 <!-- 
+	<!-- 
 		<table schema="" tableName="cobra_apply_store" domainObjectName="ApplyStoresss" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" selectByExampleQueryId="false"
 		>
 		</table>
-		-->
-	<!-- 
+	-->
+		<!-- 
 		<table schema="" tableName="cobra_apply_user_relation" domainObjectName="ApplyUserRelationss" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" selectByExampleQueryId="false"
@@ -53,18 +53,27 @@
 		</table>
 		-->
 		
-		<table schema="" tableName="city_dealership" domainObjectName="CityDealership" enableCountByExample="false"
+			<!--
+		<table schema="" tableName="city_dealership" domainObjectName="CityDealershipsssss" enableCountByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false"
+			enableSelectByExample="false" selectByExampleQueryId="false"
+		>
+		</table>
+		-->
+		
+		<table schema="" tableName="cobra_invite_user" domainObjectName="Inviteuserss" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" selectByExampleQueryId="false"
 		>
 		</table>
 		
 		<!--
-		<table schema="" tableName="cobra_invite_user" domainObjectName="cobrainviteusers" enableCountByExample="false"
+		<table schema="" tableName="system_bank_define" domainObjectName="Bank" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" selectByExampleQueryId="false"
 		>
 		</table>
-		-->
+	-->
+		
 	</context>
 </generatorConfiguration>

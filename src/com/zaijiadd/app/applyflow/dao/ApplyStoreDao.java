@@ -98,4 +98,12 @@ public interface ApplyStoreDao {
 
 	List<Map<String, Object>> queryRoleApproveStoreTry(Map<String, Object> param);
 
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStore
+	 * @return
+	 */
+
+	Integer updateWhetherStartApply(ApplyStore applyStore);
+
 }
