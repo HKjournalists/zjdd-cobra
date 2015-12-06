@@ -28,6 +28,7 @@ import com.zaijiadd.app.applyflow.entity.InviteUserEntity;
 import com.zaijiadd.app.applyflow.service.ApplyFlowService;
 import com.zaijiadd.app.system.service.SystemUserService;
 import com.zaijiadd.app.user.dao.UserInfoDAO;
+import com.zaijiadd.app.user.entity.UserInfoEntity;
 import com.zaijiadd.app.utils.constants.ConstantStorePower;
 import com.zaijiadd.app.utils.constants.ConstantsRole;
 
@@ -84,13 +85,14 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	}
 
 	/**
+	 * @throws Exception
 	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#addApplyStore(com.zaijiadd.app.applyflow.entity.ApplyStore)
 	 */
 
 	@Override
-	public String addApplyStore(ApplyStore applyStore) {
+	public String addApplyStore(ApplyStore applyStore) throws Exception {
 		ArrayList<Integer> applyStoreIdList = new ArrayList<Integer>();
-		Integer applyType = applyStore.getApplyType();
+		Integer applyType = applyStore.getApplyType();// 申请类型
 		Integer paymoneyType = applyStore.getPaymoneyType();// 付款类型
 		if (ConstantStorePower.APPLY_TYPE_SMALLSTORE.equals(applyType)) {// 小店
 			Integer storeNumm = applyStore.getStoreNumm();
@@ -105,16 +107,16 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 					}
 
 				}
-			} else {
-				whoCheck(applyStore, applyType, paymoneyType);// 由谁审核
-				Integer addApplyStoreId = applyStoreDao.addApplyStore(applyStore);
-				Integer applyStoreId2 = applyStore.getApplyStoreId();
-				if (applyStoreId2 != null) {
-					applyStoreIdList.add(applyStoreId2);
-
-				}
+			}
+		} else {// 经销权
+			whoCheck(applyStore, applyType, paymoneyType);// 由谁审核
+			Integer addApplyStoreId = applyStoreDao.addApplyStore(applyStore);
+			Integer applyStoreId2 = applyStore.getApplyStoreId();
+			if (applyStoreId2 != null) {
+				applyStoreIdList.add(applyStoreId2);
 
 			}
+
 		}
 		String possNum = generateSerialNum();// 生成流水号
 		for (Integer applyStoreId : applyStoreIdList) {
@@ -131,52 +133,92 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	 * @param applyStore
 	 * @param applyType
 	 * @param paymoneyType
+	 * @throws Exception
 	 */
 
-	void whoCheck(ApplyStore applyStore, Integer applyType, Integer paymoneyType) {
-		// systemUserService.get
+	void whoCheck(ApplyStore applyStore, Integer applyType, Integer paymoneyType) throws Exception {
 		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金直接给财务
 			applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 		} else {// 全额
-			Integer cityId = applyStore.getCityId();
-			BigDecimal paidMoney = applyStore.getPaidMoney();// 已付金额
-			BigDecimal needPaymoney = applyStore.getNeedPaymoney();// 应付金额
-			BigDecimal personPaymoneyCount = paidMoney.add(needPaymoney);// 个人现在已经付的金额
 
 			if (applyType.equals(ConstantStorePower.APPLY_TYPE_DEALERSHIP)) {// 经销权
+
+				BigDecimal personPaymoneyCount = getPersonPaymoneyCount(applyStore);
 				// 经销权价格计算
-				Integer dealershipNum = applyStore.getDealershipNum();// 经销权个数
-				BigDecimal dealershipNumBig = new BigDecimal(dealershipNum);
-				BigDecimal cityDealershipMoney = new BigDecimal(1);
-				CityDealership cityDealership = cityDealershipMapper.getCityMoneyByCityId(cityId);
-				if (cityDealership != null) {
-					cityDealershipMoney = cityDealership.getCityDealershipMoney();
-				}
-				BigDecimal needPaymoneyCount = new BigDecimal(0);
-				if (dealershipNumBig.compareTo(BigDecimal.ZERO) == 0) {
-					needPaymoneyCount = cityDealershipMoney;
-				} else {
-					needPaymoneyCount = cityDealershipMoney.multiply(dealershipNumBig);// 每个城市的价格X个数，需支付的
-				}
+				BigDecimal needPaymoneyCount = getDealershipMoney(applyStore);
+
 				if (personPaymoneyCount.compareTo(needPaymoneyCount) < 0) {// 没有支付全额
+					UserInfoEntity leader = systemUserService.getLeader(applyStore.getYjsUserId());
 					// 实际付的金额比应收的金额小，那么给主管审批
-					applyStore.setWhoCheck(ConstantsRole.ROLE_MANAGERS);
+					applyStore.setWhoCheck(leader.getUserId());
 				} else {// 实际付的金额比应收的金额 相等，给财务
 					applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 				}
 			} else if (applyType.equals(ConstantStorePower.APPLY_TYPE_SMALLSTORE)) {// 小店
+
+				BigDecimal personPaymoneyCount = getPersonPaymoneyCount(applyStore);
 				// 小店价格计算
-				Integer storeNumm = applyStore.getStoreNumm();
-				BigDecimal storeNummBig = new BigDecimal(storeNumm);
-				BigDecimal needPaymoneyCount = ConstantStorePower.STORE_MONEY.multiply(storeNummBig);
+				BigDecimal needPaymoneyCount = getNeedPaymoneyCount(applyStore);
+
 				if (personPaymoneyCount.compareTo(needPaymoneyCount) < 0) {// 没有支付全额
+					UserInfoEntity leader = systemUserService.getLeader(applyStore.getYjsUserId());
 					// 实际付的金额比应收的金额小，那么给主管审批
-					applyStore.setWhoCheck(ConstantsRole.ROLE_MANAGERS);
+					applyStore.setWhoCheck(leader.getUserId());
 				} else {// 实际付的金额比应收的金额 相等，给财务
 					applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 				}
 			}
 		}
+	}
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStore
+	 * @return
+	 */
+
+	BigDecimal getDealershipMoney(ApplyStore applyStore) {
+		Integer dealershipNum = applyStore.getDealershipNum();// 经销权个数
+		BigDecimal dealershipNumBig = new BigDecimal(dealershipNum);
+		BigDecimal cityDealershipMoney = new BigDecimal(1);
+		CityDealership cityDealership = cityDealershipMapper.getCityMoneyByCityId(applyStore.getCityId());
+		if (cityDealership != null) {
+			cityDealershipMoney = cityDealership.getCityDealershipMoney();
+		}
+		BigDecimal needPaymoneyCount = new BigDecimal(0);
+		if (dealershipNumBig.compareTo(BigDecimal.ZERO) == 0) {
+			needPaymoneyCount = cityDealershipMoney;
+		} else {
+			needPaymoneyCount = cityDealershipMoney.multiply(dealershipNumBig);// 每个城市的价格X个数，需支付的
+		}
+		return needPaymoneyCount;
+	}
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStore
+	 * @return
+	 */
+
+	BigDecimal getNeedPaymoneyCount(ApplyStore applyStore) {
+		Integer storeNumm = applyStore.getStoreNumm();
+		BigDecimal storeNummBig = new BigDecimal(storeNumm);
+		BigDecimal needPaymoneyCount = ConstantStorePower.STORE_MONEY.multiply(storeNummBig);
+		return needPaymoneyCount;
+	}
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStore
+	 * @return
+	 */
+
+	BigDecimal getPersonPaymoneyCount(ApplyStore applyStore) {
+		Integer cityId = applyStore.getCityId();
+		BigDecimal paidMoney = applyStore.getPaidMoney();// 已付金额
+		BigDecimal needPaymoney = applyStore.getNeedPaymoney();// 应付金额
+		BigDecimal personPaymoneyCount = paidMoney.add(needPaymoney);// 个人现在已经付的金额
+		return personPaymoneyCount;
 	}
 
 	/**
@@ -304,7 +346,6 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 				ApplyStore applyStore = new ApplyStore();
 				applyStore.setApplyStoreId(applyStoreId);// id
 				applyStore.setApplyStatus(ConstantStorePower.apply_state_succ);// 单子的状态
-				applyStore.setFinanceCheck(ConstantStorePower.approve_state_succ);
 				this.updateApplyStore(applyStore);
 			}
 
@@ -319,7 +360,6 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 				applyStore.setApplyStoreId(applyStoreId);
 				applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 				applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);
-				applyStore.setManagersCheck(ConstantStorePower.approve_state_succ);
 				this.updateApplyStore(applyStore);
 			} else if (approveState == ConstantStorePower.approve_state_fail) {// 主管拒绝
 				applyUserRelation.setApplyId(applyStoreId);
@@ -329,7 +369,6 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 				ApplyStore applyStore = new ApplyStore();
 				applyStore.setApplyStoreId(applyStoreId);
 				applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);
-				applyStore.setManagersCheck(ConstantStorePower.approve_state_fail);
 				this.updateApplyStore(applyStore);
 
 			}
@@ -480,15 +519,44 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	}
 
 	/**
+	 * @throws Exception
 	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#payRemainMoney(com.zaijiadd.app.applyflow.entity.ApplyStore)
 	 */
 
 	@Override
-	public Integer payRemainMoney(ApplyStore applyStore) {
+	public Integer payRemainMoney(ApplyStore applyStore) throws Exception {
 		Integer applyType = applyStore.getApplyType();
 		Integer paymoneyType = applyStore.getPaymoneyType();// 付款类型
 		whoCheck(applyStore, applyType, paymoneyType);
 		return paymoneyType;
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#whetherPayAllMoney(com.zaijiadd.app.applyflow.entity.ApplyStore)
+	 */
+
+	@Override
+	public Boolean whetherPayAllMoney(ApplyStore applyStore) throws Exception {
+		Integer applyType = applyStore.getApplyType();// 申请类型
+		if (applyType.equals(ConstantStorePower.APPLY_TYPE_DEALERSHIP)) {// 经销权
+			BigDecimal personPaymoneyCount = getPersonPaymoneyCount(applyStore);
+			// 经销权价格计算
+			BigDecimal needPaymoneyCount = getDealershipMoney(applyStore);
+
+			if (personPaymoneyCount.compareTo(needPaymoneyCount) < 0) {// 没有支付全额
+				return false;
+			}
+		} else if (applyType.equals(ConstantStorePower.APPLY_TYPE_SMALLSTORE)) {// 小店
+			BigDecimal personPaymoneyCount = getPersonPaymoneyCount(applyStore);
+			// 小店价格计算
+			BigDecimal needPaymoneyCount = getNeedPaymoneyCount(applyStore);
+
+			if (personPaymoneyCount.compareTo(needPaymoneyCount) < 0) {// 没有支付全额
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 }

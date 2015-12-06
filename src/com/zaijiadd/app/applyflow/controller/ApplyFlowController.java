@@ -373,20 +373,25 @@ public class ApplyFlowController {
 	@RequestMapping(value = "/addApplyStore", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> addApplyStore(HttpServletRequest request) {
-		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
-		UserInfoEntity user = getUserMsg(request, jsonRequest);// 用户信息
-		Map<String, Object> param = new HashMap<String, Object>();
-		ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
-		applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 待申请状态
-		applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_NO);// 没有发起收款申请
-		applyStore.setFinanceCheck(ConstantStorePower.approve_state_ready);
-		applyStore.setManagersCheck(ConstantStorePower.approve_state_ready);
-		Integer userId = user.getUserId();
+		try {
+			JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+			UserInfoEntity user = getUserMsg(request, jsonRequest);// 用户信息
+			Map<String, Object> param = new HashMap<String, Object>();
+			ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
+			applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 待申请状态
+			applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_NO);// 没有发起收款申请
+			applyStore.setFinanceCheck(ConstantStorePower.approve_state_ready);
+			applyStore.setManagersCheck(ConstantStorePower.approve_state_ready);
+			Integer userId = user.getUserId();
 
-		applyStore.setYjsUserId(userId);
-		String possNum = applyFlowService.addApplyStore(applyStore);
-		param.put("possNum", possNum);
-		return ContainerUtils.buildResSuccessMap(param);
+			applyStore.setYjsUserId(userId);
+			String possNum = applyFlowService.addApplyStore(applyStore);
+			param.put("possNum", possNum);
+			return ContainerUtils.buildResSuccessMap(param);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ContainerUtils.buildResFailMap();
+		}
 
 	}
 
@@ -474,7 +479,7 @@ public class ApplyFlowController {
 		Integer pageCount = jsonRequest.getInteger("pageCount");// 每页的数量
 		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
 		param.put("end", pageCount);
-		Integer whoCheck = jsonRequest.getInteger("roleId");
+		Integer whoCheck = jsonRequest.getInteger("whoCheck");
 		param.put("whoCheck", whoCheck);// 谁审批
 		param.put("applyStatus", ConstantStorePower.apply_state_ready);
 		param.put("whetherStartApply", ConstantStorePower.WHETHER_STARTAPPLY_YES);
@@ -525,7 +530,10 @@ public class ApplyFlowController {
 
 		UserInfoEntity user = getUserMsg(request, jsonRequest);// 用户信息
 		Integer roleId = user.getRoleId();
+		Integer userId = user.getUserId();
+
 		param.put("roleId", roleId);
+		param.put("userId", userId);
 		List<Map<String, Object>> applyStoreMap = applyFlowService.queryApproveMsg(param);
 		for (Map<String, Object> map : applyStoreMap) {
 			Date createDate = (Date) map.get("createdDate");
@@ -591,12 +599,18 @@ public class ApplyFlowController {
 	@RequestMapping(value = "/payRemainMoney", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> payRemainMoney(HttpServletRequest request) {
-		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
-		Map<String, Object> param = new HashMap<String, Object>();
-		ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
+		try {
+			JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+			Map<String, Object> param = new HashMap<String, Object>();
+			ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
 
-		Integer applyStoreId = applyFlowService.payRemainMoney(applyStore);
-		return ContainerUtils.buildResSuccessMap(param);
+			Integer applyStoreId = applyFlowService.payRemainMoney(applyStore);
+			return ContainerUtils.buildResSuccessMap(param);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ContainerUtils.buildResFailMap();
+		}
+
 	}
 
 	/**
