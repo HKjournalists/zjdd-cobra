@@ -161,9 +161,12 @@ public class ApplyFlowController {
 		param.put("inviteUserid", jsonRequest.getString("inviteUserid"));
 		param.put("fuctionSate", "2");
 		Map<String, Object> inviteUserEntityDet = applyFlowService.queryInviteUserDet(param);
-		Date visitTime = (Date) inviteUserEntityDet.get("visitTime");
-		String sysDateStr = DateUtils.getSysDate(visitTime, "yyyy-MM-dd");
-		inviteUserEntityDet.put("visitTime", sysDateStr);
+		if (inviteUserEntityDet != null) {
+			Date visitTime = (Date) inviteUserEntityDet.get("visitTime");
+			String sysDateStr = DateUtils.getSysDate(visitTime, "yyyy-MM-dd");
+			inviteUserEntityDet.put("visitTime", sysDateStr);
+		}
+
 		param.put("result", inviteUserEntityDet);
 		return ContainerUtils.buildResSuccessMap(param);
 

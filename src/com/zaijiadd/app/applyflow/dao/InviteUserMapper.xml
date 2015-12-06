@@ -217,9 +217,9 @@
 	</update>
 	
 	
-	<update id="updateInviteUser" parameterType="inviteUserEntity">
-		update cobra_invite_user 
-		 <set >
+	 <update id="updateInviteUser" parameterType="com.zaijiadd.app.applyflow.entity.InviteUserEntity" >
+    update cobra_invite_user
+    <set >
       <if test="inviteuserName != null" >
         inviteuser_name = #{inviteuserName,jdbcType=VARCHAR},
       </if>
@@ -238,9 +238,7 @@
       <if test="userState != null" >
         user_state = #{userState,jdbcType=INTEGER},
       </if>
-      <if test="createdDate != null" >
-        created_date = #{createdDate,jdbcType=TIMESTAMP},
-      </if>
+     
       <if test="updatedDate != null" >
         updated_date = #{updatedDate,jdbcType=TIMESTAMP},
       </if>
@@ -259,8 +257,8 @@
       <if test="remark != null" >
         remark = #{remark,jdbcType=LONGVARCHAR},
       </if>
-	</set>
-		where inviteuser_id = #{inviteUserid}
-	</update>
+    </set>
+    where inviteuser_id = #{inviteUserid,jdbcType=INTEGER}
+  </update>
 
 </mapper>
