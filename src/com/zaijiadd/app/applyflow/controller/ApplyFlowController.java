@@ -384,18 +384,8 @@ public class ApplyFlowController {
 		Integer userId = user.getUserId();
 
 		applyStore.setYjsUserId(userId);
-		Integer addApplyStoreId = applyFlowService.addApplyStore(applyStore);
-		Integer applyStoreId = applyStore.getApplyStoreId();
-		// 财务流水号
-		String possNum = applyFlowService.generateSerialNum();
-
-		ApplyStore applyStore2 = new ApplyStore();
-		applyStore2.setApplyStoreId(applyStoreId);
-		applyStore2.setPossNum(possNum);
-		applyFlowService.updateApplyStore(applyStore2);
-
+		String possNum = applyFlowService.addApplyStore(applyStore);
 		param.put("possNum", possNum);
-		param.put("applyStoreId", applyStoreId);
 		return ContainerUtils.buildResSuccessMap(param);
 
 	}
@@ -590,6 +580,22 @@ public class ApplyFlowController {
 		Map<String, Object> param = new HashMap<String, Object>();
 		ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
 		Integer applyStoreId = applyFlowService.updateApplyStore(applyStore);
+		return ContainerUtils.buildResSuccessMap(param);
+	}
+
+	/**
+	 * 支付尾款
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/payRemainMoney", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> payRemainMoney(HttpServletRequest request) {
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		Map<String, Object> param = new HashMap<String, Object>();
+		ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
+
+		Integer applyStoreId = applyFlowService.payRemainMoney(applyStore);
 		return ContainerUtils.buildResSuccessMap(param);
 	}
 

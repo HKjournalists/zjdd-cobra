@@ -50,7 +50,7 @@ public interface ApplyFlowService {
 	 * @return
 	 */
 
-	Integer addApplyStore(ApplyStore applyStore);
+	String addApplyStore(ApplyStore applyStore);
 
 	/**
 	 * (用一句话描述方法的主要功能)
@@ -234,5 +234,13 @@ public interface ApplyFlowService {
 	 */
 
 	String generateSerialNum();
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStore
+	 * @return
+	 */
+
+	Integer payRemainMoney(ApplyStore applyStore);
 
 }

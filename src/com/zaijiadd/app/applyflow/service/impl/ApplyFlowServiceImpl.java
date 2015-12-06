@@ -26,6 +26,7 @@ import com.zaijiadd.app.applyflow.entity.City;
 import com.zaijiadd.app.applyflow.entity.CityDealership;
 import com.zaijiadd.app.applyflow.entity.InviteUserEntity;
 import com.zaijiadd.app.applyflow.service.ApplyFlowService;
+import com.zaijiadd.app.system.service.SystemUserService;
 import com.zaijiadd.app.user.dao.UserInfoDAO;
 import com.zaijiadd.app.utils.constants.ConstantStorePower;
 import com.zaijiadd.app.utils.constants.ConstantsRole;
@@ -55,6 +56,8 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	private UserInfoDAO userInfoDao;
 	@Autowired
 	private CityMapper cityMapper;
+	@Autowired
+	private SystemUserService systemUserService;
 
 	@Override
 	public Integer addInviteUser(InviteUserEntity inviteUserEntity) {
@@ -85,10 +88,53 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	 */
 
 	@Override
-	public Integer addApplyStore(ApplyStore applyStore) {
+	public String addApplyStore(ApplyStore applyStore) {
+		ArrayList<Integer> applyStoreIdList = new ArrayList<Integer>();
 		Integer applyType = applyStore.getApplyType();
-
 		Integer paymoneyType = applyStore.getPaymoneyType();// 付款类型
+		if (ConstantStorePower.APPLY_TYPE_SMALLSTORE.equals(applyType)) {// 小店
+			Integer storeNumm = applyStore.getStoreNumm();
+			if (applyStore != null && storeNumm > 0) {// 有几个小店就插入几次
+				for (int i = 0; i < storeNumm; i++) {
+					whoCheck(applyStore, applyType, paymoneyType);
+					Integer applyStoreId = applyStoreDao.addApplyStore(applyStore);
+					Integer applyStoreId2 = applyStore.getApplyStoreId();
+					if (applyStoreId2 != null) {
+						applyStoreIdList.add(applyStoreId2);
+
+					}
+
+				}
+			} else {
+				whoCheck(applyStore, applyType, paymoneyType);// 由谁审核
+				Integer addApplyStoreId = applyStoreDao.addApplyStore(applyStore);
+				Integer applyStoreId2 = applyStore.getApplyStoreId();
+				if (applyStoreId2 != null) {
+					applyStoreIdList.add(applyStoreId2);
+
+				}
+
+			}
+		}
+		String possNum = generateSerialNum();// 生成流水号
+		for (Integer applyStoreId : applyStoreIdList) {
+			ApplyStore applyStore3 = new ApplyStore();
+			applyStore3.setPossNum(possNum);
+			applyStore3.setApplyStoreId(applyStoreId);
+			updateApplyStore(applyStore3);
+		}
+		return possNum;
+	}
+
+	/**
+	 * 谁审核
+	 * @param applyStore
+	 * @param applyType
+	 * @param paymoneyType
+	 */
+
+	void whoCheck(ApplyStore applyStore, Integer applyType, Integer paymoneyType) {
+		// systemUserService.get
 		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金直接给财务
 			applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 		} else {// 全额
@@ -131,8 +177,6 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 				}
 			}
 		}
-
-		return applyStoreDao.addApplyStore(applyStore);
 	}
 
 	/**
@@ -433,6 +477,18 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		Double d = r.nextDouble();
 		String s = d + "";
 		return s = s.substring(3, 3 + 6);
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#payRemainMoney(com.zaijiadd.app.applyflow.entity.ApplyStore)
+	 */
+
+	@Override
+	public Integer payRemainMoney(ApplyStore applyStore) {
+		Integer applyType = applyStore.getApplyType();
+		Integer paymoneyType = applyStore.getPaymoneyType();// 付款类型
+		whoCheck(applyStore, applyType, paymoneyType);
+		return paymoneyType;
 	}
 
 }
