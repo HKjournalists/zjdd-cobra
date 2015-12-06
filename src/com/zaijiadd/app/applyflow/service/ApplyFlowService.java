@@ -204,4 +204,35 @@ public interface ApplyFlowService {
 
 	Map<String, Object> queryDealershipNumAble(Integer cityId);
 
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	Integer updateUserAddFlagById(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	List<Map<String, Object>> queryAllInviteUserMsg(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	List<Map<String, Object>> queryInviteUserMsgLike(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @return
+	 */
+
+	String generateSerialNum();
+
 }

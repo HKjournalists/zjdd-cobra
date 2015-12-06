@@ -15,11 +15,23 @@
 		<result column="yjs_user_id" property="yjsUserId"/>
 		<result column="person_number" property="personNumber"/>
 		<result column="fuction_sate" property="fuctionSate"/>
+		  <result column="user_add_flag" property="userAddFlag" jdbcType="INTEGER" />
 	</resultMap>
 	<!-- 提取公用的sql片段 -->
-	<sql id="inviteUserEntityLike">
-		inviteuser_id as inviteUserid, inviteuser_name as inviteuserName, apply_role as applyRole, visit_time as visitTime,fuction_sate as fuctionSate,created_date as createDate
+	<!--信息列表-->
+	<sql id="inviteUserEntityLikeMsg">
+		inviteuser_id as inviteUserid, inviteuser_name as inviteuserName, apply_role as applyRole,
+		fuction_sate as fuctionSate,created_date as createDate,
+		inviteuser_mobile as inviteuserMobile
 	</sql>
+	
+	<!-- 邀约列表 -->
+	<sql id="inviteUserEntityLike">
+		inviteuser_id as inviteUserid, inviteuser_name as inviteuserName, 
+		apply_role as applyRole, visit_time as visitTime,fuction_sate as fuctionSate,created_date as createDate,
+		inviteuser_mobile as inviteuserMobile,user_state as userState,user_add_flag as userAddFlag
+	</sql>
+	
 	<sql id="queryAllInviteUser">
 		inviteuser_id as inviteUserid,inviteuser_name as inviteuserName ,inviteuser_mobile as inviteuserMobile,
 		visit_time as visitTime,referrer as referrer,apply_role as applyRole,user_state as userState,
@@ -33,15 +45,20 @@
   	</sql>
   	<!-- 查询邀约记录详情 -->
   	<sql id="Base_Column_queryInviteUserDet_List" >
-   	inviteuser_id as inviteUserid,inviteuser_name as inviteuserName ,inviteuser_mobile as inviteuserMobile,visit_time as visitTime
-		apply_role as applyRole,user_state as userState,remark as remark
+   	inviteuser_id as inviteUserid,inviteuser_name as inviteuserName ,inviteuser_mobile as inviteuserMobile,visit_time as visitTime,
+		apply_role as applyRole,user_state as userState,remark as remark,user_add_flag as userAddFlag
   	</sql>
+  	
+  	
+  	
 	<insert id="addInviteUser" parameterType="inviteUserEntity" useGeneratedKeys="true" keyProperty="inviteUserid">
 		insert into
 			cobra_invite_user
-		(inviteuser_name,inviteuser_mobile,visit_time,referrer,apply_role,user_state,remark,person_number,yjs_user_id,created_date,fuction_sate)	
+		(inviteuser_name,inviteuser_mobile,visit_time,referrer,apply_role,user_state,remark,
+		person_number,yjs_user_id,created_date,fuction_sate,user_add_flag)	
 		values
-		( #{inviteuserName}, #{inviteuserMobile}, #{visitTime}, #{referrer}, #{applyRole},#{userState},#{remark},#{personNumber},#{yjsUserId},now(),#{fuctionSate})
+		( #{inviteuserName}, #{inviteuserMobile}, #{visitTime}, #{referrer},
+		 #{applyRole},#{userState},#{remark},#{personNumber},#{yjsUserId},now(),#{fuctionSate},#{userAddFlag})
 	</insert>
 	
 
@@ -81,7 +98,7 @@
 	</select>
 	
 	<select id="queryInviteUserDet" parameterType="map" resultType="java.util.HashMap">
-		select <include refid="queryAllInviteUser"/> from cobra_invite_user 
+		select <include refid="Base_Column_queryInviteUserDet_List"/> from cobra_invite_user 
 		<where>
 			<if test="yjsUserId != null">
 				and yjs_user_id = #{yjsUserId}
@@ -95,8 +112,34 @@
 		</where>
 	</select>
 	
+	<!-- 邀约 列表-->
 	<select id="queryInviteUserMap" parameterType="map" resultType="java.util.HashMap">
 		select <include refid="inviteUserEntityLike"/> from cobra_invite_user 
+		<where>
+			<if test="inviteuserName != null and inviteuserName !=''">
+				inviteuser_name = #{inviteuserName}
+			</if>
+			<if test="inviteuserMobile != null">
+				and inviteuser_mobile = #{inviteuserMobile}
+			</if>
+			<if test="yjsUserId != null">
+				and yjs_user_id = #{yjsUserId}
+			</if>
+			<if test="userState != null">
+				and user_state = #{userState}
+			</if>
+			<if test="fuctionSate != null">
+				and fuction_sate = #{fuctionSate}
+			</if>
+			order by visit_time desc, user_add_flag DESC
+			limit #{start,jdbcType=INTEGER}, #{end}
+		</where>
+	</select>
+	
+	
+	<!-- 用户信息 列表-->
+	<select id="queryAllInviteUserMsg" parameterType="map" resultType="java.util.HashMap">
+		select <include refid="inviteUserEntityLikeMsg"/> from cobra_invite_user 
 		<where>
 			<if test="inviteuserName != null and inviteuserName !=''">
 				inviteuser_name = #{inviteuserName}
@@ -117,9 +160,27 @@
 			limit #{start,jdbcType=INTEGER}, #{end}
 		</where>
 	</select>
-	
+	<!-- 邀约模糊 -->
 	<select id="queryInviteUserLike" parameterType="map" resultType="java.util.HashMap">
 		select <include refid="inviteUserEntityLike"/> from cobra_invite_user 
+		<where>
+			<if test="yjsUserId != null">
+			  yjs_user_id = #{yjsUserId}
+			</if>
+			<if test="inviteuserName != null">
+				and  inviteuser_name like '%${inviteuserName}%'
+			</if>
+			<if test="fuctionSate != null">
+				and fuction_sate = #{fuctionSate}
+			</if>
+			order by visit_time desc, user_add_flag DESC
+			limit #{start,jdbcType=INTEGER}, #{end}
+		</where>
+	</select>
+	
+	<!-- 用户信息模糊 -->
+	<select id="queryInviteUserMsgLike" parameterType="map" resultType="java.util.HashMap">
+		select <include refid="inviteUserEntityLikeMsg"/> from cobra_invite_user 
 		<where>
 			<if test="yjsUserId != null">
 			  yjs_user_id = #{yjsUserId}
@@ -145,41 +206,61 @@
 		where inviteuser_id = #{inviteUserid}
 	</update>
 	
-	<update id="updateInviteUserMsg" parameterType="inviteUserEntity">
-		update cobra_invite_user ciu
+	<update id="updateUserAddFlagById" parameterType="map">
+		update cobra_invite_user 
 		<set>
-			<if test="inviteuserName != null">
-				ciu.inviteuser_name = #{inviteuserName},
-			</if>
-			<if test="inviteuserMobile != null">
-				ciu.inviteuser_mobile = #{inviteuserMobile},
-			</if>
-			<if test="visitTime != null">
-				ciu.visit_time = #{visitTime},
-			</if>
-			<if test="referrer != null">
-				ciu.referrer = #{referrer},
-			</if>
-			<if test="applyRole != null">
-				ciu.apply_role = #{applyRole},
-			</if>
-			<if test="userState != null">
-				ciu.user_state = #{userState},
-			</if>
-			<if test="remark != null">
-				ciu.remark = #{remark},
-			</if>
-			<if test="createDate != null">
-				ciu.created_date = #{createDate},
-			</if>
-			<if test="updatedDate != null">
-				ciu.updated_date = now(),
-			</if>
-			<if test="personNumber != null">
-				ciu.person_number =#{personNumber},
-			</if>
+		  <if test="userAddFlag != null" >
+        user_add_flag = #{userAddFlag,jdbcType=INTEGER},
+      </if>
 		</set>
-		where ciu.inviteuser_id = #{inviteUserid}
+		where inviteuser_id = #{inviteUserid}
+	</update>
+	
+	
+	<update id="updateInviteUser" parameterType="inviteUserEntity">
+		update cobra_invite_user 
+		 <set >
+      <if test="inviteuserName != null" >
+        inviteuser_name = #{inviteuserName,jdbcType=VARCHAR},
+      </if>
+      <if test="inviteuserMobile != null" >
+        inviteuser_mobile = #{inviteuserMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="visitTime != null" >
+        visit_time = #{visitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="referrer != null" >
+        referrer = #{referrer,jdbcType=VARCHAR},
+      </if>
+      <if test="applyRole != null" >
+        apply_role = #{applyRole,jdbcType=INTEGER},
+      </if>
+      <if test="userState != null" >
+        user_state = #{userState,jdbcType=INTEGER},
+      </if>
+      <if test="createdDate != null" >
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedDate != null" >
+        updated_date = #{updatedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="yjsUserId != null" >
+        yjs_user_id = #{yjsUserId,jdbcType=INTEGER},
+      </if>
+      <if test="personNumber != null" >
+        person_number = #{personNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="fuctionSate != null" >
+        fuction_sate = #{fuctionSate,jdbcType=INTEGER},
+      </if>
+      <if test="userAddFlag != null" >
+        user_add_flag = #{userAddFlag,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=LONGVARCHAR},
+      </if>
+	</set>
+		where inviteuser_id = #{inviteUserid}
 	</update>
 
 </mapper>

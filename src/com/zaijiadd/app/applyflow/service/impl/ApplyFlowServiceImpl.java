@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -271,6 +272,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 
 				ApplyStore applyStore = new ApplyStore();
 				applyStore.setApplyStoreId(applyStoreId);
+				applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 				applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);
 				this.updateApplyStore(applyStore);
 			} else if (approveState == ConstantStorePower.approve_state_fail) {// 主管拒绝
@@ -281,7 +283,6 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 				ApplyStore applyStore = new ApplyStore();
 				applyStore.setApplyStoreId(applyStoreId);
 				applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);
-
 				this.updateApplyStore(applyStore);
 
 			}
@@ -390,6 +391,45 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	@Override
 	public Map<String, Object> queryDealershipNumAble(Integer cityId) {
 		return cityDealershipMapper.queryDealershipNumAble(cityId);
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#updateUserAddFlagById(java.util.Map)
+	 */
+
+	@Override
+	public Integer updateUserAddFlagById(Map<String, Object> param) {
+		return applyFlowDao.updateUserAddFlagById(param);
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#queryAllInviteUserMsg(java.util.Map)
+	 */
+
+	@Override
+	public List<Map<String, Object>> queryAllInviteUserMsg(Map<String, Object> param) {
+		return applyFlowDao.queryAllInviteUserMsg(param);
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#queryInviteUserMsgLike(java.util.Map)
+	 */
+
+	@Override
+	public List<Map<String, Object>> queryInviteUserMsgLike(Map<String, Object> param) {
+		return applyFlowDao.queryInviteUserMsgLike(param);
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#generateSerialNum()
+	 */
+
+	@Override
+	public String generateSerialNum() {
+		Random r = new Random();
+		Double d = r.nextDouble();
+		String s = d + "";
+		return s = s.substring(3, 3 + 6);
 	}
 
 }
