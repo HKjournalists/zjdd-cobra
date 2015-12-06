@@ -310,8 +310,11 @@ public class ApplyFlowController {
 	@ResponseBody
 	public Map<String, Object> updateInviteUser(HttpServletRequest request) {
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		UserInfoEntity user = getUserMsg(request, jsonRequest);// 用户信息
+		Integer userId = user.getUserId();
 		Map<String, Object> param = new HashMap<String, Object>();
 		InviteUserEntity inviteUserEntity = jsonToInviteUserVO(jsonRequest);
+		inviteUserEntity.setYjsUserId(userId);
 		Integer inviteUserId = applyFlowService.updateInviteUser(inviteUserEntity);
 		return ContainerUtils.buildResSuccessMap(param);
 
