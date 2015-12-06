@@ -379,20 +379,22 @@ public class ApplyFlowController {
 		ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
 		applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 待申请状态
 		applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_NO);// 没有发起收款申请
+		applyStore.setFinanceCheck(ConstantStorePower.approve_state_ready);
+		applyStore.setManagersCheck(ConstantStorePower.approve_state_ready);
 		Integer userId = user.getUserId();
 
 		applyStore.setYjsUserId(userId);
 		Integer addApplyStoreId = applyFlowService.addApplyStore(applyStore);
 		Integer applyStoreId = applyStore.getApplyStoreId();
 		// 财务流水号
-		String generateSerialNum = applyFlowService.generateSerialNum();
+		String possNum = applyFlowService.generateSerialNum();
 
 		ApplyStore applyStore2 = new ApplyStore();
 		applyStore2.setApplyStoreId(applyStoreId);
-		applyStore2.setPossNum(generateSerialNum);
+		applyStore2.setPossNum(possNum);
 		applyFlowService.updateApplyStore(applyStore2);
 
-		param.put("generateSerialNum", generateSerialNum);
+		param.put("possNum", possNum);
 		param.put("applyStoreId", applyStoreId);
 		return ContainerUtils.buildResSuccessMap(param);
 
@@ -408,6 +410,8 @@ public class ApplyFlowController {
 	public Map<String, Object> queryApplyStoreDetails(HttpServletRequest request) {
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
 		Map<String, Object> param = new HashMap<String, Object>();
+		UserInfoEntity user = getUserMsg(request, jsonRequest);// 用户信息
+
 		Integer applyStoreId = jsonRequest.getInteger("applyStoreId");
 		Map<String, Object> applyStoreMap = applyFlowService.queryApplyStoreDetails(applyStoreId);
 		applyStoreMapDateToString(applyStoreMap);

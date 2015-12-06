@@ -258,8 +258,9 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 				updateDealershipNum(applyStoreId);
 
 				ApplyStore applyStore = new ApplyStore();
-				applyStore.setApplyStoreId(applyStoreId);
-				applyStore.setApplyStatus(ConstantStorePower.apply_state_succ);
+				applyStore.setApplyStoreId(applyStoreId);// id
+				applyStore.setApplyStatus(ConstantStorePower.apply_state_succ);// 单子的状态
+				applyStore.setFinanceCheck(ConstantStorePower.approve_state_succ);
 				this.updateApplyStore(applyStore);
 			}
 
@@ -274,6 +275,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 				applyStore.setApplyStoreId(applyStoreId);
 				applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 				applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);
+				applyStore.setManagersCheck(ConstantStorePower.approve_state_succ);
 				this.updateApplyStore(applyStore);
 			} else if (approveState == ConstantStorePower.approve_state_fail) {// 主管拒绝
 				applyUserRelation.setApplyId(applyStoreId);
@@ -283,6 +285,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 				ApplyStore applyStore = new ApplyStore();
 				applyStore.setApplyStoreId(applyStoreId);
 				applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);
+				applyStore.setManagersCheck(ConstantStorePower.approve_state_fail);
 				this.updateApplyStore(applyStore);
 
 			}
