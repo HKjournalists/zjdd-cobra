@@ -41,6 +41,6 @@ public interface StoreInfoService {
 	   * @return
 	   * @throws Exception
 	   */
-	  List<Map<String, Object>> getMyApproval(Map<String, Object> map) throws Exception;
+	  Map<String, Object> getMyApproval(Map<String, Object> map) throws Exception;
 
 }

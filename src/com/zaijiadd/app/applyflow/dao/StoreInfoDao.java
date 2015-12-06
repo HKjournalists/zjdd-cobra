@@ -29,4 +29,6 @@ public interface StoreInfoDao {
     List<StoreApprovalDTO> getMyApproval(Map<String, Object> map);
     
     int applicantCount(Map<String, Object> map);
+    
+    int approvalCount(Map<String, Object> map);
 }

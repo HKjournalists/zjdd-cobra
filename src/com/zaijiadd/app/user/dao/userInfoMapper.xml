@@ -20,7 +20,7 @@
 			user_id = #{userId}
 	</select>
 	
-	<select id="getUserInfoByLeaderOrg" parameterType="map" resultType="userInfoEntity">
+	<select id="getLeader" parameterType="map" resultType="userInfoEntity">
 		select
 			user_id userId,
 			mobile mobile,
@@ -37,11 +37,11 @@
 		where
 			orgid = #{orgId}
 			<!-- 销售的直接主管 -->
-			<if test="type == 1">
+			<if test="roleId == 3">
 				and roleid = 2
 			</if>
 			<!-- 主管的直接主管 -->
-			<if test="type == 2">
+			<if test="roleId == 2">
 				and roleid = 1
 			</if>
 		

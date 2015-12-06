@@ -13,7 +13,10 @@ public interface UserInfoDAO {
 	
 	UserInfoEntity getUserInfoForLogin(Map<String, String> map);
 	
+	UserInfoEntity getLeader(Map<String, Object> map);
+	
 	UserInfoEntity getLeaderByOrgId(Integer orgId);
+
 	
 	void changePassword(UserInfoEntity userInfoEntity);
 	

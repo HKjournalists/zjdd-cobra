@@ -252,7 +252,7 @@ public class StoreInfoController {
 			param.put("status", type);
 			//param.put("applicant",  ((UserInfoEntity)request.getSession().getAttribute("user")).getUserId());
 			param.put("userId",  jsonRequest.getString("userId"));
-			result.put("result", this.storeInfoService.selectByApplicant(param));
+			result = this.storeInfoService.selectByApplicant(param);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ContainerUtils.buildResFailMap();
@@ -280,7 +280,7 @@ public class StoreInfoController {
 			param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
 			param.put("end", pageCount);
 			//param.put("applicant",  ((UserInfoEntity)request.getSession().getAttribute("user")).getUserId());
-			result.put("result", this.storeInfoService.selectByApplicant(param));
+			result = this.storeInfoService.selectByApplicant(param);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ContainerUtils.buildResFailMap();
@@ -302,8 +302,12 @@ public class StoreInfoController {
 			JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
 			int type = jsonRequest.getIntValue("type");
 			param.put("type", type);
+			String page = jsonRequest.getString("page");// 当前页
+			Integer pageCount = jsonRequest.getInteger("pageCount");// 每页的数量
+			param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
+			param.put("end", pageCount);
 			param.put("userId",  jsonRequest.getString("userId"));
-			result.put("result", this.storeInfoService.getMyApproval(param));
+			result = this.storeInfoService.getMyApproval(param);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ContainerUtils.buildResFailMap();

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
+import com.zaijiadd.app.applyflow.dao.ApplyStoreDao;
 import com.zaijiadd.app.applyflow.dao.CityMapper;
 import com.zaijiadd.app.applyflow.dao.CountryMapper;
 import com.zaijiadd.app.applyflow.dao.ProvinceMapper;
@@ -21,10 +22,13 @@ import com.zaijiadd.app.applyflow.dao.StoreInfoDao;
 import com.zaijiadd.app.applyflow.dao.TownMapper;
 import com.zaijiadd.app.applyflow.dto.StoreApprovalDTO;
 import com.zaijiadd.app.applyflow.dto.StoreInfoDTO;
+import com.zaijiadd.app.applyflow.entity.ApplyStore;
 import com.zaijiadd.app.applyflow.entity.StoreImg;
 import com.zaijiadd.app.applyflow.entity.StoreInfo;
 import com.zaijiadd.app.applyflow.service.StoreInfoService;
 import com.zaijiadd.app.common.utils.DateUtils;
+import com.zaijiadd.app.user.dao.UserInfoDAO;
+import com.zaijiadd.app.user.entity.UserInfoEntity;
 
 @Service
 public class StoreInfoServiceImpl implements StoreInfoService {
@@ -41,6 +45,11 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 	private TownMapper townMapper;
 	@Autowired
 	private StoreImgDao storeImgDao;
+	@Autowired
+	private ApplyStoreDao applyStoreDao;
+	@Autowired
+	private UserInfoDAO userInfoDAO;
+	
 	
 	@Override
 	public int deleteByPrimaryKey(Long storeId) throws Exception {
@@ -54,6 +63,10 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 		record.setCityName(cityMapper.selectNameById(record.getCity()));
 		record.setDistrictName(countryMapper.selectNameById(record.getDistrict()));
 		record.setStreetName(townMapper.selectNameById(record.getStreet()));
+		ApplyStore applyStore = new ApplyStore();
+		applyStore.setApplyStoreId(record.getApplyStoreId().intValue());
+		applyStore.setApplyStatus(3);
+		applyStoreDao.updateApplyStore(applyStore);
 		return storeInfoDao.insert(record);
 	}
 
@@ -200,25 +213,34 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 	}
 	
 	@Override
-	public List<Map<String, Object>> getMyApproval(Map<String, Object> map) throws Exception {
+	public Map<String, Object> getMyApproval(Map<String, Object> map) throws Exception {
 		int type = Integer.parseInt(map.get("type").toString());
+		Map<String, Object> resultMap = new HashMap<String, Object>();
 		//
 		if(type == 0) {//地址待审批
 			map.put("addressAuditStatus", 0);
 			map.put("status", 0);
-			return groupByApprovalDay(this.storeInfoDao.getMyApproval(map), 0);
+			resultMap.put("data", this.storeInfoDao.getMyApproval(map));
+			resultMap.put("total", this.storeInfoDao.approvalCount(map));
+			return resultMap;
 		} else if(type == 1) { // 地址已审批
 			//map.put("addressAuditStatus", 0);
 			map.put("status", 1);
 			map.put("addressApprover", map.get("userId"));
-			return groupByApprovalDay(this.storeInfoDao.getMyApproval(map), 0);
+			resultMap.put("data", this.storeInfoDao.getMyApproval(map));
+			resultMap.put("total", this.storeInfoDao.approvalCount(map));
+			return resultMap;
 		} else if(type == 2){ // 图片未审批
 			map.put("status", 2);
-			return groupByApprovalDay(this.storeInfoDao.getMyApproval(map), 1);
+			resultMap.put("data", this.storeInfoDao.getMyApproval(map));
+			resultMap.put("total", this.storeInfoDao.approvalCount(map));
+			return resultMap;
 		} else {
 			map.put("status", 3);
 			map.put("imgsApprover", map.get("userId"));
-			return groupByApprovalDay(this.storeInfoDao.getMyApproval(map), 1);
+			resultMap.put("data", this.storeInfoDao.getMyApproval(map));
+			resultMap.put("total", this.storeInfoDao.approvalCount(map));
+			return resultMap;
 		}
 		
 	}
