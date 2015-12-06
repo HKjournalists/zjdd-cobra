@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
-import com.zaijiadd.app.applyflow.dto.StoreApprovalDTO;
 import com.zaijiadd.app.applyflow.dto.StoreInfoDTO;
 import com.zaijiadd.app.applyflow.entity.StoreInfo;
 
@@ -26,7 +25,7 @@ public interface StoreInfoDao {
     
     List<StoreInfoDTO> selectByApplicant(Map<String, Object> map);
     
-    List<StoreApprovalDTO> getMyApproval(Map<String, Object> map);
+    List<StoreInfoDTO> getMyApproval(Map<String, Object> map);
     
     int applicantCount(Map<String, Object> map);
     
