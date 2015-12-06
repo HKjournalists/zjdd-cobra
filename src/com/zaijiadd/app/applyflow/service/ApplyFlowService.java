@@ -48,9 +48,18 @@ public interface ApplyFlowService {
 	 * (用一句话描述方法的主要功能)
 	 * @param applyStore
 	 * @return
+	 * @throws Exception
 	 */
 
-	String addApplyStore(ApplyStore applyStore);
+	String addApplyStore(ApplyStore applyStore) throws Exception;
+
+	/**
+	 * 是否是全额支付
+	 * @param applyStore
+	 * @return
+	 * @throws Exception
+	 */
+	Boolean whetherPayAllMoney(ApplyStore applyStore) throws Exception;
 
 	/**
 	 * (用一句话描述方法的主要功能)
@@ -239,8 +248,9 @@ public interface ApplyFlowService {
 	 * (用一句话描述方法的主要功能)
 	 * @param applyStore
 	 * @return
+	 * @throws Exception
 	 */
 
-	Integer payRemainMoney(ApplyStore applyStore);
+	Integer payRemainMoney(ApplyStore applyStore) throws Exception;
 
 }
