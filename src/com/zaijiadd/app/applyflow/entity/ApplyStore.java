@@ -92,6 +92,15 @@ public class ApplyStore {
 	private String payBankName;
 
 	private BigDecimal contractAmount;
+	private String payBankCode;
+
+	public String getPayBankCode() {
+		return payBankCode;
+	}
+
+	public void setPayBankCode(String payBankCode) {
+		this.payBankCode = payBankCode;
+	}
 
 	public Integer getApplyStoreId() {
 		return applyStoreId;

@@ -246,16 +246,18 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		ApplyUserRelation applyUserRelation = new ApplyUserRelation();
 		applyUserRelation.setApplyId(applyStoreId);
 		applyUserRelation.setUserid(userId);// userId
+		applyUserRelation.setRoleid(roleId);
 
 		if (ConstantsRole.ROLE_FINANCE.equals(roleId)) {// 财务
 			if (approveState == ConstantStorePower.approve_state_succ) {// 财务同意
-				applyUserRelation.setApplyId(ConstantStorePower.apply_state_succ);
+				applyUserRelation.setApplyId(applyStoreId);
 				applyUserRelation.setCaurApproveState(approveState);
 				this.insertApplyRoleRelation(applyUserRelation);
 
 				updateDealershipNum(applyStoreId);
 
 				ApplyStore applyStore = new ApplyStore();
+				applyStore.setApplyStoreId(applyStoreId);
 				applyStore.setApplyStatus(ConstantStorePower.apply_state_succ);
 				this.updateApplyStore(applyStore);
 			}
@@ -263,20 +265,23 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		} else if (ConstantsRole.ROLE_MANAGERS.equals(roleId)) {// 主管
 			applyUserRelation.setCaurApproveState(approveState);
 			if (approveState == ConstantStorePower.approve_state_succ) {// 主管同意
-				applyUserRelation.setApplyId(ConstantStorePower.apply_state_succ);
+				applyUserRelation.setApplyId(applyStoreId);
 				applyUserRelation.setCaurApproveState(approveState);
 				this.insertApplyRoleRelation(applyUserRelation);
 
 				ApplyStore applyStore = new ApplyStore();
+				applyStore.setApplyStoreId(applyStoreId);
 				applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);
 				this.updateApplyStore(applyStore);
 			} else if (approveState == ConstantStorePower.approve_state_fail) {// 主管拒绝
-				applyUserRelation.setApplyId(ConstantStorePower.apply_state_fail);
+				applyUserRelation.setApplyId(applyStoreId);
 				applyUserRelation.setCaurApproveState(approveState);
 				this.insertApplyRoleRelation(applyUserRelation);
 
 				ApplyStore applyStore = new ApplyStore();
+				applyStore.setApplyStoreId(applyStoreId);
 				applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);
+
 				this.updateApplyStore(applyStore);
 
 			}
@@ -295,9 +300,9 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		Integer dealershipNum = (Integer) queryApplyStoreDetails.get("dealershipNum");// 用户的经销权个数
 		if (dealershipNum != null && dealershipNum != 0) {
 			CityDealership cityDealership = cityDealershipMapper.getCityMoneyByCityId(cityId);
-			Integer sellDealershipNum = cityDealership.getSellDealershipNum();// 城市经销权总的个数
-			Integer dealershipNumAble = sellDealershipNum - dealershipNum;
 			if (cityDealership != null) {
+				Integer sellDealershipNum = cityDealership.getSellDealershipNum();// 城市经销权总的个数
+				Integer dealershipNumAble = sellDealershipNum - dealershipNum;
 				CityDealership cityDealership2 = new CityDealership(cityDealership.getCityDealershipId(), cityId,
 						dealershipNumAble);
 				cityDealershipMapper.updateCityDealership(cityDealership2);

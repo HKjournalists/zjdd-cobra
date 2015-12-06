@@ -31,9 +31,13 @@
    <select id="queryApproveMsg" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
    	select <include refid="Base_Column_query_ApproveMsg_List" />  from cobra_apply_user_relation cpur
    	 LEFT JOIN cobra_apply_store cas ON cpur.apply_id=cas.apply_store_id 
-   	 where cpur.roleId = #{roleId}
-	limit #{start,jdbcType=INTEGER}, #{end}
-   	
+   	 <where>
+			<if test="roleId != null and roleId !=''">
+				cpur.roleId = #{roleId}
+			</if>
+			order by caur_created_date desc
+			limit #{start,jdbcType=INTEGER}, #{end}
+		</where>
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

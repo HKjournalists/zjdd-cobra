@@ -44,8 +44,10 @@
     <result column="pay_alipay_num" property="payAlipayNum" jdbcType="VARCHAR" />
     <result column="poss_num" property="possNum" jdbcType="VARCHAR" />
     <result column="whether_start_apply" property="whetherStartApply" jdbcType="INTEGER" />
-     <result column="pay_bank_name" property="payBankName" jdbcType="VARCHAR" />
-      <result column="contract_Amount" property="contractAmount" jdbcType="DECIMAL" />
+    <result column="pay_bank_name" property="payBankName" jdbcType="VARCHAR" />
+    <result column="contract_Amount" property="contractAmount" jdbcType="DECIMAL" />
+    <result column="pay_bank_code" property="payBankCode" jdbcType="VARCHAR" />
+      
   </resultMap>
   <sql id="Base_Column_List" >
     apply_store_id as applyStoreId, apply_type as applyType, apply_person_type as applyPersonType, 
@@ -59,7 +61,8 @@
     capital_id as capitalId , city_id as cityId, district_id as districtId,created_date as createdDate,
      whether_self as whetherSelf , pay_bank as payBank, pay_subbranch_bank as paySubbranchBank, 
      pay_person_name as payPersonName, pay_alipay_num as payAlipayNum, 
-    poss_num as possNum , whether_start_apply as whetherStartApply,pay_bank_name as payBankName,contract_Amount as contractAmount
+    poss_num as possNum , whether_start_apply as whetherStartApply,pay_bank_name as payBankName,contract_Amount as contractAmount,
+    pay_bank_code as payBankCode
   </sql>
   
      <!-- 查询打印信息-->
@@ -163,6 +166,9 @@
 			<if test="applyStatus != null">
 				and apply_status = #{applyStatus}
 			</if>
+			<if test="whetherStartApply != null">
+				and whether_start_apply = #{whetherStartApply}
+			</if>
 			order by created_date desc
 			limit #{start,jdbcType=INTEGER}, #{end}
 		</where>
@@ -184,7 +190,7 @@
   
   <!-- 增加单子-->
   <insert id="addApplyStore" parameterType="com.zaijiadd.app.applyflow.entity.ApplyStore"  useGeneratedKeys="true" keyProperty="applyStoreId">
-    insert into cobra_apply_store ( apply_type, apply_person_type, 
+    insert into cobra_apply_store (apply_type, apply_person_type, 
       capital, city, district, 
       agency_type, agency_time, dealership_num, 
       apply_name, person_num, phone, 
@@ -198,7 +204,8 @@
       created_date, updated_date, whether_self, 
       pay_bank, pay_subbranch_bank, pay_person_name, 
       pay_alipay_num, poss_num, whether_start_apply, 
-      pay_bank_name, contract_Amount)
+      pay_bank_name, contract_Amount, pay_bank_code
+      )
     values (#{applyType,jdbcType=INTEGER}, #{applyPersonType,jdbcType=INTEGER}, 
       #{capital,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{district,jdbcType=VARCHAR}, 
       #{agencyType,jdbcType=INTEGER}, #{agencyTime,jdbcType=INTEGER}, #{dealershipNum,jdbcType=INTEGER}, 
@@ -213,11 +220,12 @@
       #{createdDate,jdbcType=TIMESTAMP}, #{updatedDate,jdbcType=TIMESTAMP}, #{whetherSelf,jdbcType=INTEGER}, 
       #{payBank,jdbcType=INTEGER}, #{paySubbranchBank,jdbcType=VARCHAR}, #{payPersonName,jdbcType=VARCHAR}, 
       #{payAlipayNum,jdbcType=VARCHAR}, #{possNum,jdbcType=VARCHAR}, #{whetherStartApply,jdbcType=INTEGER}, 
-      #{payBankName,jdbcType=VARCHAR}, #{contractAmount,jdbcType=DECIMAL})
+      #{payBankName,jdbcType=VARCHAR}, #{contractAmount,jdbcType=DECIMAL}, #{payBankCode,jdbcType=VARCHAR}
+      )
   </insert>
  
   <update id="updateApplyStore" parameterType="com.zaijiadd.app.applyflow.entity.ApplyStore" >
-    update cobra_apply_store
+   update cobra_apply_store
     <set >
       <if test="applyType != null" >
         apply_type = #{applyType,jdbcType=INTEGER},
@@ -347,6 +355,9 @@
       </if>
       <if test="contractAmount != null" >
         contract_Amount = #{contractAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="payBankCode != null" >
+        pay_bank_code = #{payBankCode,jdbcType=VARCHAR},
       </if>
     </set>
     where apply_store_id = #{applyStoreId,jdbcType=INTEGER}

@@ -3,18 +3,28 @@ package com.zaijiadd.app.applyflow.entity;
 import java.util.Date;
 
 public class Bank {
-    private Integer bankMsgId;
+    private String bankCode;
 
     private String bankName;
 
-    private Date bankUpdatedDate;
+    private String shortName;
 
-    public Integer getBankMsgId() {
-        return bankMsgId;
+    private String bankOrg;
+
+    private Integer useFlag;
+
+    private Integer orderB;
+
+    private Date createdDate;
+
+    private Date updatedDate;
+
+    public String getBankCode() {
+        return bankCode;
     }
 
-    public void setBankMsgId(Integer bankMsgId) {
-        this.bankMsgId = bankMsgId;
+    public void setBankCode(String bankCode) {
+        this.bankCode = bankCode;
     }
 
     public String getBankName() {
@@ -25,11 +35,51 @@ public class Bank {
         this.bankName = bankName;
     }
 
-    public Date getBankUpdatedDate() {
-        return bankUpdatedDate;
+    public String getShortName() {
+        return shortName;
     }
 
-    public void setBankUpdatedDate(Date bankUpdatedDate) {
-        this.bankUpdatedDate = bankUpdatedDate;
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
+    }
+
+    public String getBankOrg() {
+        return bankOrg;
+    }
+
+    public void setBankOrg(String bankOrg) {
+        this.bankOrg = bankOrg;
+    }
+
+    public Integer getUseFlag() {
+        return useFlag;
+    }
+
+    public void setUseFlag(Integer useFlag) {
+        this.useFlag = useFlag;
+    }
+
+    public Integer getOrderB() {
+        return orderB;
+    }
+
+    public void setOrderB(Integer orderB) {
+        this.orderB = orderB;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public Date getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(Date updatedDate) {
+        this.updatedDate = updatedDate;
     }
 }
