@@ -149,7 +149,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 					UserInfoEntity leader = systemUserService.getLeader(applyStore.getYjsUserId());
 					// 实际付的金额比应收的金额小，那么给主管审批
 					applyStore.setWhoCheck(leader.getUserId());
-					applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_NO);//
+					applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_YES);//
 					// 没有发起收款申请
 				} else {// 实际付的金额比应收的金额 相等，给财务
 					applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
@@ -164,7 +164,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 					UserInfoEntity leader = systemUserService.getLeader(applyStore.getYjsUserId());
 					// 实际付的金额比应收的金额小，那么给主管审批
 					applyStore.setWhoCheck(leader.getUserId());
-					applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_NO);//
+					applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_YES);//
 					// 没有发起收款申请
 				} else {// 实际付的金额比应收的金额 相等，给财务
 					applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
@@ -420,10 +420,10 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金
 			applyStore.setApplyStatus(ConstantStorePower.apply_state_fail);// 单子的状态--in
 		}
-		if(ConstantStorePower.APPLY_PAYMONEY_ALL.equals(paymoneyType)){//全额
+		if (ConstantStorePower.APPLY_PAYMONEY_ALL.equals(paymoneyType)) {// 全额
 			ApplyStore applyStoreCopy = this.applyStoreDao.selectByAppStoreId(applyStoreId);
 			Integer storeNumm = applyStoreCopy.getStoreNumm();
-			for(int i = 0; i < storeNumm; i ++) {
+			for (int i = 0; i < storeNumm; i++) {
 				ApplyStoreDetail applyDetailStore = new ApplyStoreDetail();
 				try {
 					PropertyUtils.copyProperties(applyDetailStore, applyStoreCopy);
@@ -436,8 +436,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 					e.printStackTrace();
 				}
 			}
-			
-			
+
 		}
 		applyStore.setApplyStoreId(applyStoreId);// id
 		applyStore.setApplyStatus(ConstantStorePower.apply_state_succ);// 单子的状态
