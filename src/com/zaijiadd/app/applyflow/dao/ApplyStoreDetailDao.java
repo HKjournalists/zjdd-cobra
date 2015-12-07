@@ -73,7 +73,7 @@ public interface ApplyStoreDetailDao {
 	 * @return
 	 */
 
-	Integer updateApplyStore(ApplyStore applyStore);
+	Integer updateApplyStore(ApplyStoreDetail applyStore);
 
 	/**
 	 * (用一句话描述方法的主要功能)
