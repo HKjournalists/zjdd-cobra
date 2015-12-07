@@ -64,7 +64,15 @@
     poss_num as possNum , whether_start_apply as whetherStartApply,pay_bank_name as payBankName,contract_Amount as contractAmount,
     pay_bank_code as payBankCode
   </sql>
-  
+   <sql id="Base_Column_List_two" >
+    apply_store_id, apply_type, apply_person_type, capital, city, district, agency_type, 
+    agency_time, dealership_num, apply_name, person_num, phone, post_addr, mai_addr, 
+    urgency_person, urgency_phone, CompanyName, pay_way, paymoney_type, paid_money, need_paymoney, 
+    yjs_user_id, finance_check, managers_check, apply_status, approve_state, who_check, 
+    store_numm, bank_numOne, bank_numTwo, capital_id, city_id, district_id, created_date, 
+    updated_date, whether_self, pay_bank, pay_subbranch_bank, pay_person_name, pay_alipay_num, 
+    poss_num, whether_start_apply, pay_bank_name, contract_Amount, pay_bank_code
+  </sql>
      <!-- 查询打印信息-->
    <sql id="Base_Column_order_printContract_List" >
     apply_store_id as applyStoreId, apply_name as applyName,capital as capital, city as city, district as district,
@@ -87,7 +95,12 @@
     paymoney_type as paymoneyType,created_date as createdDate, 
     apply_status as applyStatus
   </sql>
-  
+    <select id="selectByAppStoreId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List_two" />
+    from cobra_apply_store
+    where apply_store_id = #{applyStoreId,jdbcType=INTEGER}
+  </select>
   
      <!-- 查询订单状态 -->
   <select id="queryAllApplyStoreSate" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
@@ -103,6 +116,22 @@
 			limit #{start,jdbcType=INTEGER}, #{end}
 		</where>
   </select>
+  <!-- 总数 -->
+    <select id="queryByParamCount" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+  		 select
+		count(1)
+		 from cobra_apply_store
+    	<where>
+			<if test="yjsUserId != null and yjsUserId !=''">
+				yjs_user_id = #{yjsUserId}
+			</if>
+			<if test="applyStatus != null">
+				and apply_status = #{applyStatus}
+			</if>
+			
+		</where>
+  </select>
+  
  <select id="queryApplStoreNotAllMoney" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
     select 
     <include refid="Base_Column_List" />

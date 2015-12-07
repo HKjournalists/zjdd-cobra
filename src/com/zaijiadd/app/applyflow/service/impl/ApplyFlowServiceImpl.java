@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -101,40 +102,17 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 
 	@Override
 	public String addApplyStore(ApplyStore applyStore) throws Exception {
-		ArrayList<Integer> applyStoreIdList = new ArrayList<Integer>();
+
 		Integer applyType = applyStore.getApplyType();// 申请类型
 		Integer paymoneyType = applyStore.getPaymoneyType();// 付款类型
-		if (ConstantStorePower.APPLY_TYPE_SMALLSTORE.equals(applyType)) {// 小店
-			Integer storeNumm = applyStore.getStoreNumm();
-			if (applyStore != null && storeNumm > 0) {// 有几个小店就插入几次
-				for (int i = 0; i < storeNumm; i++) {
-					whoCheck(applyStore, applyType, paymoneyType);
-					Integer applyStoreId = applyStoreDao.addApplyStore(applyStore);
-					Integer applyStoreId2 = applyStore.getApplyStoreId();
-					if (applyStoreId2 != null) {
-						applyStoreIdList.add(applyStoreId2);
+		whoCheck(applyStore, applyType, paymoneyType);
+		Integer applyStoreId = applyStoreDao.addApplyStore(applyStore);
 
-					}
-
-				}
-			}
-		} else {// 经销权
-			whoCheck(applyStore, applyType, paymoneyType);// 由谁审核
-			Integer addApplyStoreId = applyStoreDao.addApplyStore(applyStore);
-			Integer applyStoreId2 = applyStore.getApplyStoreId();
-			if (applyStoreId2 != null) {
-				applyStoreIdList.add(applyStoreId2);
-
-			}
-
-		}
 		String possNum = generateSerialNum();// 生成流水号
-		for (Integer applyStoreId : applyStoreIdList) {
-			ApplyStore applyStore3 = new ApplyStore();
-			applyStore3.setPossNum(possNum);
-			applyStore3.setApplyStoreId(applyStoreId);
-			updateApplyStore(applyStore3);
-		}
+		ApplyStore applyStore2 = new ApplyStore();
+		applyStore2.setPossNum(possNum);
+		applyStore2.setApplyStoreId(applyStoreId);
+		updateApplyStore(applyStore2);
 		return possNum;
 	}
 
@@ -147,17 +125,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	 */
 
 	void whoCheck(ApplyStore applyStore, Integer applyType, Integer paymoneyType) throws Exception {
-		Map<String, Object> applyStoreMap = queryApplyStoreDetails(applyStore.getApplyStoreId());
-		applyType = (Integer) applyStoreMap.get("applyType");
-		Integer cityId = (Integer) applyStoreMap.get("cityId");
-		Integer dealershipNum = (Integer) applyStoreMap.get("dealershipNum");
-		Integer storeNumm = (Integer) applyStoreMap.get("storeNumm");
-		Integer userId = (Integer) applyStoreMap.get("userId");
 
-		applyStore.setCityId(cityId);
-		applyStore.setDealershipNum(dealershipNum);
-		applyStore.setStoreNumm(storeNumm);
-		applyStore.setYjsUserId(userId);
 		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金直接给财务
 			applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 		} else {// 全额
@@ -221,10 +189,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	 */
 
 	BigDecimal getNeedPaymoneyCount(ApplyStore applyStore) {
-		Integer storeNumm = applyStore.getStoreNumm();
-		BigDecimal storeNummBig = new BigDecimal(storeNumm);
-		BigDecimal needPaymoneyCount = ConstantStorePower.STORE_MONEY.multiply(storeNummBig);
-		return needPaymoneyCount;
+		return ConstantStorePower.STORE_MONEY;
 	}
 
 	/**
@@ -431,10 +396,35 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金
 			applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 单子的状态--in
 		}
+
+		Integer applyType = (Integer) queryApplyStoreDetails.get("applyType");// 申请类型是小店
+
+		if (ConstantStorePower.APPLY_TYPE_SMALLSTORE.equals(applyType)) {
+			Integer storeNumm = (Integer) queryApplyStoreDetails.get("storeNumm");
+			ApplyStore applyStore1 = this.selectByAppStoreId(applyStoreId);
+			applyStore1.setApplyStatus(ConstantStorePower.apply_state_succ);
+			applyStore1.setFinanceCheck(ConstantStorePower.apply_state_succ);// 单子的财务状态
+			if (storeNumm != null && storeNumm > 0) {
+				for (int i = 0; i < storeNumm; i++) {
+					applyStoreDao.addApplyStore(applyStore1);
+				}
+			}
+
+		}
 		applyStore.setApplyStoreId(applyStoreId);// id
 		applyStore.setApplyStatus(ConstantStorePower.apply_state_succ);// 单子的状态
 		applyStore.setFinanceCheck(ConstantStorePower.apply_state_succ);// 单子的财务状态
 		this.updateApplyStore(applyStore);
+	}
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStoreId
+	 * @return
+	 */
+
+	private ApplyStore selectByAppStoreId(Integer applyStoreId) {
+		return applyStoreDao.selectByAppStoreId(applyStoreId);
 	}
 
 	/**
@@ -592,15 +582,91 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 
 	@Override
 	public Integer payRemainMoney(ApplyStore applyStore) throws Exception {
-		Integer applyType = applyStore.getApplyType();
-		applyStore.setFinanceCheck(ConstantStorePower.approve_state_ready);
-		applyStore.setManagersCheck(ConstantStorePower.approve_state_ready);
-		applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);
-		applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_NO);
-		Integer paymoneyType = applyStore.getPaymoneyType();// 付款类型
-		whoCheck(applyStore, applyType, paymoneyType);
-		updateApplyStore(applyStore);
+		BigDecimal contractAmount = applyStore.getContractAmount();
+		BigDecimal needPaymoney = applyStore.getNeedPaymoney();
+		BigDecimal paidMoney = applyStore.getPaidMoney();
+		Integer payWay = applyStore.getPayWay();
+		Integer paymoneyType2 = applyStore.getPaymoneyType();
+		Integer whetherSelf = applyStore.getWhetherSelf();
+
+		ApplyStore applyStore2 = this.selectByAppStoreId(applyStore.getApplyStoreId());// 老的记录
+
+		ApplyStore applyStore3 = new ApplyStore();
+		applyStore3.setFinanceCheck(ConstantStorePower.approve_state_ready);
+		applyStore3.setManagersCheck(ConstantStorePower.approve_state_ready);
+		applyStore3.setApplyStatus(ConstantStorePower.apply_state_ready);
+		applyStore3.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_NO);
+		BeanUtils.copyProperties(applyStore3, applyStore2);
+		applyStore3.setContractAmount(contractAmount);
+		applyStore3.setNeedPaymoney(needPaymoney);
+		applyStore3.setPaidMoney(paidMoney);
+		applyStore3.setPayWay(payWay);
+		applyStore3.setPaymoneyType(paymoneyType2);
+		applyStore3.setWhetherSelf(whetherSelf);
+
+		Integer applyStoreId = applyStoreDao.addApplyStore(applyStore3);// 新记录
+		// 审核新记录
+		Integer applyType = applyStore3.getApplyType();
+		Integer paymoneyType = applyStore3.getPaymoneyType();// 付款类型
+		whoCheckpayRemainMoney(applyStore3, applyType, paymoneyType);
+		// 把原来的记录备份
+		applyStore2.setApplyStatus(ConstantStorePower.APPLY_STATE_NOT_PAYALLMONEY);// 尾款，用户不可见
+		updateApplyStore(applyStore2);
 		return paymoneyType;
+	}
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStore
+	 * @param applyType
+	 * @param paymoneyType
+	 * @throws Exception
+	 */
+
+	private void whoCheckpayRemainMoney(ApplyStore applyStore, Integer applyType, Integer paymoneyType)
+			throws Exception {
+		Map<String, Object> applyStoreMap = queryApplyStoreDetails(applyStore.getApplyStoreId());
+		applyType = (Integer) applyStoreMap.get("applyType");
+		Integer cityId = (Integer) applyStoreMap.get("cityId");
+		Integer dealershipNum = (Integer) applyStoreMap.get("dealershipNum");
+		Integer storeNumm = (Integer) applyStoreMap.get("storeNumm");
+		Integer userId = (Integer) applyStoreMap.get("userId");
+
+		applyStore.setCityId(cityId);
+		applyStore.setDealershipNum(dealershipNum);
+		applyStore.setStoreNumm(storeNumm);
+		applyStore.setYjsUserId(userId);
+		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金直接给财务
+			applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
+		} else {// 全额
+			if (applyType.equals(ConstantStorePower.APPLY_TYPE_DEALERSHIP)) {// 经销权
+
+				BigDecimal personPaymoneyCount = getPersonPaymoneyCount(applyStore);
+				// 经销权价格计算
+				BigDecimal needPaymoneyCount = getDealershipMoney(applyStore);
+
+				if (personPaymoneyCount.compareTo(needPaymoneyCount) < 0) {// 没有支付全额
+					UserInfoEntity leader = systemUserService.getLeader(applyStore.getYjsUserId());
+					// 实际付的金额比应收的金额小，那么给主管审批
+					applyStore.setWhoCheck(leader.getUserId());
+				} else {// 实际付的金额比应收的金额 相等，给财务
+					applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
+				}
+			} else if (applyType.equals(ConstantStorePower.APPLY_TYPE_SMALLSTORE)) {// 小店
+
+				BigDecimal personPaymoneyCount = getPersonPaymoneyCount(applyStore);
+				// 小店价格计算
+				BigDecimal needPaymoneyCount = getNeedPaymoneyCount(applyStore);
+
+				if (personPaymoneyCount.compareTo(needPaymoneyCount) < 0) {// 没有支付全额
+					UserInfoEntity leader = systemUserService.getLeader(applyStore.getYjsUserId());
+					// 实际付的金额比应收的金额小，那么给主管审批
+					applyStore.setWhoCheck(leader.getUserId());
+				} else {// 实际付的金额比应收的金额 相等，给财务
+					applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
+				}
+			}
+		}
 	}
 
 	/**
