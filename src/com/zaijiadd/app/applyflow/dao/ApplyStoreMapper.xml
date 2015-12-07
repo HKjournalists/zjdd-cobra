@@ -80,9 +80,10 @@
     finance_check as financeCheck, managers_check as managersCheck
   </sql>
   
-   <!-- 审批首页 -->
+   <!-- 角色审批首页 -->
    <sql id="Base_Column_Role_Approve_state" >
-    apply_store_id as applyStoreId, apply_name as applyName,need_paymoney as needPaymoney,apply_type as applyType, phone as phone,
+    apply_store_id as applyStoreId, apply_name as applyName,need_paymoney as needPaymoney, paid_money as paidMoney,
+    apply_type as applyType, phone as phone,
     paymoney_type as paymoneyType,created_date as createdDate, 
     apply_status as applyStatus
   </sql>
