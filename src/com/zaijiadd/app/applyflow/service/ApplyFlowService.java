@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import com.zaijiadd.app.applyflow.entity.ApplyContract;
 import com.zaijiadd.app.applyflow.entity.ApplyStore;
 import com.zaijiadd.app.applyflow.entity.InviteUserEntity;
 
@@ -258,5 +259,13 @@ public interface ApplyFlowService {
 	 */
 
 	void cleanLoseEfficacyApplyStore();
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyContractParam
+	 * @return
+	 */
+
+	ApplyContract getApplyContract(Map<String, Object> applyContractParam);
 
 }

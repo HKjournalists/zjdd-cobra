@@ -672,6 +672,15 @@ public class ApplyFlowController {
 			BigDecimal needPaymoney = (BigDecimal) printApply.get("needPaymoney");
 			BigDecimal allMoney = needPaymoney.add(paidMoney);
 			printApply.put("allMoney", allMoney);
+
+			// Integer applyType = (Integer) printApply.get("applyType");// 申请类型
+			// Map<String, Object> applyContractParam = new HashMap<String,
+			// Object>();
+			// applyContractParam.put("applyContractType", applyType);
+			// ApplyContract applyContract =
+			// applyFlowService.getApplyContract(applyContractParam);
+			// param.put("applyContractContent",
+			// applyContract.getApplyContractContent());
 		}
 
 		param.put("result", printApply);

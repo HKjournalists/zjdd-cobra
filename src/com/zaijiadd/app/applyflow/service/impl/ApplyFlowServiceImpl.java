@@ -18,12 +18,14 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zaijiadd.app.applyflow.dao.ApplyContractMapper;
 import com.zaijiadd.app.applyflow.dao.ApplyFlowDao;
 import com.zaijiadd.app.applyflow.dao.ApplyStoreDao;
 import com.zaijiadd.app.applyflow.dao.ApplyUserRelationDao;
 import com.zaijiadd.app.applyflow.dao.BankMapper;
 import com.zaijiadd.app.applyflow.dao.CityDealershipMapper;
 import com.zaijiadd.app.applyflow.dao.CityMapper;
+import com.zaijiadd.app.applyflow.entity.ApplyContract;
 import com.zaijiadd.app.applyflow.entity.ApplyStore;
 import com.zaijiadd.app.applyflow.entity.ApplyUserRelation;
 import com.zaijiadd.app.applyflow.entity.City;
@@ -51,6 +53,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	ApplyFlowDao applyFlowDao;
 	@Autowired
 	ApplyStoreDao applyStoreDao;
+
 	@Autowired
 	BankMapper bankMapper;
 	@Autowired
@@ -63,6 +66,9 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	private CityMapper cityMapper;
 	@Autowired
 	private SystemUserService systemUserService;
+
+	@Autowired
+	private ApplyContractMapper applyContractMapper;
 
 	@Override
 	public Integer addInviteUser(InviteUserEntity inviteUserEntity) {
@@ -589,6 +595,8 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		Integer applyType = applyStore.getApplyType();
 		applyStore.setFinanceCheck(ConstantStorePower.approve_state_ready);
 		applyStore.setManagersCheck(ConstantStorePower.approve_state_ready);
+		applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);
+		applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_NO);
 		Integer paymoneyType = applyStore.getPaymoneyType();// 付款类型
 		whoCheck(applyStore, applyType, paymoneyType);
 		updateApplyStore(applyStore);
@@ -637,6 +645,15 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 
 		}
 
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#getApplyContract(java.util.Map)
+	 */
+
+	@Override
+	public ApplyContract getApplyContract(Map<String, Object> applyContractParam) {
+		return applyContractMapper.getApplyContract(applyContractParam);
 	}
 
 }
