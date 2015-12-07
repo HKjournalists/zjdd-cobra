@@ -420,6 +420,10 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金
 			applyStore.setApplyStatus(ConstantStorePower.apply_state_fail);// 单子的状态--in
 		}
+		applyStore.setApplyStoreId(applyStoreId);// id
+		applyStore.setApplyStatus(ConstantStorePower.apply_state_succ);// 单子的状态
+		applyStore.setFinanceCheck(ConstantStorePower.apply_state_succ);// 单子的财务状态
+		this.updateApplyStore(applyStore);
 		if (ConstantStorePower.APPLY_PAYMONEY_ALL.equals(paymoneyType)) {// 全额
 			ApplyStore applyStoreCopy = this.applyStoreDao.selectByAppStoreId(applyStoreId);
 			Integer storeNumm = applyStoreCopy.getStoreNumm();
@@ -427,6 +431,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 				ApplyStoreDetail applyDetailStore = new ApplyStoreDetail();
 				try {
 					PropertyUtils.copyProperties(applyDetailStore, applyStoreCopy);
+					applyDetailStore.setApplyStatus(1);
 					applyStoreDetailDao.addApplyStore(applyDetailStore);
 				} catch (IllegalAccessException e) {
 					e.printStackTrace();
@@ -438,10 +443,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 			}
 
 		}
-		applyStore.setApplyStoreId(applyStoreId);// id
-		applyStore.setApplyStatus(ConstantStorePower.apply_state_succ);// 单子的状态
-		applyStore.setFinanceCheck(ConstantStorePower.apply_state_succ);// 单子的财务状态
-		this.updateApplyStore(applyStore);
+		
 	}
 
 	/**
