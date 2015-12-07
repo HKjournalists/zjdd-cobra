@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.zaijiadd.app.applyflow.dao.CityMapper;
 import com.zaijiadd.app.applyflow.dao.CountryMapper;
+import com.zaijiadd.app.applyflow.dao.ExcelMapper;
 import com.zaijiadd.app.applyflow.dao.ProvinceMapper;
 import com.zaijiadd.app.applyflow.dao.TownMapper;
 import com.zaijiadd.app.applyflow.entity.City;
@@ -42,6 +43,8 @@ public class AreaController {
 	private CountryMapper countryMapper;
 	@Autowired
 	private TownMapper townMapper;
+	@Autowired
+	private ExcelMapper excelMapper;
 	/**
 	 * 省份列表
 	 * @param request
@@ -135,5 +138,27 @@ public class AreaController {
 		return ContainerUtils.buildResSuccessMap(param);
 		
 	}
-
+	
+	
+	/**
+	 * 导入数据
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/init", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> init() {
+		Map<String, Object> param = new HashMap<String, Object>();
+		try {
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("allCount", "5");
+			this.excelMapper.selectByName(map);
+			//param.put("townList", this.areaService.selectByCountryId(countryId));
+		} catch (Exception e) { 
+			e.printStackTrace();
+			return ContainerUtils.buildResFailMap();
+		}
+		return ContainerUtils.buildResSuccessMap(param);
+		
+	}
 }

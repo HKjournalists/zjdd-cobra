@@ -117,4 +117,9 @@
 		<property name="mapperInterface" value="com.zaijiadd.app.applyflow.dao.ApplyContractMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
 	</bean>
+	
+	<bean id="excelMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.zaijiadd.app.applyflow.dao.ExcelMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
 </beans>
