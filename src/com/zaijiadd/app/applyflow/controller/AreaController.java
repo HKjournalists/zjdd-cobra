@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ import com.zaijiadd.app.applyflow.dao.ProvinceMapper;
 import com.zaijiadd.app.applyflow.dao.TownMapper;
 import com.zaijiadd.app.applyflow.entity.City;
 import com.zaijiadd.app.applyflow.entity.Country;
+import com.zaijiadd.app.applyflow.entity.Excel;
 import com.zaijiadd.app.applyflow.entity.Town;
 import com.zaijiadd.app.applyflow.service.AreaService;
 import com.zaijiadd.app.common.utils.ContainerUtils;
@@ -151,8 +153,37 @@ public class AreaController {
 		Map<String, Object> param = new HashMap<String, Object>();
 		try {
 			Map<String, String> map = new HashMap<String, String>();
-			map.put("allCount", "5");
-			this.excelMapper.selectByName(map);
+			map.put("allCount", "3");
+			List<Excel> list = this.excelMapper.selectByName(map);
+			for(int i = 0; i < list.size(); i ++) {
+				Excel excel = list.get(i);
+				/*City city = this.cityMapper.selectCityByName(excel.getCityName());
+				if(city != null) {
+					city.setTotalDealership(10);
+					city.setAlreadySoldNum(Integer.parseInt(excel.getCount1()));
+					if(StringUtils.isNotBlank(excel.getCount2())) {
+						city.setDepositNum(Integer.parseInt(excel.getCount2()));
+					}
+				
+					this.cityMapper.updateByPrimaryKeySelective(city);
+				}*/
+				List<Country> countryList = this.countryMapper.selectByName(excel.getCountryName());
+				if(countryList != null) {
+					for(Country country: countryList ){
+						
+					if(country != null) {
+						country.setTotalDealership(3);
+						country.setAlreadySoldNum(Integer.parseInt(excel.getCount1()));
+						if(StringUtils.isNotBlank(excel.getCount2())) {
+							country.setDepositNum(Integer.parseInt(excel.getCount2()));
+						}
+					
+						this.countryMapper.updateByPrimaryKeySelective(country);
+					}
+					}
+				}
+				
+			}
 			//param.put("townList", this.areaService.selectByCountryId(countryId));
 		} catch (Exception e) { 
 			e.printStackTrace();

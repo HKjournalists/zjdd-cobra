@@ -21,6 +21,11 @@
     	from country  where country_id = #{countryId,jdbcType=INTEGER} 
   </select>
   
+   <select id="selectByName" resultMap="BaseResultMap" parameterType="string">
+    select *
+    	from country  where country_name = #{countryName,jdbcType=VARCHAR} 
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from country
     where country_id = #{countryId,jdbcType=INTEGER}

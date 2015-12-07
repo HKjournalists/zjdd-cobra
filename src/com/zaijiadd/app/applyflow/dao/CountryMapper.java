@@ -24,4 +24,6 @@ public interface CountryMapper {
     int updateByPrimaryKeySelective(Country record);
 
     int updateByPrimaryKey(Country record);
+    
+    List<Country> selectByName(String selectByName);
 }

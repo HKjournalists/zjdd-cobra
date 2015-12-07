@@ -25,6 +25,8 @@ public interface CityMapper {
 	int updateByPrimaryKeySelective(City record);
 
 	int updateByPrimaryKey(City record);
+	
+	City selectCityByName(String name);
 
 	/**
 	 * (用一句话描述方法的主要功能)

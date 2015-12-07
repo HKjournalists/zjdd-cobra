@@ -28,6 +28,7 @@
     select city_name
     	from city  where city_id = #{cityId,jdbcType=INTEGER} 
   </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from city
     where city_id = #{cityId,jdbcType=INTEGER}
