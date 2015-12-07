@@ -79,6 +79,7 @@ public class StoreInfoController {
 			StoreInfoVO storeInfoVO = new StoreInfoVO();
 			//PropertyUtils.copyProperties(storeInfoVO, this.storeInfoService.selectByPrimaryKey(storeId));
 			param.put("detail", this.storeInfoService.selectByPrimaryKey(storeId));
+			param.put("imgs", this.storeInfoService.selectImgsByStoreId(storeId));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ContainerUtils.buildResFailMap();
