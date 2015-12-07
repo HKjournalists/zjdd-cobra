@@ -18,6 +18,8 @@ public interface StoreInfoDao {
     int insertSelective(StoreInfo record);
 
     StoreInfo selectByPrimaryKey(Long storeId);
+    
+    StoreInfo selectByShopId(Long shopId);
 
     int updateByPrimaryKeySelective(StoreInfo record);
 
@@ -25,9 +27,17 @@ public interface StoreInfoDao {
     
     List<StoreInfoDTO> selectByApplicant(Map<String, Object> map);
     
+    List<StoreInfoDTO> selectShopByApplicant(Map<String, Object> map);
+    
     List<StoreInfoDTO> getMyApproval(Map<String, Object> map);
+    
+    List<StoreInfoDTO> getShopApproval(Map<String, Object> map);
     
     int applicantCount(Map<String, Object> map);
     
+    int applicantShopCount(Map<String, Object> map);
+    
     int approvalCount(Map<String, Object> map);
+    
+    int approvalShopCount(Map<String, Object> map);
 }

@@ -10,6 +10,7 @@
     <result column="imgs_audit_status" property="imgsAuditStatus" jdbcType="TINYINT" />
     <result column="imgs_audit_opinion" property="imgsAuditOpinion" jdbcType="VARCHAR" />
     <result column="application_shop_time" property="applicationShopTime" jdbcType="TIMESTAMP" />
+     <result column="is_history" property="isHistory" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     shop_id, store_id, shop_applicant, imgs_approval_time, imgs_approver, imgs_audit_status, 
@@ -31,10 +32,10 @@
 	</selectKey>
     insert into shop_apply (shop_id, store_id, shop_applicant, 
       imgs_approval_time, imgs_approver, imgs_audit_status, 
-      imgs_audit_opinion, application_shop_time)
+      imgs_audit_opinion, application_shop_time, is_history)
     values (#{shopId,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{shopApplicant,jdbcType=INTEGER}, 
       #{imgsApprovalTime,jdbcType=TIMESTAMP}, #{imgsApprover,jdbcType=INTEGER}, #{imgsAuditStatus,jdbcType=TINYINT}, 
-      #{imgsAuditOpinion,jdbcType=VARCHAR}, #{applicationShopTime,jdbcType=TIMESTAMP})
+      #{imgsAuditOpinion,jdbcType=VARCHAR}, #{applicationShopTime,jdbcType=TIMESTAMP}, #{isHistory,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.zaijiadd.app.applyflow.entity.ShopApply" >
     insert into shop_apply
@@ -105,6 +106,9 @@
       </if>
       <if test="imgsAuditOpinion != null" >
         imgs_audit_opinion = #{imgsAuditOpinion,jdbcType=VARCHAR},
+      </if>
+       <if test="isHistory != null" >
+        	is_history = #{isHistory,jdbcType=INTEGER},
       </if>
     </set>
     where shop_id = #{shopId,jdbcType=BIGINT}

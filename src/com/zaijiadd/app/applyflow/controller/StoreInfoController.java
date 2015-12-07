@@ -118,6 +118,28 @@ public class StoreInfoController {
 	}
 	
 	/**
+	 * 开店申请查看
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/shopDetail/{shopId}", method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String, Object> shopDetail(@PathVariable Long shopId) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		try {
+			StoreInfoVO storeInfoVO = new StoreInfoVO();
+			//PropertyUtils.copyProperties(storeInfoVO, this.storeInfoService.selectByPrimaryKey(storeId));
+			param.put("detail", this.storeInfoService.selectByShopId(shopId));
+			param.put("imgs", this.storeInfoService.selectImgsByStoreId(shopId));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ContainerUtils.buildResFailMap();
+		}
+		return ContainerUtils.buildResSuccessMap(param);
+
+	}
+	
+	/**
 	 * 地址审核初始化
 	 * @param request
 	 * @return
@@ -178,9 +200,9 @@ public class StoreInfoController {
 			JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
 			JSONArray fileUrls = jsonRequest.getJSONArray("fileUrls");
 			//String[] fileUrls = request.getParameterValues("fileUrls");
-			Long storeId = jsonRequest.getLong("storeId");
+			Long storeId = jsonRequest.getLong("shopId");
 			Integer userId = jsonRequest.getInteger("userId");
-			this.storeInfoService.applicationShop(fileUrls, storeId, userId);
+			this.storeInfoService.ReApplicationShop(fileUrls, storeId, userId);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ContainerUtils.buildResFailMap();

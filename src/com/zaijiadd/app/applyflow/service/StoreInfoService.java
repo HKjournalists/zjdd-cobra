@@ -34,6 +34,8 @@ public interface StoreInfoService {
 	  
 	  void applicationShop(JSONArray fileUrls, Long storeId, Integer userId) throws Exception;
 	  
+	  void ReApplicationShop(JSONArray fileUrls, Long storeId, Integer userId) throws Exception;
+	  
 	  List<StoreImg> selectImgsByStoreId(Long storeId) throws Exception;
 	  
 	  /**
@@ -50,5 +52,7 @@ public interface StoreInfoService {
 	   * @throws Exception
 	   */
 	  Map<String, Object> getMyApproval(Map<String, Object> map) throws Exception;
+	  
+	  StoreInfo selectByShopId(Long shopId)throws Exception;
 
 }
