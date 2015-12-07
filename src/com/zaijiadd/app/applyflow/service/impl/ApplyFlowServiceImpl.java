@@ -642,6 +642,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		Integer applyType = applyStore3.getApplyType();
 		Integer paymoneyType = applyStore3.getPaymoneyType();// 付款类型
 		whoCheckpayRemainMoney(applyStore3, applyType, paymoneyType);
+		updateApplyStore(applyStore3);
 		// 把原来的记录备份
 		applyStore2.setApplyStatus(ConstantStorePower.APPLY_STATE_NOT_PAYALLMONEY);// 尾款，用户不可见
 		updateApplyStore(applyStore2);
