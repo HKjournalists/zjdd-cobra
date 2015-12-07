@@ -428,18 +428,20 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		if (ConstantStorePower.APPLY_PAYMONEY_ALL.equals(paymoneyType)) {// 全额
 			ApplyStore applyStoreCopy = this.applyStoreDao.selectByAppStoreId(applyStoreId);
 			Integer storeNumm = applyStoreCopy.getStoreNumm();
-			for (int i = 0; i < storeNumm; i++) {
-				ApplyStoreDetail applyDetailStore = new ApplyStoreDetail();
-				try {
-					PropertyUtils.copyProperties(applyDetailStore, applyStoreCopy);
-					applyDetailStore.setApplyStatus(1);
-					applyStoreDetailDao.addApplyStore(applyDetailStore);
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (NoSuchMethodException e) {
-					e.printStackTrace();
+			if(storeNumm != null) {
+				for (int i = 0; i < storeNumm; i++) {
+					ApplyStoreDetail applyDetailStore = new ApplyStoreDetail();
+					try {
+						PropertyUtils.copyProperties(applyDetailStore, applyStoreCopy);
+						applyDetailStore.setApplyStatus(1);
+						applyStoreDetailDao.addApplyStore(applyDetailStore);
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					} catch (NoSuchMethodException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 
