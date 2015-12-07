@@ -33,9 +33,10 @@
     where city_id = #{cityId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.zaijiadd.app.applyflow.entity.City" >
-    insert into city (city_id, city_name, province_id
+    insert into city (city_id, city_name, province_id,total_dealership,already_sold_num,deposit_num
       )
-    values (#{cityId,jdbcType=INTEGER}, #{cityName,jdbcType=VARCHAR}, #{provinceId,jdbcType=INTEGER}
+    values (#{cityId,jdbcType=INTEGER}, #{cityName,jdbcType=VARCHAR}, #{provinceId,jdbcType=INTEGER},
+    	#{totalDealership,jdbcType=INTEGER},#{alreadySoldNum,jdbcType=INTEGER},#{depositNum,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.zaijiadd.app.applyflow.entity.City" >
@@ -71,6 +72,15 @@
       </if>
       <if test="provinceId != null" >
         province_id = #{provinceId,jdbcType=INTEGER},
+      </if>
+      <if test="totalDealership != null" >
+        total_dealership = #{totalDealership,jdbcType=INTEGER},
+      </if>
+      <if test="alreadySoldNum != null" >
+        already_sold_num = #{alreadySoldNum,jdbcType=INTEGER},
+      </if>
+      <if test="depositNum != null" >
+        deposit_num = #{depositNum,jdbcType=INTEGER},
       </if>
     </set>
     where city_id = #{cityId,jdbcType=INTEGER}
