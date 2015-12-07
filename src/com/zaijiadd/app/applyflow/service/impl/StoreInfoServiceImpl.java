@@ -25,7 +25,7 @@ import com.zaijiadd.app.applyflow.dao.TownMapper;
 import com.zaijiadd.app.applyflow.dto.ShopVO;
 import com.zaijiadd.app.applyflow.dto.StoreApprovalDTO;
 import com.zaijiadd.app.applyflow.dto.StoreInfoDTO;
-import com.zaijiadd.app.applyflow.entity.ApplyStore;
+import com.zaijiadd.app.applyflow.entity.ApplyStoreDetail;
 import com.zaijiadd.app.applyflow.entity.ShopApply;
 import com.zaijiadd.app.applyflow.entity.StoreImg;
 import com.zaijiadd.app.applyflow.entity.StoreInfo;
@@ -68,10 +68,11 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 		record.setDistrictName(countryMapper.selectNameById(record.getDistrict()));
 		record.setStreetName(townMapper.selectNameById(record.getStreet()));
 		record.setIsHistory(0);
-		ApplyStore applyStore = new ApplyStore();
-		applyStore.setApplyStoreId(record.getApplyStoreId().intValue());
+		ApplyStoreDetail applyStore = new ApplyStoreDetail();
+		//applyStore.setApplyStoreId(record.getApplyStoreId().intValue());
+		applyStore.setApplyStoreDetailId(record.getApplyStoreId().longValue());
 		applyStore.setApplyStatus(3);
-		applyStoreDao.updateApplyStore(applyStore);
+		applyStoreDetailDao.updateApplyStore(applyStore);
 		return storeInfoDao.insert(record);
 	}
 

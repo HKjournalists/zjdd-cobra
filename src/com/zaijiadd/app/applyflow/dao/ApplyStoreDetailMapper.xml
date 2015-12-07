@@ -250,8 +250,8 @@
       )
   </insert>
  
-  <update id="updateApplyStore" parameterType="com.zaijiadd.app.applyflow.entity.ApplyStore" >
-   update cobra_apply_store
+  <update id="updateApplyStore" parameterType="com.zaijiadd.app.applyflow.entity.ApplyStoreDetail" >
+   update cobra_apply_store_detail
     <set >
       <if test="applyType != null" >
         apply_type = #{applyType,jdbcType=INTEGER},
@@ -386,7 +386,7 @@
         pay_bank_code = #{payBankCode,jdbcType=VARCHAR},
       </if>
     </set>
-    where apply_store_id = #{applyStoreId,jdbcType=INTEGER}
+    where apply_store_detail_id = #{applyStoreDetailId,jdbcType=INTEGER}
   </update>
   
   
