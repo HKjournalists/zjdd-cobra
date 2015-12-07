@@ -6,7 +6,11 @@
 package com.zaijiadd.app.applyflow.service.impl;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -330,7 +334,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		Integer applyStoreId = (Integer) param.get("applyStoreId");
 		Integer approveState = (Integer) param.get("approveState");
 		this.queryApplyStoreDetails(applyStoreId);
-		ApplyUserRelation applyUserRelation = new ApplyUserRelation();
+		ApplyUserRelation applyUserRelation = new ApplyUserRelation();// 操作记录
 		applyUserRelation.setApplyId(applyStoreId);
 		applyUserRelation.setUserid(userId);// userId
 		applyUserRelation.setRoleid(roleId);
@@ -341,11 +345,12 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 				applyUserRelation.setCaurApproveState(approveState);
 				this.insertApplyRoleRelation(applyUserRelation);
 
-				updateDealershipNum(applyStoreId);
+				updateDealershipNum(applyStoreId);// 更新城市的经销权个数
 
 				ApplyStore applyStore = new ApplyStore();
 				applyStore.setApplyStoreId(applyStoreId);// id
 				applyStore.setApplyStatus(ConstantStorePower.apply_state_succ);// 单子的状态
+				applyStore.setFinanceCheck(ConstantStorePower.apply_state_succ);// 单子的财务状态
 				this.updateApplyStore(applyStore);
 			}
 
@@ -359,7 +364,8 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 				ApplyStore applyStore = new ApplyStore();
 				applyStore.setApplyStoreId(applyStoreId);
 				applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
-				applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);
+				applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 单子的状态
+				applyStore.setManagersCheck(ConstantStorePower.approve_state_succ);// 单子的经理审核状态
 				this.updateApplyStore(applyStore);
 			} else if (approveState == ConstantStorePower.approve_state_fail) {// 主管拒绝
 				applyUserRelation.setApplyId(applyStoreId);
@@ -368,7 +374,8 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 
 				ApplyStore applyStore = new ApplyStore();
 				applyStore.setApplyStoreId(applyStoreId);
-				applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);
+				applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 单子的状态
+				applyStore.setManagersCheck(ConstantStorePower.approve_state_fail);// 单子的经理审核状态
 				this.updateApplyStore(applyStore);
 
 			}
@@ -563,6 +570,22 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		}
 
 		return true;
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#cleanLoseEfficacyApplyStore()
+	 */
+
+	@Override
+	public void cleanLoseEfficacyApplyStore() {
+		Map<String, Object> param = new HashMap<String, Object>();
+		List<ApplyStore> applyStoreList = applyStoreDao.queryApplStoreNotAllMoney(param);
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		for (ApplyStore applyStore : applyStoreList) {
+			Date createdDate = applyStore.getCreatedDate();
+
+		}
+
 	}
 
 }

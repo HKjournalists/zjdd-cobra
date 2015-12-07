@@ -418,7 +418,7 @@ public class ApplyFlowController {
 	}
 
 	/**
-	 * (用一句话描述方法的主要功能)
+	 * 时间转换
 	 * @param applyStoreMap
 	 */
 
@@ -687,4 +687,19 @@ public class ApplyFlowController {
 		ApplyStore applyStore = jsonRequest.parseObject(jsonRequest.toJSONString(), ApplyStore.class);
 		return applyStore;
 	}
+
+	/**
+	 * 测试
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/tests", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> test1(HttpServletRequest request) {
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+		Map<String, Object> param = new HashMap<String, Object>();
+		applyFlowService.cleanLoseEfficacyApplyStore();
+		return ContainerUtils.buildResSuccessMap(param);
+	}
+
 }

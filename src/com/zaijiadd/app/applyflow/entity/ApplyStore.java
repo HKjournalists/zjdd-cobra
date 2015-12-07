@@ -61,9 +61,9 @@ public class ApplyStore {
 
 	private Integer storeNumm;
 
-	private Integer bankNumone;
+	private String bankNumone;
 
-	private Integer bankNumtwo;
+	private String bankNumtwo;
 
 	private Integer capitalId;
 
@@ -334,19 +334,19 @@ public class ApplyStore {
 		this.storeNumm = storeNumm;
 	}
 
-	public Integer getBankNumone() {
+	public String getBankNumone() {
 		return bankNumone;
 	}
 
-	public void setBankNumone(Integer bankNumone) {
+	public void setBankNumone(String bankNumone) {
 		this.bankNumone = bankNumone;
 	}
 
-	public Integer getBankNumtwo() {
+	public String getBankNumtwo() {
 		return bankNumtwo;
 	}
 
-	public void setBankNumtwo(Integer bankNumtwo) {
+	public void setBankNumtwo(String bankNumtwo) {
 		this.bankNumtwo = bankNumtwo;
 	}
 

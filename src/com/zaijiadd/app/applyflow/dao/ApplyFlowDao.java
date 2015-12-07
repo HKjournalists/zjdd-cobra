@@ -96,22 +96,6 @@ public interface ApplyFlowDao {
 	 * @return
 	 */
 
-	public List<Map<String, Object>> queryFinanceApproveStoreTry(Map<String, Object> param);
-
-	/**
-	 * (用一句话描述方法的主要功能)
-	 * @param param
-	 * @return
-	 */
-
-	public List<Map<String, Object>> queryManagersApproveStoreTry(Map<String, Object> param);
-
-	/**
-	 * (用一句话描述方法的主要功能)
-	 * @param param
-	 * @return
-	 */
-
 	public List<Map<String, Object>> queryApproveMsg(Map<String, Object> param);
 
 	/**

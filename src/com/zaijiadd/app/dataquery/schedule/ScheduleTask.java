@@ -8,115 +8,117 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.zaijiadd.app.applyflow.service.ApplyFlowService;
 import com.zaijiadd.app.dataquery.service.DataQueryService;
 import com.zaijiadd.app.external.dao.ExternalDataDAO;
 
 public class ScheduleTask {
 
-	private static Logger logger = LoggerFactory.getLogger( ScheduleTask.class );
+	private static Logger logger = LoggerFactory.getLogger(ScheduleTask.class);
 
 	@Autowired
 	private DataQueryService service;
 
 	@Autowired
 	private ExternalDataDAO externalDataDao;
+	@Autowired
+	private ApplyFlowService applyFlowService;
 
 	public void dataImport() {
 
-//		logger.info( "数据定时导入... ..." );
-//		LogUtils.asyncLog( "定时任务同步流量数据" );
-		
+		// logger.info( "数据定时导入... ..." );
+		// LogUtils.asyncLog( "定时任务同步流量数据" );
+
 		try {
-			
+
 			Map<String, Object> param = new HashMap<String, Object>();
 			// 获取最新导入数据的时间，查询比其时间晚的所有数据，即为最新产生的数据
-			Map<String, Object> timeInfo = service.timeInfo( param );
-			if ( timeInfo != null && timeInfo.get( "protim" ) != null )
-				param.put( "created_at", timeInfo.get( "protim" ) );
-			List<Map<String, Object>> resData = externalDataDao
-					.importHomeVisitorData( param );
-			for ( Map<String, Object> map : resData ) {
+			Map<String, Object> timeInfo = service.timeInfo(param);
+			if (timeInfo != null && timeInfo.get("protim") != null) param.put("created_at", timeInfo.get("protim"));
+			List<Map<String, Object>> resData = externalDataDao.importHomeVisitorData(param);
+			for (Map<String, Object> map : resData) {
 				// 数据插入数据表
-//				LogUtils.asyncLog( "【asyn】同步数据" + map.get( "name" ) );
-				param.put( "cussrc", map.get( "channel" ) );// 客户来源
-				param.put( "srcdtl", map.get( "uri" ) );// 来源详情
-				param.put( "protim", map.get( "created_at" ) );// 处理时间
-				param.put( "lastphntim", null );// 上次通话时间
-				param.put( "phncnt", 0 );// 通话次数
-				param.put( "name", map.get( "name" ) );// 客户名称
-				param.put( "phone", map.get( "phone" ) );// 客户电话
-				param.put( "email", map.get( "email" ) );// 电子邮件
-				param.put( "wx", "" );// 微信
-				param.put( "qq", "" );// QQ
-				param.put( "city", map.get( "city" ) );// 客户所在城市
-				
-				Integer cityId = parseCityIdByName( map.get( "city" ) + "" );
-				
-				param.put( "ccity", cityId );// 分配城市，目前默认上海
-				param.put( "custype", "2" );// 客户类别 小店OR经销商，目前默认小店
-				param.put( "cgroup", null );// 分配组
-				param.put( "cuser", null );// 分配客服
-//				param.put( "txnsts", "0" );// 状态，默认未分配
-//				param.put( "dtlsts", "01" );// 状态，默认无组未分配
-				param.put( "statusType", 0 );
-				param.put( "salman", "" );// 销售代表
-				param.put( "remark", map.get( "remark" ) );// 备注
+				// LogUtils.asyncLog( "【asyn】同步数据" + map.get( "name" ) );
+				param.put("cussrc", map.get("channel"));// 客户来源
+				param.put("srcdtl", map.get("uri"));// 来源详情
+				param.put("protim", map.get("created_at"));// 处理时间
+				param.put("lastphntim", null);// 上次通话时间
+				param.put("phncnt", 0);// 通话次数
+				param.put("name", map.get("name"));// 客户名称
+				param.put("phone", map.get("phone"));// 客户电话
+				param.put("email", map.get("email"));// 电子邮件
+				param.put("wx", "");// 微信
+				param.put("qq", "");// QQ
+				param.put("city", map.get("city"));// 客户所在城市
 
-				service.dataInsert( param );
+				Integer cityId = parseCityIdByName(map.get("city") + "");
+
+				param.put("ccity", cityId);// 分配城市，目前默认上海
+				param.put("custype", "2");// 客户类别 小店OR经销商，目前默认小店
+				param.put("cgroup", null);// 分配组
+				param.put("cuser", null);// 分配客服
+				// param.put( "txnsts", "0" );// 状态，默认未分配
+				// param.put( "dtlsts", "01" );// 状态，默认无组未分配
+				param.put("statusType", 0);
+				param.put("salman", "");// 销售代表
+				param.put("remark", map.get("remark"));// 备注
+
+				service.dataInsert(param);
+				// applyFlowService.cleanLoseEfficacyApplyStore();
 			}
-			
-		} catch ( Exception e ) {
-//			logger.error( "同步流量数据异常", e );
-//			LogUtils.error( "同步流量数据异常", e );
+
+		} catch (Exception e) {
+			// logger.error( "同步流量数据异常", e );
+			// LogUtils.error( "同步流量数据异常", e );
 		}
-		
+
 	}
-	
-	private Integer parseCityIdByName( String cityName ) {
-		
+
+	private Integer parseCityIdByName(String cityName) {
+
 		Integer cityId = 0;
-		if ( cityName == null || cityName.equals( "" ) ) {
+		if (cityName == null || cityName.equals("")) {
 			return cityId;
 		}
-		if ( cityName.contains( "大客户" ) ) {
+		if (cityName.contains("大客户")) {
 			cityId = 11;
-		} else if ( cityName.contains( "北京" ) ) {
+		} else if (cityName.contains("北京")) {
 			cityId = 12;
-		} else if ( cityName.contains( "宁波" ) ) {
+		} else if (cityName.contains("宁波")) {
 			cityId = 13;
-		} else if ( cityName.contains( "南京" ) ) {
+		} else if (cityName.contains("南京")) {
 			cityId = 14;
-		} else if ( cityName.contains( "苏州" ) ) {
+		} else if (cityName.contains("苏州")) {
 			cityId = 15;
-		} else if ( cityName.contains( "广州" ) ) {
+		} else if (cityName.contains("广州")) {
 			cityId = 16;
-		} else if ( cityName.contains( "杭州" ) ) {
+		} else if (cityName.contains("杭州")) {
 			cityId = 17;
-		} else if ( cityName.contains( "深圳" ) ) {
+		} else if (cityName.contains("深圳")) {
 			cityId = 18;
-		} else if ( cityName.contains( "武汉" ) ) {
+		} else if (cityName.contains("武汉")) {
 			cityId = 19;
-		} else if ( cityName.contains( "天津" ) ) {
+		} else if (cityName.contains("天津")) {
 			cityId = 20;
-		} else if ( cityName.contains( "上海" ) ) {
+		} else if (cityName.contains("上海")) {
 			cityId = 21;
 		}
-		
+
 		return cityId;
-		
-		
+
 	}
-	
+
 	public void processExpiration() {
 		System.out.println("定时任务");
 	}
-	public static void main( String[] args ) {
-		
+
+	public static void main(String[] args) {
+
 		ScheduleTask s = new ScheduleTask();
-		int i = s.parseCityIdByName( "上海徐汇" );
-		System.out.println( i );
+		int i = s.parseCityIdByName("上海徐汇");
+		System.out.println(i);
 	}
-	
+
 	// public void DataImport(){
 	// logger.info("数据定时导入... ...");
 	// Map<String,Object> param = new HashMap<String,Object>();
