@@ -30,13 +30,13 @@
 		>
 		</table>
 		-->
-	<!-- 
+	
 		<table schema="" tableName="cobra_apply_store" domainObjectName="ApplyStoresss" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" selectByExampleQueryId="false"
 		>
 		</table>
-	-->
+	
 		<!-- 
 		<table schema="" tableName="cobra_apply_user_relation" domainObjectName="ApplyUserRelationss" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"
@@ -74,10 +74,12 @@
 		>
 		</table>
 	-->
+		<!--
 		<table schema="" tableName="apply_contract" domainObjectName="ApplyContract" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" selectByExampleQueryId="false"
 		>
 		</table>
+			-->
 	</context>
 </generatorConfiguration>

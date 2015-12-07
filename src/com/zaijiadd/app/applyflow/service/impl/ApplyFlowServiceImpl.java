@@ -610,10 +610,9 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		//
 		Integer applyStoreId = applyStoreDao.addApplyStore(applyStore3);//
 		// 新记录
-		//
-		// Integer applyType = applyStore3.getApplyType();
-		// Integer paymoneyType = applyStore3.getPaymoneyType();// 付款类型
-		// whoCheckpayRemainMoney(applyStore3, applyType, paymoneyType);
+		Integer applyType = applyStore3.getApplyType();
+		Integer paymoneyType = applyStore3.getPaymoneyType();// 付款类型
+		whoCheckpayRemainMoney(applyStore3, applyType, paymoneyType);
 		// 把原来的记录备份
 		applyStore2.setApplyStatus(ConstantStorePower.APPLY_STATE_NOT_PAYALLMONEY);// 尾款，用户不可见
 		updateApplyStore(applyStore2);
