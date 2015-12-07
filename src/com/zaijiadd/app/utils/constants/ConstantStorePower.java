@@ -41,7 +41,15 @@ public class ConstantStorePower {
 	public final static Integer APPLY_PAYMONEY_ALL = 1;// 全额
 
 	// 发起收款申请
-	public final static Integer WHETHER_STARTAPPLY_NO = 0;//
-	public final static Integer WHETHER_STARTAPPLY_YES = 1;//
+	public final static Integer WHETHER_STARTAPPLY_NO = 0;// 没有
+	public final static Integer WHETHER_STARTAPPLY_YES = 1;// 有
+
+	// 代理类型
+	public final static Integer AGENCYTYPE_EXCLUSIVE = 0;// 独家
+	public final static Integer AGENCYTYPE_NO_EXCLUSIVE = 1;// 非独家
+
+	// 是否本人付款
+	public final static Integer whetherSelf_pay_yes = 0;// 否
+	public final static Integer whetherSelf_pay_no = 1;// 是
 
 }

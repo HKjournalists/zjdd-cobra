@@ -141,6 +141,17 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	 */
 
 	void whoCheck(ApplyStore applyStore, Integer applyType, Integer paymoneyType) throws Exception {
+		Map<String, Object> applyStoreMap = queryApplyStoreDetails(applyStore.getApplyStoreId());
+		applyType = (Integer) applyStoreMap.get("applyType");
+		Integer cityId = (Integer) applyStoreMap.get("cityId");
+		Integer dealershipNum = (Integer) applyStoreMap.get("dealershipNum");
+		Integer storeNumm = (Integer) applyStoreMap.get("storeNumm");
+		Integer userId = (Integer) applyStoreMap.get("userId");
+
+		applyStore.setCityId(cityId);
+		applyStore.setDealershipNum(dealershipNum);
+		applyStore.setStoreNumm(storeNumm);
+		applyStore.setYjsUserId(userId);
 		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金直接给财务
 			applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 		} else {// 全额
