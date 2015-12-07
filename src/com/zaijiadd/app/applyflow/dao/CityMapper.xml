@@ -6,6 +6,9 @@
     <result column="city_name" property="cityName" jdbcType="VARCHAR" />
     <result column="province_id" property="provinceId" jdbcType="INTEGER" />
     <result column="city_money" property="cityMoney" jdbcType="DECIMAL" />
+    <result column="total_dealership" property="totalDealership" jdbcType="INTEGER" />
+    <result column="already_sold_num" property="alreadySoldNum" jdbcType="INTEGER" />
+    <result column="deposit_num" property="depositNum" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     city_id, city_name, province_id,city_money
@@ -24,9 +27,21 @@
     where city_name = #{cityName,jdbcType=VARCHAR}
   </select>
   
+   <select id="selectCityByID" resultMap="BaseResultMap" parameterType="Integer" >
+    select 
+  	*
+    from city
+    where city_id = #{cityId,jdbcType=INTEGER}
+  </select>
+  
   <select id="selectNameById" resultType="String" parameterType="Integer">
     select city_name
     	from city  where city_id = #{cityId,jdbcType=INTEGER} 
+  </select>
+  
+  <select id="selectSpecialByCityId" resultType="Integer" parameterType="Integer">
+    select count(*)
+    	from special_city  where city_id = #{cityId,jdbcType=INTEGER} 
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

@@ -5,6 +5,10 @@
     <id column="country_id" property="countryId" jdbcType="INTEGER" />
     <result column="country_name" property="countryName" jdbcType="VARCHAR" />
     <result column="city_id" property="cityId" jdbcType="INTEGER" />
+    <result column="total_dealership" property="totalDealership" jdbcType="INTEGER" />
+    <result column="already_sold_num" property="alreadySoldNum" jdbcType="INTEGER" />
+    <result column="deposit_num" property="depositNum" jdbcType="INTEGER" />
+    <result column="country_money" property="countryMoney" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     country_id, country_name, city_id
@@ -18,6 +22,11 @@
   
   <select id="selectNameById" resultType="String" parameterType="Integer">
     select country_name
+    	from country  where country_id = #{countryId,jdbcType=INTEGER} 
+  </select>
+  
+  <select id="selectByCounryId" resultMap="BaseResultMap" parameterType="Integer">
+    select *
     	from country  where country_id = #{countryId,jdbcType=INTEGER} 
   </select>
   

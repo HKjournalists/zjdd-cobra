@@ -50,6 +50,7 @@
     	<mapper resource="com/zaijiadd/app/applyflow/dao/StoreInfoMapper.xml"/>
     	<mapper resource="com/zaijiadd/app/applyflow/dao/ShopApplyMapper.xml"/>
     	<mapper resource="com/zaijiadd/app/applyflow/dao/ExcelMapper.xml"/>
+    	<mapper resource="com/zaijiadd/app/applyflow/dao/SpecialCityMapper.xml"/>
 
 
     	<mapper resource="com/zaijiadd/app/applyflow/dao/CityDealershipMapper.xml"/>

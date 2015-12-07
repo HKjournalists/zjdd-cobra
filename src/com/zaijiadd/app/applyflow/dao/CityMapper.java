@@ -35,5 +35,7 @@ public interface CityMapper {
 	 */
 
 	ArrayList<City> selectCityByID(Integer cityId);
+	
+	int selectSpecialByCityId(Integer cityId);
 
 }

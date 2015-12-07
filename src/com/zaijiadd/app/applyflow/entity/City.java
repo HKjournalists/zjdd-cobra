@@ -12,6 +12,7 @@ public class City {
 	private Integer totalDealership;
 	private Integer alreadySoldNum;
 	private Integer depositNum;
+	
 	public Integer getTotalDealership() {
 		return totalDealership;
 	}

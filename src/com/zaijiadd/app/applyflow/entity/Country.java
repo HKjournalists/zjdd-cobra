@@ -9,8 +9,17 @@ public class Country {
     private Integer totalDealership;
 	private Integer alreadySoldNum;
 	private Integer depositNum;
+	private int countryMoney;
 
-    public Integer getTotalDealership() {
+    public int getCountryMoney() {
+		return countryMoney;
+	}
+
+	public void setCountryMoney(int countryMoney) {
+		this.countryMoney = countryMoney;
+	}
+
+	public Integer getTotalDealership() {
 		return totalDealership;
 	}
 

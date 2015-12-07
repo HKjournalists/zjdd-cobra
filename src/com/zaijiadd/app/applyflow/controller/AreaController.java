@@ -58,6 +58,7 @@ public class AreaController {
 		Map<String, Object> param = new HashMap<String, Object>();
 		try {
 			param.put("privinceList", this.areaService.selectAll());
+			//this.areaService.findCitySellInfo(1125, 1257);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ContainerUtils.buildResFailMap();
