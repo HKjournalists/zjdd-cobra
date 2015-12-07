@@ -6,6 +6,7 @@
 package com.zaijiadd.app.applyflow.controller;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -451,7 +452,12 @@ public class ApplyFlowController {
 		Integer userId = user.getUserId();
 		param.put("yjsUserId", userId);
 		param.put("applyStatus", applyStatus);
-		List<Map<String, Object>> applyStoreOrderMap = applyFlowService.queryAllApplyStoreSate(param);
+		List<Map<String, Object>> applyStoreOrderMap = new ArrayList<Map<String, Object>>();
+		if (ConstantStorePower.apply_state_ready.equals(applyStatus)) {// 申请中的
+			applyStoreOrderMap = applyFlowService.queryAllApplyStoreSateIn(param);
+		} else if (ConstantStorePower.apply_state_succ.equals(applyStatus)) {// 申请成功的
+			applyStoreOrderMap = applyFlowService.queryAllApplyStoreSate(param);
+		}
 		mapListValueToDate(applyStoreOrderMap);
 		param.put("result", applyStoreOrderMap);
 		return ContainerUtils.buildResSuccessMap(param);
