@@ -112,4 +112,9 @@
 		<property name="mapperInterface" value="com.zaijiadd.app.applyflow.dao.BankMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
 	</bean>
+	
+	<bean id="applyContractMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.zaijiadd.app.applyflow.dao.ApplyContractMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
 </beans>

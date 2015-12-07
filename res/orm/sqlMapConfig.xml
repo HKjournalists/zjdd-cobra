@@ -33,6 +33,7 @@
     	<typeAlias type="com.zaijiadd.app.applyflow.entity.Community" alias="community"/>
     	<typeAlias type="com.zaijiadd.app.applyflow.entity.ApplyUserRelation" alias="applyUserRelation"/>
     	<typeAlias type="com.zaijiadd.app.applyflow.entity.Bank" alias="bank"/>
+    	<typeAlias type="com.zaijiadd.app.applyflow.entity.ApplyContract" alias="applyContract"/>
     </typeAliases>
 
     <mappers>
@@ -54,6 +55,7 @@
     	<mapper resource="com/zaijiadd/app/applyflow/dao/CommunityMapper.xml"/>
     	<mapper resource="com/zaijiadd/app/applyflow/dao/ApplyUserRelationMapper.xml"/>
     	<mapper resource="com/zaijiadd/app/applyflow/dao/BankMapper.xml"/>
+    	<mapper resource="com/zaijiadd/app/applyflow/dao/ApplyContractMapper.xml"/>
 
     </mappers>
 	

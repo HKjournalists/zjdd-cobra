@@ -572,7 +572,7 @@ public class ApplyFlowController {
 	public Map<String, Object> queryDealershipNumAble(HttpServletRequest request) {
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
 		Map<String, Object> param = new HashMap<String, Object>();
-		Integer cityId = jsonRequest.getInteger("cityId");// 每页的数量
+		Integer cityId = jsonRequest.getInteger("cityId");
 		param.put("cityId", cityId);
 		Map<String, Object> cityDealership = applyFlowService.queryDealershipNumAble(cityId);
 		param.put("result", cityDealership);
@@ -672,6 +672,15 @@ public class ApplyFlowController {
 			BigDecimal needPaymoney = (BigDecimal) printApply.get("needPaymoney");
 			BigDecimal allMoney = needPaymoney.add(paidMoney);
 			printApply.put("allMoney", allMoney);
+
+			// Integer applyType = (Integer) printApply.get("applyType");// 申请类型
+			// Map<String, Object> applyContractParam = new HashMap<String,
+			// Object>();
+			// applyContractParam.put("applyContractType", applyType);
+			// ApplyContract applyContract =
+			// applyFlowService.getApplyContract(applyContractParam);
+			// param.put("applyContractContent",
+			// applyContract.getApplyContractContent());
 		}
 
 		param.put("result", printApply);
