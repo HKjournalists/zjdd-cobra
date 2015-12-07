@@ -144,7 +144,6 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金直接给财务
 			applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 		} else {// 全额
-
 			if (applyType.equals(ConstantStorePower.APPLY_TYPE_DEALERSHIP)) {// 经销权
 
 				BigDecimal personPaymoneyCount = getPersonPaymoneyCount(applyStore);
@@ -577,8 +576,11 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	@Override
 	public Integer payRemainMoney(ApplyStore applyStore) throws Exception {
 		Integer applyType = applyStore.getApplyType();
+		applyStore.setFinanceCheck(ConstantStorePower.approve_state_ready);
+		applyStore.setManagersCheck(ConstantStorePower.approve_state_ready);
 		Integer paymoneyType = applyStore.getPaymoneyType();// 付款类型
 		whoCheck(applyStore, applyType, paymoneyType);
+		updateApplyStore(applyStore);
 		return paymoneyType;
 	}
 
