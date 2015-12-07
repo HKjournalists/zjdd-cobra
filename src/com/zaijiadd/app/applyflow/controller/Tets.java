@@ -33,8 +33,20 @@ public class Tets {
 		// testTime();
 		// testBigDecimal();
 		// testJson();
-		testrand();
+		// testrand();
+		testTime1();
+	}
 
+	/**
+	 * (用一句话描述方法的主要功能)
+	 */
+
+	private static void testTime1() {
+		Date date = new Date();
+		System.out.println(date);
+		System.out.println(date.getTime());
+		// Long thirdDay=1
+		// System.out.println("TIAN"+);
 	}
 
 	/**

@@ -253,4 +253,10 @@ public interface ApplyFlowService {
 
 	Integer payRemainMoney(ApplyStore applyStore) throws Exception;
 
+	/**
+	 * (用一句话描述方法的主要功能)
+	 */
+
+	void cleanLoseEfficacyApplyStore();
+
 }

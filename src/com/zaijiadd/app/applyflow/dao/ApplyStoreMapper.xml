@@ -29,8 +29,8 @@
     <result column="apply_status" property="applyStatus" jdbcType="INTEGER" />
     <result column="who_check" property="whoCheck" jdbcType="INTEGER" />
     <result column="store_numm" property="storeNumm" jdbcType="INTEGER" />
-    <result column="bank_numOne" property="bankNumone" jdbcType="INTEGER" />
-    <result column="bank_numTwo" property="bankNumtwo" jdbcType="INTEGER" />
+   <result column="bank_numOne" property="bankNumone" jdbcType="VARCHAR" />
+    <result column="bank_numTwo" property="bankNumtwo" jdbcType="VARCHAR" />
       <result column="capital_id" property="capitalId" jdbcType="INTEGER" />
     <result column="city_id" property="cityId" jdbcType="INTEGER" />
     <result column="district_id" property="districtId" jdbcType="INTEGER" />
@@ -76,27 +76,19 @@
    <sql id="Base_Column_order_state_List" >
     apply_store_id as applyStoreId, apply_name as applyName, apply_type as applyType, phone as phone,
     paymoney_type as paymoneyType, created_date as createdDate, 
-    apply_status as applyStatus,whether_start_apply as whetherStartApply
+    apply_status as applyStatus,whether_start_apply as whetherStartApply,
+    finance_check as financeCheck, managers_check as managersCheck
   </sql>
   
-   <!-- 审批首页 -->
+   <!-- 角色审批首页 -->
    <sql id="Base_Column_Role_Approve_state" >
-    apply_store_id as applyStoreId, apply_name as applyName,need_paymoney as needPaymoney,apply_type as applyType, phone as phone,
+    apply_store_id as applyStoreId, apply_name as applyName,need_paymoney as needPaymoney, paid_money as paidMoney,
+    apply_type as applyType, phone as phone,
     paymoney_type as paymoneyType,created_date as createdDate, 
     apply_status as applyStatus
   </sql>
   
-   <!-- 查询财务的order-->
-   <sql id="Base_Column_approve_finance_state_List" >
-     apply_store_id as applyStoreId, apply_type as applyType, agency_time as agencyTime, apply_name as applyName, 
-     paymoney_type as paymoneyType,need_paymoney as needPaymoney,who_check as whoCheck
-  </sql>
   
-   <!-- 查询 managers order -->
-   <sql id="Base_Column_approve_managers_state_List" >
-    apply_store_id as applyStoreId, apply_type as applyType, agency_time as agencyTime, apply_name as applyName, 
-     paymoney_type as paymoneyType,  apply_status as applyStatus,who_check as whoCheck
-  </sql>
      <!-- 查询订单状态 -->
   <select id="queryAllApplyStoreSate" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
     select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
@@ -111,7 +103,22 @@
 			limit #{start,jdbcType=INTEGER}, #{end}
 		</where>
   </select>
-
+ <select id="queryApplStoreNotAllMoney" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from cobra_apply_store
+   		 <where>
+			<if test="applyType != null and applyType !=''">
+				apply_type = #{applyType}
+			</if>
+			<if test="applyStatus != null">
+				and apply_status = #{applyStatus}
+			</if>
+			<if test="financeCheck != null">
+				and finance_check = #{financeCheck}
+			</if>
+		</where>
+  </select>
   
     <!-- 查询待审批的 不用-->
    <select id="queryApproveStoreSate" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
@@ -128,34 +135,6 @@
 		</where>
   </select>
   
-    <!-- 查询给主管审批的 managers-->
-  <select id="queryManagersApproveStoreTry" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
-    select <include refid="Base_Column_approve_managers_state_List" /> from cobra_apply_store
-    	<where>
-			<if test="whoCheck != null and whoCheck !=''">
-				who_check = #{whoCheck}
-			</if>
-			<if test="applyStatus != null">
-				and apply_status = #{applyStatus}
-			</if>
-			order by created_date desc
-			limit #{start,jdbcType=INTEGER}, #{end}
-		</where>
-  </select>
-  <!-- 查询财务待审批的 -->
-  <select id="queryFinanceApproveStoreTry" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
-    select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
-    	<where>
-			<if test="whoCheck != null and whoCheck !=''">
-				who_check = #{whoCheck}
-			</if>
-			<if test="applyStatus != null">
-				and apply_status = #{applyStatus}
-			</if>
-			order by created_date desc
-			limit #{start,jdbcType=INTEGER}, #{end}
-		</where>
-  </select>
     <!-- 查询审批总-->
   <select id="queryRoleApproveStoreTry" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
     select <include refid="Base_Column_Role_Approve_state" /> from cobra_apply_store
@@ -215,7 +194,7 @@
       #{paymoneyType,jdbcType=INTEGER}, #{paidMoney,jdbcType=DECIMAL}, #{needPaymoney,jdbcType=DECIMAL}, 
       #{yjsUserId,jdbcType=INTEGER}, #{financeCheck,jdbcType=INTEGER}, #{managersCheck,jdbcType=INTEGER}, 
       #{applyStatus,jdbcType=INTEGER}, #{approveState,jdbcType=INTEGER}, #{whoCheck,jdbcType=INTEGER}, 
-      #{storeNumm,jdbcType=INTEGER}, #{bankNumone,jdbcType=INTEGER}, #{bankNumtwo,jdbcType=INTEGER}, 
+      #{storeNumm,jdbcType=INTEGER}, #{bankNumone,jdbcType=VARCHAR}, #{bankNumtwo,jdbcType=VARCHAR}, 
       #{capitalId,jdbcType=INTEGER}, #{cityId,jdbcType=INTEGER}, #{districtId,jdbcType=INTEGER}, 
       #{createdDate,jdbcType=TIMESTAMP}, #{updatedDate,jdbcType=TIMESTAMP}, #{whetherSelf,jdbcType=INTEGER}, 
       #{payBank,jdbcType=INTEGER}, #{paySubbranchBank,jdbcType=VARCHAR}, #{payPersonName,jdbcType=VARCHAR}, 
@@ -309,10 +288,10 @@
         store_numm = #{storeNumm,jdbcType=INTEGER},
       </if>
       <if test="bankNumone != null" >
-        bank_numOne = #{bankNumone,jdbcType=INTEGER},
+        bank_numOne = #{bankNumone,jdbcType=VARCHAR},
       </if>
       <if test="bankNumtwo != null" >
-        bank_numTwo = #{bankNumtwo,jdbcType=INTEGER},
+        bank_numTwo = #{bankNumtwo,jdbcType=VARCHAR},
       </if>
       <if test="capitalId != null" >
         capital_id = #{capitalId,jdbcType=INTEGER},
