@@ -395,6 +395,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 		applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 单子的状态
 		applyStore.setManagersCheck(ConstantStorePower.approve_state_succ);// 单子的经理审核状态
+		applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_NO);// 重置
 		this.updateApplyStore(applyStore);
 	}
 
@@ -443,7 +444,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 			}
 
 		}
-		
+
 	}
 
 	/**
