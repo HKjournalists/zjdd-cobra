@@ -82,7 +82,12 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 	}
 
 	@Override
-	public int updateByPrimaryKeySelective(StoreInfo record) throws Exception {
+	public int updateByPrimaryKeySelective(StoreInfo record, ShopApply shopApply) throws Exception {
+		if(shopApply != null) {
+			this.shopApplyMapper.updateByPrimaryKeySelective(shopApply);
+		}
+		ShopApply shop = this.shopApplyMapper.selectByPrimaryKey(shopApply.getShopId());
+		record.setStoreId(shop.getStoreId());
 		return this.storeInfoDao.updateByPrimaryKeySelective(record);
 	}
 
@@ -101,11 +106,12 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 		shopApply.setApplicationShopTime(new Timestamp(new Date().getTime()));
 		shopApply.setShopApplicant(userId);
 		shopApply.setImgsAuditStatus(0);
+		shopApply.setIsHistory(0);
 		Long shopId = this.shopApplyMapper.insert(shopApply);
 		for(Object fileUrl : fileUrls) {
 			StoreImg storeImg = new StoreImg();
 			storeImg.setImgUrl(fileUrl.toString());
-			storeImg.setStoreId(shopId);
+			storeImg.setStoreId(shopApply.getShopId());
 			this.storeImgDao.insert(storeImg);
 		}
 	}
@@ -152,22 +158,22 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 				map.put("status", 2);
 				map.put("shopApplicant", map.get("userId"));
 				map.remove("applicant");
-				resultMap.put("data", this.storeInfoDao.selectByApplicant(map));
-				resultMap.put("total", this.storeInfoDao.applicantCount(map));
+				resultMap.put("data", this.storeInfoDao.selectShopByApplicant(map));
+				resultMap.put("total", this.storeInfoDao.applicantShopCount(map));
 				return resultMap;
 			case 5://开店审核成功
 				map.put("status", 3);
 				map.put("imgsAuditStatus", 1);
 				map.put("shopApplicant", map.get("userId"));
-				resultMap.put("data", this.storeInfoDao.selectByApplicant(map));
-				resultMap.put("total", this.storeInfoDao.applicantCount(map));
+				resultMap.put("data", this.storeInfoDao.selectShopByApplicant(map));
+				resultMap.put("total", this.storeInfoDao.selectShopByApplicant(map));
 				return resultMap;
 			case 6://开店审核失败
 				map.put("status", 3);
 				map.put("imgsAuditStatus", -1);
 				map.put("shopApplicant", map.get("userId"));
-				resultMap.put("data", this.storeInfoDao.selectByApplicant(map));
-				resultMap.put("total", this.storeInfoDao.applicantCount(map));
+				resultMap.put("data", this.storeInfoDao.selectShopByApplicant(map));
+				resultMap.put("total", this.storeInfoDao.applicantShopCount(map));
 				return resultMap;
 				default:
 					break;
@@ -239,14 +245,14 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 			return resultMap;
 		} else if(type == 2){ // 图片未审批
 			map.put("status", 2);
-			resultMap.put("data", this.storeInfoDao.getMyApproval(map));
-			resultMap.put("total", this.storeInfoDao.approvalCount(map));
+			resultMap.put("data", this.storeInfoDao.getShopApproval(map));
+			resultMap.put("total", this.storeInfoDao.approvalShopCount(map));
 			return resultMap;
 		} else {
 			map.put("status", 3);
 			map.put("imgsApprover", map.get("userId"));
-			resultMap.put("data", this.storeInfoDao.getMyApproval(map));
-			resultMap.put("total", this.storeInfoDao.approvalCount(map));
+			resultMap.put("data", this.storeInfoDao.getShopApproval(map));
+			resultMap.put("total", this.storeInfoDao.approvalShopCount(map));
 			return resultMap;
 		}
 		
@@ -301,8 +307,44 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 		//上一个申请成为历史记录
 		StoreInfo hisInfo = this.storeInfoDao.selectByPrimaryKey(record.getStoreId());
 		hisInfo.setIsHistory(1);
-		this.updateByPrimaryKeySelective(hisInfo);
+		this.storeInfoDao.updateByPrimaryKeySelective(hisInfo);
+		record.setStoreId(null);
 		return storeInfoDao.insert(record);
+	}
+
+	@Override
+	public void ReApplicationShop(JSONArray fileUrls, Long storeId, Integer userId) throws Exception {
+		ShopApply hisApply = this.shopApplyMapper.selectByPrimaryKey(storeId);
+		
+		StoreInfo storeInfo = new StoreInfo();
+		//图片审核中
+		storeInfo.setStatus(2);
+		storeInfo.setStoreId(hisApply.getStoreId());
+		storeInfo.setApplicationShopTime(new Timestamp(new Date().getTime()));
+		storeInfo.setShopApplicant(userId);
+		this.storeInfoDao.updateByPrimaryKeySelective(storeInfo);
+		
+		hisApply.setIsHistory(1);
+		this.shopApplyMapper.updateByPrimaryKeySelective(hisApply);
+		ShopApply shopApply = new ShopApply();
+		shopApply.setStoreId(hisApply.getStoreId());
+		shopApply.setApplicationShopTime(new Timestamp(new Date().getTime()));
+		shopApply.setShopApplicant(userId);
+		shopApply.setImgsAuditStatus(0);
+		shopApply.setIsHistory(0);
+		Long shopId = this.shopApplyMapper.insert(shopApply);
+		for(Object fileUrl : fileUrls) {
+			StoreImg storeImg = new StoreImg();
+			storeImg.setImgUrl(fileUrl.toString());
+			storeImg.setStoreId(shopApply.getShopId());
+			this.storeImgDao.insert(storeImg);
+		}
+		
+	}
+
+	@Override
+	public StoreInfo selectByShopId(Long shopId) throws Exception {
+		return this.storeInfoDao.selectByShopId(shopId);
 	}
 
 }

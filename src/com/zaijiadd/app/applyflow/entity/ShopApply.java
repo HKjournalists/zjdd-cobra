@@ -14,6 +14,17 @@ public class ShopApply {
     private Integer imgsApprover;
 
     private Integer imgsAuditStatus;
+    
+    private int isHistory;
+    
+
+    public int getIsHistory() {
+		return isHistory;
+	}
+
+	public void setIsHistory(int isHistory) {
+		this.isHistory = isHistory;
+	}
 
     public Long getShopId() {
 		return shopId;
