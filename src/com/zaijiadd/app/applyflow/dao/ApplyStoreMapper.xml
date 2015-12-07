@@ -110,7 +110,22 @@
 				yjs_user_id = #{yjsUserId}
 			</if>
 			<if test="applyStatus != null">
-				and apply_status = #{applyStatus}
+				and apply_status = #{applyStatus} 
+			</if>
+			order by created_date desc
+			limit #{start,jdbcType=INTEGER}, #{end}
+		</where>
+  </select>
+    <!-- 查询订单状态 -->
+  <select id="queryAllApplyStoreSateIn" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+    select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
+    	<where>
+			<if test="yjsUserId != null and yjsUserId !=''">
+				yjs_user_id = #{yjsUserId}
+			</if>
+			<if test="applyStatus != null">
+				and apply_status = #{applyStatus} 
+				or apply_status=3
 			</if>
 			order by created_date desc
 			limit #{start,jdbcType=INTEGER}, #{end}

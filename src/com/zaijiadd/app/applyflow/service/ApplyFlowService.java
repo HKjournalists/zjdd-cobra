@@ -277,4 +277,12 @@ public interface ApplyFlowService {
 
 	UserInfoEntity getUserInfoById(Integer userId);
 
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	List<Map<String, Object>> queryAllApplyStoreSateIn(Map<String, Object> param);
+
 }

@@ -351,7 +351,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 
 		ApplyStore applyStore = new ApplyStore();
 		applyStore.setApplyStoreId(applyStoreId);
-		applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 单子的状态
+		applyStore.setApplyStatus(ConstantStorePower.approve_state_fail);// 单子的状态
 		applyStore.setManagersCheck(ConstantStorePower.approve_state_fail);// 单子的经理审核状态
 		this.updateApplyStore(applyStore);
 	}
@@ -395,23 +395,6 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		ApplyStore applyStore = new ApplyStore();
 		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金
 			applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 单子的状态--in
-		}
-
-		Integer applyType = (Integer) queryApplyStoreDetails.get("applyType");// 申请类型是小店
-
-		if (ConstantStorePower.APPLY_TYPE_SMALLSTORE.equals(applyType)) {
-			if (ConstantStorePower.APPLY_PAYMONEY_ALL.equals(paymoneyType)) {// 全额
-				Integer storeNumm = (Integer) queryApplyStoreDetails.get("storeNumm");
-				ApplyStore applyStore1 = this.selectByAppStoreId(applyStoreId);
-				applyStore1.setApplyStatus(ConstantStorePower.apply_state_succ);
-				applyStore1.setFinanceCheck(ConstantStorePower.apply_state_succ);// 单子的财务状态
-				if (storeNumm != null && storeNumm > 0) {
-					for (int i = 0; i < storeNumm; i++) {
-						applyStoreDao.addApplyStore(applyStore1);
-					}
-				}
-			}
-
 		}
 		applyStore.setApplyStoreId(applyStoreId);// id
 		applyStore.setApplyStatus(ConstantStorePower.apply_state_succ);// 单子的状态
@@ -734,6 +717,15 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	@Override
 	public UserInfoEntity getUserInfoById(Integer userId) {
 		return userInfoDao.getUserInfoById(userId);
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#queryAllApplyStoreSateIn(java.util.Map)
+	 */
+
+	@Override
+	public List<Map<String, Object>> queryAllApplyStoreSateIn(Map<String, Object> param) {
+		return applyStoreDao.queryAllApplyStoreSateIn(param);
 	}
 
 }
