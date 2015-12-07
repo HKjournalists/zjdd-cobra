@@ -459,7 +459,7 @@
   
   
   <select id="selectByShopId" resultMap="BaseResultMap" parameterType="map" >
-    select t3.store_id, capital, city, district, apply_store_id, apply_name, person_num, phone, 
+    select t3.store_id, t1.username, t1.password, capital, city, district, apply_store_id, apply_name, person_num, phone, 
     street, detail_address, village, status,t1.shop_id,  t1.shop_applicant, t1.imgs_approval_time, t1.imgs_approver, t1.imgs_audit_status, 
     t1.imgs_audit_opinion
      from shop_apply t1  
