@@ -34,7 +34,7 @@
 		<table tableName="permissiongroup" domainObjectName="Permissiongroup" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
 		<table tableName="pg_module" domainObjectName="Pgmodule" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
 -->
-	<table tableName="zj_community" domainObjectName="Community" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
+	<table tableName="shop_apply" domainObjectName="ShopApply" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
 		
 	</context>
 </generatorConfiguration>

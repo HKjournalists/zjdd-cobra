@@ -144,7 +144,6 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金直接给财务
 			applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 		} else {// 全额
-
 			if (applyType.equals(ConstantStorePower.APPLY_TYPE_DEALERSHIP)) {// 经销权
 
 				BigDecimal personPaymoneyCount = getPersonPaymoneyCount(applyStore);
@@ -333,7 +332,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		Integer userId = (Integer) param.get("userId");
 		Integer applyStoreId = (Integer) param.get("applyStoreId");
 		Integer approveState = (Integer) param.get("approveState");
-		this.queryApplyStoreDetails(applyStoreId);
+
 		ApplyUserRelation applyUserRelation = new ApplyUserRelation();// 操作记录
 		applyUserRelation.setApplyId(applyStoreId);
 		applyUserRelation.setUserid(userId);// userId
@@ -341,46 +340,84 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 
 		if (ConstantsRole.ROLE_FINANCE.equals(roleId)) {// 财务
 			if (approveState == ConstantStorePower.approve_state_succ) {// 财务同意
-				applyUserRelation.setApplyId(applyStoreId);
-				applyUserRelation.setCaurApproveState(approveState);
-				this.insertApplyRoleRelation(applyUserRelation);
-
-				updateDealershipNum(applyStoreId);// 更新城市的经销权个数
-
-				ApplyStore applyStore = new ApplyStore();
-				applyStore.setApplyStoreId(applyStoreId);// id
-				applyStore.setApplyStatus(ConstantStorePower.apply_state_succ);// 单子的状态
-				applyStore.setFinanceCheck(ConstantStorePower.apply_state_succ);// 单子的财务状态
-				this.updateApplyStore(applyStore);
+				financeApproveApply(applyStoreId, approveState, applyUserRelation);
 			}
 
 		} else if (ConstantsRole.ROLE_MANAGERS.equals(roleId)) {// 主管
 			applyUserRelation.setCaurApproveState(approveState);
 			if (approveState == ConstantStorePower.approve_state_succ) {// 主管同意
-				applyUserRelation.setApplyId(applyStoreId);
-				applyUserRelation.setCaurApproveState(approveState);
-				this.insertApplyRoleRelation(applyUserRelation);
-
-				ApplyStore applyStore = new ApplyStore();
-				applyStore.setApplyStoreId(applyStoreId);
-				applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
-				applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 单子的状态
-				applyStore.setManagersCheck(ConstantStorePower.approve_state_succ);// 单子的经理审核状态
-				this.updateApplyStore(applyStore);
+				managersApproveApply(applyStoreId, approveState, applyUserRelation);
 			} else if (approveState == ConstantStorePower.approve_state_fail) {// 主管拒绝
-				applyUserRelation.setApplyId(applyStoreId);
-				applyUserRelation.setCaurApproveState(approveState);
-				this.insertApplyRoleRelation(applyUserRelation);
-
-				ApplyStore applyStore = new ApplyStore();
-				applyStore.setApplyStoreId(applyStoreId);
-				applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 单子的状态
-				applyStore.setManagersCheck(ConstantStorePower.approve_state_fail);// 单子的经理审核状态
-				this.updateApplyStore(applyStore);
+				managersNotApproveApply(applyStoreId, approveState, applyUserRelation);
 
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * 主管拒绝
+	 * @param applyStoreId
+	 * @param approveState
+	 * @param applyUserRelation
+	 */
+
+	void managersNotApproveApply(Integer applyStoreId, Integer approveState, ApplyUserRelation applyUserRelation) {
+		applyUserRelation.setApplyId(applyStoreId);
+		applyUserRelation.setCaurApproveState(approveState);
+		this.insertApplyRoleRelation(applyUserRelation);
+
+		ApplyStore applyStore = new ApplyStore();
+		applyStore.setApplyStoreId(applyStoreId);
+		applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 单子的状态
+		applyStore.setManagersCheck(ConstantStorePower.approve_state_fail);// 单子的经理审核状态
+		this.updateApplyStore(applyStore);
+	}
+
+	/**
+	 * 主管同意
+	 * @param applyStoreId
+	 * @param approveState
+	 * @param applyUserRelation
+	 */
+
+	void managersApproveApply(Integer applyStoreId, Integer approveState, ApplyUserRelation applyUserRelation) {
+		applyUserRelation.setApplyId(applyStoreId);
+		applyUserRelation.setCaurApproveState(approveState);
+		this.insertApplyRoleRelation(applyUserRelation);
+
+		ApplyStore applyStore = new ApplyStore();
+		applyStore.setApplyStoreId(applyStoreId);
+		applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
+		applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 单子的状态
+		applyStore.setManagersCheck(ConstantStorePower.approve_state_succ);// 单子的经理审核状态
+		this.updateApplyStore(applyStore);
+	}
+
+	/**
+	 * 财务同意
+	 * @param applyStoreId
+	 * @param approveState
+	 * @param applyUserRelation
+	 */
+
+	void financeApproveApply(Integer applyStoreId, Integer approveState, ApplyUserRelation applyUserRelation) {
+		applyUserRelation.setApplyId(applyStoreId);
+		applyUserRelation.setCaurApproveState(approveState);
+		this.insertApplyRoleRelation(applyUserRelation);
+
+		updateDealershipNum(applyStoreId);// 更新城市的经销权个数
+
+		Map<String, Object> queryApplyStoreDetails = this.queryApplyStoreDetails(applyStoreId);
+		Integer paymoneyType = (Integer) queryApplyStoreDetails.get("paymoneyType");
+		ApplyStore applyStore = new ApplyStore();
+		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金
+			applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 单子的状态--in
+		}
+		applyStore.setApplyStoreId(applyStoreId);// id
+		applyStore.setApplyStatus(ConstantStorePower.apply_state_succ);// 单子的状态
+		applyStore.setFinanceCheck(ConstantStorePower.apply_state_succ);// 单子的财务状态
+		this.updateApplyStore(applyStore);
 	}
 
 	/**
@@ -539,8 +576,11 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	@Override
 	public Integer payRemainMoney(ApplyStore applyStore) throws Exception {
 		Integer applyType = applyStore.getApplyType();
+		applyStore.setFinanceCheck(ConstantStorePower.approve_state_ready);
+		applyStore.setManagersCheck(ConstantStorePower.approve_state_ready);
 		Integer paymoneyType = applyStore.getPaymoneyType();// 付款类型
 		whoCheck(applyStore, applyType, paymoneyType);
+		updateApplyStore(applyStore);
 		return paymoneyType;
 	}
 

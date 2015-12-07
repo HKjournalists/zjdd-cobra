@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zaijiadd.app.applyflow.dao.ShopApplyMapper" >
+  <resultMap id="BaseResultMap" type="com.zaijiadd.app.applyflow.entity.ShopApply" >
+    <id column="shop_id" property="shopId" jdbcType="BIGINT" />
+    <result column="store_id" property="storeId" jdbcType="BIGINT" />
+    <result column="shop_applicant" property="shopApplicant" jdbcType="INTEGER" />
+    <result column="imgs_approval_time" property="imgsApprovalTime" jdbcType="TIMESTAMP" />
+    <result column="imgs_approver" property="imgsApprover" jdbcType="INTEGER" />
+    <result column="imgs_audit_status" property="imgsAuditStatus" jdbcType="TINYINT" />
+    <result column="imgs_audit_opinion" property="imgsAuditOpinion" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    shop_id, store_id, shop_applicant, imgs_approval_time, imgs_approver, imgs_audit_status, 
+    imgs_audit_opinion
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from shop_apply
+    where shop_id = #{shopId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from shop_apply
+    where shop_id = #{shopId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.zaijiadd.app.applyflow.entity.ShopApply" >
+    insert into shop_apply (shop_id, store_id, shop_applicant, 
+      imgs_approval_time, imgs_approver, imgs_audit_status, 
+      imgs_audit_opinion)
+    values (#{shopId,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{shopApplicant,jdbcType=INTEGER}, 
+      #{imgsApprovalTime,jdbcType=TIMESTAMP}, #{imgsApprover,jdbcType=INTEGER}, #{imgsAuditStatus,jdbcType=TINYINT}, 
+      #{imgsAuditOpinion,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zaijiadd.app.applyflow.entity.ShopApply" >
+    insert into shop_apply
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="shopId != null" >
+        shop_id,
+      </if>
+      <if test="storeId != null" >
+        store_id,
+      </if>
+      <if test="shopApplicant != null" >
+        shop_applicant,
+      </if>
+      <if test="imgsApprovalTime != null" >
+        imgs_approval_time,
+      </if>
+      <if test="imgsApprover != null" >
+        imgs_approver,
+      </if>
+      <if test="imgsAuditStatus != null" >
+        imgs_audit_status,
+      </if>
+      <if test="imgsAuditOpinion != null" >
+        imgs_audit_opinion,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="shopId != null" >
+        #{shopId,jdbcType=BIGINT},
+      </if>
+      <if test="storeId != null" >
+        #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="shopApplicant != null" >
+        #{shopApplicant,jdbcType=INTEGER},
+      </if>
+      <if test="imgsApprovalTime != null" >
+        #{imgsApprovalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="imgsApprover != null" >
+        #{imgsApprover,jdbcType=INTEGER},
+      </if>
+      <if test="imgsAuditStatus != null" >
+        #{imgsAuditStatus,jdbcType=TINYINT},
+      </if>
+      <if test="imgsAuditOpinion != null" >
+        #{imgsAuditOpinion,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zaijiadd.app.applyflow.entity.ShopApply" >
+    update shop_apply
+    <set >
+      <if test="storeId != null" >
+        store_id = #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="shopApplicant != null" >
+        shop_applicant = #{shopApplicant,jdbcType=INTEGER},
+      </if>
+      <if test="imgsApprovalTime != null" >
+        imgs_approval_time = #{imgsApprovalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="imgsApprover != null" >
+        imgs_approver = #{imgsApprover,jdbcType=INTEGER},
+      </if>
+      <if test="imgsAuditStatus != null" >
+        imgs_audit_status = #{imgsAuditStatus,jdbcType=TINYINT},
+      </if>
+      <if test="imgsAuditOpinion != null" >
+        imgs_audit_opinion = #{imgsAuditOpinion,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where shop_id = #{shopId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zaijiadd.app.applyflow.entity.ShopApply" >
+    update shop_apply
+    set store_id = #{storeId,jdbcType=BIGINT},
+      shop_applicant = #{shopApplicant,jdbcType=INTEGER},
+      imgs_approval_time = #{imgsApprovalTime,jdbcType=TIMESTAMP},
+      imgs_approver = #{imgsApprover,jdbcType=INTEGER},
+      imgs_audit_status = #{imgsAuditStatus,jdbcType=TINYINT},
+      imgs_audit_opinion = #{imgsAuditOpinion,jdbcType=VARCHAR}
+    where shop_id = #{shopId,jdbcType=BIGINT}
+  </update>
+</mapper>

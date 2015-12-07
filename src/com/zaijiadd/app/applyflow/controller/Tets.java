@@ -44,6 +44,9 @@ public class Tets {
 	private static void testTime1() {
 		Date date = new Date();
 		System.out.println(date);
+		System.out.println(date.getTime());
+		// Long thirdDay=1
+		// System.out.println("TIAN"+);
 	}
 
 	/**
