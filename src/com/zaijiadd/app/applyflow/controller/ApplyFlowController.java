@@ -28,6 +28,7 @@ import com.zaijiadd.app.common.utils.DateUtils;
 import com.zaijiadd.app.common.utils.ParseUtils;
 import com.zaijiadd.app.user.entity.UserInfoEntity;
 import com.zaijiadd.app.utils.constants.ConstantStorePower;
+import com.zaijiadd.app.utils.constants.ConstantsRole;
 
 /**
  * 流程申请
@@ -481,8 +482,16 @@ public class ApplyFlowController {
 		Integer pageCount = jsonRequest.getInteger("pageCount");// 每页的数量
 		param.put("start", (Integer.parseInt(page) - 1) * pageCount);// 从那里开始
 		param.put("end", pageCount);
-		Integer whoCheck = jsonRequest.getInteger("whoCheck");
-		param.put("whoCheck", whoCheck);// 谁审批
+		Integer userId = jsonRequest.getInteger("userId");
+		UserInfoEntity userInfoEntity = applyFlowService.getUserInfoById(userId);
+		Integer roleId = userInfoEntity.getRoleId();
+
+		if (ConstantsRole.ROLE_MANAGERS.equals(roleId)) {// 经理
+			param.put("whoCheck", userInfoEntity.getUserId());
+		} else if (ConstantsRole.ROLE_FINANCE.equals(roleId)) {
+			param.put("whoCheck", userInfoEntity.getRoleId());
+		}
+
 		param.put("applyStatus", ConstantStorePower.apply_state_ready);
 		param.put("whetherStartApply", ConstantStorePower.WHETHER_STARTAPPLY_YES);
 		List<Map<String, Object>> applyStoreMap = applyFlowService.queryRoleApproveStoreTry(param);
@@ -610,8 +619,8 @@ public class ApplyFlowController {
 			// Integer userId = user.getUserId();
 			// applyStore.setYjsUserId(userId);
 
-			Integer applyStoreId = applyFlowService.payRemainMoney(applyStore);
-			param.put("applyStoreId", applyStoreId);
+			String possNum = applyFlowService.payRemainMoney(applyStore);
+			param.put("possNum", possNum);
 			return ContainerUtils.buildResSuccessMap(param);
 		} catch (Exception e) {
 			e.printStackTrace();

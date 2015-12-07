@@ -12,6 +12,7 @@ import java.util.Map;
 import com.zaijiadd.app.applyflow.entity.ApplyContract;
 import com.zaijiadd.app.applyflow.entity.ApplyStore;
 import com.zaijiadd.app.applyflow.entity.InviteUserEntity;
+import com.zaijiadd.app.user.entity.UserInfoEntity;
 
 /**
  * (用一句话描述类的主要功能)
@@ -252,7 +253,7 @@ public interface ApplyFlowService {
 	 * @throws Exception
 	 */
 
-	Integer payRemainMoney(ApplyStore applyStore) throws Exception;
+	String payRemainMoney(ApplyStore applyStore) throws Exception;
 
 	/**
 	 * (用一句话描述方法的主要功能)
@@ -267,5 +268,13 @@ public interface ApplyFlowService {
 	 */
 
 	ApplyContract getApplyContract(Map<String, Object> applyContractParam);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param userId
+	 * @return
+	 */
+
+	UserInfoEntity getUserInfoById(Integer userId);
 
 }

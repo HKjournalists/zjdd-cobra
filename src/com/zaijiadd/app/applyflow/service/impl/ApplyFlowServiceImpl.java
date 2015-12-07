@@ -583,7 +583,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	 */
 
 	@Override
-	public Integer payRemainMoney(ApplyStore applyStore) throws Exception {
+	public String payRemainMoney(ApplyStore applyStore) throws Exception {
 		BigDecimal contractAmount = applyStore.getContractAmount();
 		BigDecimal needPaymoney = applyStore.getNeedPaymoney();
 		BigDecimal paidMoney = applyStore.getPaidMoney();
@@ -610,14 +610,14 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		//
 		Integer applyStoreId = applyStoreDao.addApplyStore(applyStore3);//
 		// 新记录
-		//
-		// Integer applyType = applyStore3.getApplyType();
-		// Integer paymoneyType = applyStore3.getPaymoneyType();// 付款类型
-		// whoCheckpayRemainMoney(applyStore3, applyType, paymoneyType);
+		Integer applyType = applyStore3.getApplyType();
+		Integer paymoneyType = applyStore3.getPaymoneyType();// 付款类型
+		whoCheckpayRemainMoney(applyStore3, applyType, paymoneyType);
 		// 把原来的记录备份
 		applyStore2.setApplyStatus(ConstantStorePower.APPLY_STATE_NOT_PAYALLMONEY);// 尾款，用户不可见
 		updateApplyStore(applyStore2);
-		return applyStore3.getApplyStoreId();
+		String possNum = generateSerialNum();// 生成流水号
+		return possNum;
 	}
 
 	/**
@@ -725,6 +725,15 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	@Override
 	public ApplyContract getApplyContract(Map<String, Object> applyContractParam) {
 		return applyContractMapper.getApplyContract(applyContractParam);
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#getUserInfoById(java.lang.Integer)
+	 */
+
+	@Override
+	public UserInfoEntity getUserInfoById(Integer userId) {
+		return userInfoDao.getUserInfoById(userId);
 	}
 
 }
