@@ -102,7 +102,7 @@
     where apply_store_id = #{applyStoreId,jdbcType=INTEGER}
   </select>
   
-     <!-- 查询订单状态 -->
+  <!-- 查询订单状态 -->
   <select id="queryAllApplyStoreSate" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
     select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
     	<where>
@@ -164,9 +164,16 @@
 		</where>
   </select>
   
+  
+   <select id="queryApplStoreById" resultMap="BaseResultMap" parameterType="Long" >
+    select 
+       *
+    from cobra_apply_store
+   		where apply_store_id=#{applyStoreId}
+  </select>
     <!-- 查询待审批的 不用-->
    <select id="queryApproveStoreSate" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
-    select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
+    select <include refid="Base_Column_order_state_List" /> from cobra_apply_store_detail
     	<where>
 			<if test="yjsUserId != null and yjsUserId !=''">
 				yjs_user_id = #{yjsUserId}

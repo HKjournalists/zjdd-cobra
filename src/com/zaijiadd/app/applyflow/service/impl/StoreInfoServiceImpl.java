@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.zaijiadd.app.applyflow.dao.ApplyStoreDao;
+import com.zaijiadd.app.applyflow.dao.ApplyStoreDetailDao;
 import com.zaijiadd.app.applyflow.dao.CityMapper;
 import com.zaijiadd.app.applyflow.dao.CountryMapper;
 import com.zaijiadd.app.applyflow.dao.ProvinceMapper;
@@ -50,6 +51,8 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 	private ApplyStoreDao applyStoreDao;
 	@Autowired
 	private ShopApplyMapper shopApplyMapper;
+	@Autowired
+	ApplyStoreDetailDao applyStoreDetailDao;
 	
 	
 	@Override
@@ -130,7 +133,12 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		switch(type) {
 			case -1:
-				break;
+				map.put("yjsUserId", map.get("userId"));
+				map.put("applyStatus", "1");
+				
+				resultMap.put("data", this.applyStoreDetailDao.queryAllApplyStoreSate(map));
+				resultMap.put("total", this.applyStoreDetailDao.queryByParamCount(map));
+				return resultMap;
 			case 0: //开户申请中
 				map.put("applicant", map.get("userId"));
 				resultMap.put("data", this.storeInfoDao.selectByApplicant(map));

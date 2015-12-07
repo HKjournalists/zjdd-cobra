@@ -6,6 +6,7 @@ import java.util.Map;
 import com.zaijiadd.app.applyflow.entity.Excel;
 
 public interface ExcelMapper {
+	
     int insert(Excel record);
 
     int insertSelective(Excel record);
