@@ -727,4 +727,13 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		return applyContractMapper.getApplyContract(applyContractParam);
 	}
 
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#getUserInfoById(java.lang.Integer)
+	 */
+
+	@Override
+	public UserInfoEntity getUserInfoById(Integer userId) {
+		return userInfoDao.getUserInfoById(userId);
+	}
+
 }
