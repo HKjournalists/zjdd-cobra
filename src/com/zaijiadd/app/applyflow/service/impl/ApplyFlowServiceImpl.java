@@ -37,6 +37,7 @@ import com.zaijiadd.app.applyflow.entity.City;
 import com.zaijiadd.app.applyflow.entity.CityDealership;
 import com.zaijiadd.app.applyflow.entity.InviteUserEntity;
 import com.zaijiadd.app.applyflow.service.ApplyFlowService;
+import com.zaijiadd.app.applyflow.service.AreaService;
 import com.zaijiadd.app.system.service.SystemUserService;
 import com.zaijiadd.app.user.dao.UserInfoDAO;
 import com.zaijiadd.app.user.entity.UserInfoEntity;
@@ -65,6 +66,9 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	BankMapper bankMapper;
 	@Autowired
 	CityDealershipMapper cityDealershipMapper;
+
+	@Autowired
+	AreaService areaService;
 	@Autowired
 	ApplyUserRelationDao applyUserRelationDao;
 	@Autowired
@@ -145,6 +149,8 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 					UserInfoEntity leader = systemUserService.getLeader(applyStore.getYjsUserId());
 					// 实际付的金额比应收的金额小，那么给主管审批
 					applyStore.setWhoCheck(leader.getUserId());
+					applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_NO);//
+					// 没有发起收款申请
 				} else {// 实际付的金额比应收的金额 相等，给财务
 					applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 				}
@@ -158,6 +164,8 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 					UserInfoEntity leader = systemUserService.getLeader(applyStore.getYjsUserId());
 					// 实际付的金额比应收的金额小，那么给主管审批
 					applyStore.setWhoCheck(leader.getUserId());
+					applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_NO);//
+					// 没有发起收款申请
 				} else {// 实际付的金额比应收的金额 相等，给财务
 					applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 				}
@@ -169,15 +177,22 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	 * (用一句话描述方法的主要功能)
 	 * @param applyStore
 	 * @return
+	 * @throws Exception
 	 */
 
-	BigDecimal getDealershipMoney(ApplyStore applyStore) {
+	BigDecimal getDealershipMoney(ApplyStore applyStore) throws Exception {
 		Integer dealershipNum = applyStore.getDealershipNum();// 经销权个数
 		BigDecimal dealershipNumBig = new BigDecimal(dealershipNum);
 		BigDecimal cityDealershipMoney = new BigDecimal(1);
+		// Map<String, Object> findCitySellInfo =
+		// areaService.findCitySellInfo(applyStore.getCityId(),
+		// applyStore.getDistrictId());
 		CityDealership cityDealership = cityDealershipMapper.getCityMoneyByCityId(applyStore.getCityId());
 		if (cityDealership != null) {
 			cityDealershipMoney = cityDealership.getCityDealershipMoney();
+			// cityDealershipMoney = (BigDecimal) findCitySellInfo.get("money");
+			// BigDecimal dealershipNumAble = (BigDecimal)
+			// findCitySellInfo.get("laveNum");
 		}
 		BigDecimal needPaymoneyCount = new BigDecimal(0);
 		if (dealershipNumBig.compareTo(BigDecimal.ZERO) == 0) {
@@ -311,11 +326,12 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	}
 
 	/**
+	 * @throws Exception
 	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#roleApproveStore(java.util.Map)
 	 */
 
 	@Override
-	public Integer roleApproveStore(Map<String, Object> param) {
+	public Integer roleApproveStore(Map<String, Object> param) throws Exception {
 		Integer roleId = (Integer) param.get("roleId");
 		Integer userId = (Integer) param.get("userId");
 		Integer applyStoreId = (Integer) param.get("applyStoreId");
@@ -387,20 +403,22 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	 * @param applyStoreId
 	 * @param approveState
 	 * @param applyUserRelation
+	 * @throws Exception
 	 */
 
-	void financeApproveApply(Integer applyStoreId, Integer approveState, ApplyUserRelation applyUserRelation) {
+	void financeApproveApply(Integer applyStoreId, Integer approveState, ApplyUserRelation applyUserRelation)
+			throws Exception {
 		applyUserRelation.setApplyId(applyStoreId);
 		applyUserRelation.setCaurApproveState(approveState);
 		this.insertApplyRoleRelation(applyUserRelation);
 
-		updateDealershipNum(applyStoreId);// 更新城市的经销权个数
+		// updateDealershipNum(applyStoreId);// 更新城市的经销权个数
 
 		Map<String, Object> queryApplyStoreDetails = this.queryApplyStoreDetails(applyStoreId);
 		Integer paymoneyType = (Integer) queryApplyStoreDetails.get("paymoneyType");
 		ApplyStore applyStore = new ApplyStore();
 		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金
-			applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 单子的状态--in
+			applyStore.setApplyStatus(ConstantStorePower.apply_state_fail);// 单子的状态--in
 		}
 		if(ConstantStorePower.APPLY_PAYMONEY_ALL.equals(paymoneyType)){//全额
 			ApplyStore applyStoreCopy = this.applyStoreDao.selectByAppStoreId(applyStoreId);
@@ -440,17 +458,19 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	/**
 	 * 更新城市的经销权个数
 	 * @param applyStoreId
+	 * @throws Exception
 	 */
 
-	void updateDealershipNum(Integer applyStoreId) {
+	void updateDealershipNum(Integer applyStoreId) throws Exception {
 		Map<String, Object> queryApplyStoreDetails = applyStoreDao.queryApplyStoreDetails(applyStoreId);
 		Integer cityId = (Integer) queryApplyStoreDetails.get("cityId");// 用户的城市id
+		Integer districtId = (Integer) queryApplyStoreDetails.get("districtId");// 用户的城市id
 		Integer dealershipNum = (Integer) queryApplyStoreDetails.get("dealershipNum");// 用户的经销权个数
 		if (dealershipNum != null && dealershipNum != 0) {
 			CityDealership cityDealership = cityDealershipMapper.getCityMoneyByCityId(cityId);
+			Map<String, Object> findCitySellInfo = areaService.findCitySellInfo(cityId, districtId);
 			if (cityDealership != null) {
-				Integer sellDealershipNum = cityDealership.getSellDealershipNum();// 城市经销权总的个数
-				Integer dealershipNumAble = cityDealership.getDealershipNumAble();
+				Integer dealershipNumAble = (Integer) findCitySellInfo.get("laveNum");
 				dealershipNumAble = dealershipNumAble - dealershipNum;
 				if (dealershipNumAble >= 0) {
 					CityDealership cityDealership2 = new CityDealership(cityDealership.getCityDealershipId(), cityId,
