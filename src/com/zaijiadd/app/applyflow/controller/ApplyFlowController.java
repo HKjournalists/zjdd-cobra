@@ -606,7 +606,10 @@ public class ApplyFlowController {
 			JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
 			Map<String, Object> param = new HashMap<String, Object>();
 			ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
-
+			UserInfoEntity user = getUserMsg(request, jsonRequest);// 用户信息
+			Integer roleId = user.getRoleId();
+			Integer userId = user.getUserId();
+			applyStore.setYjsUserId(userId);
 			Integer applyStoreId = applyFlowService.payRemainMoney(applyStore);
 			return ContainerUtils.buildResSuccessMap(param);
 		} catch (Exception e) {
