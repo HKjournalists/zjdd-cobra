@@ -111,7 +111,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		String possNum = generateSerialNum();// 生成流水号
 		ApplyStore applyStore2 = new ApplyStore();
 		applyStore2.setPossNum(possNum);
-		applyStore2.setApplyStoreId(applyStoreId);
+		applyStore2.setApplyStoreId(applyStore.getApplyStoreId());
 		updateApplyStore(applyStore2);
 		return possNum;
 	}
@@ -400,13 +400,15 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		Integer applyType = (Integer) queryApplyStoreDetails.get("applyType");// 申请类型是小店
 
 		if (ConstantStorePower.APPLY_TYPE_SMALLSTORE.equals(applyType)) {
-			Integer storeNumm = (Integer) queryApplyStoreDetails.get("storeNumm");
-			ApplyStore applyStore1 = this.selectByAppStoreId(applyStoreId);
-			applyStore1.setApplyStatus(ConstantStorePower.apply_state_succ);
-			applyStore1.setFinanceCheck(ConstantStorePower.apply_state_succ);// 单子的财务状态
-			if (storeNumm != null && storeNumm > 0) {
-				for (int i = 0; i < storeNumm; i++) {
-					applyStoreDao.addApplyStore(applyStore1);
+			if (ConstantStorePower.APPLY_PAYMONEY_ALL.equals(paymoneyType)) {// 全额
+				Integer storeNumm = (Integer) queryApplyStoreDetails.get("storeNumm");
+				ApplyStore applyStore1 = this.selectByAppStoreId(applyStoreId);
+				applyStore1.setApplyStatus(ConstantStorePower.apply_state_succ);
+				applyStore1.setFinanceCheck(ConstantStorePower.apply_state_succ);// 单子的财务状态
+				if (storeNumm != null && storeNumm > 0) {
+					for (int i = 0; i < storeNumm; i++) {
+						applyStoreDao.addApplyStore(applyStore1);
+					}
 				}
 			}
 
@@ -592,27 +594,30 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		ApplyStore applyStore2 = this.selectByAppStoreId(applyStore.getApplyStoreId());// 老的记录
 
 		ApplyStore applyStore3 = new ApplyStore();
+
+		BeanUtils.copyProperties(applyStore3, applyStore2);
 		applyStore3.setFinanceCheck(ConstantStorePower.approve_state_ready);
 		applyStore3.setManagersCheck(ConstantStorePower.approve_state_ready);
 		applyStore3.setApplyStatus(ConstantStorePower.apply_state_ready);
 		applyStore3.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_NO);
-		BeanUtils.copyProperties(applyStore3, applyStore2);
 		applyStore3.setContractAmount(contractAmount);
 		applyStore3.setNeedPaymoney(needPaymoney);
 		applyStore3.setPaidMoney(paidMoney);
 		applyStore3.setPayWay(payWay);
 		applyStore3.setPaymoneyType(paymoneyType2);
 		applyStore3.setWhetherSelf(whetherSelf);
-
-		Integer applyStoreId = applyStoreDao.addApplyStore(applyStore3);// 新记录
-		// 审核新记录
-		Integer applyType = applyStore3.getApplyType();
-		Integer paymoneyType = applyStore3.getPaymoneyType();// 付款类型
-		whoCheckpayRemainMoney(applyStore3, applyType, paymoneyType);
+		applyStore3.setWhoCheck(null);
+		//
+		Integer applyStoreId = applyStoreDao.addApplyStore(applyStore3);//
+		// 新记录
+		//
+		// Integer applyType = applyStore3.getApplyType();
+		// Integer paymoneyType = applyStore3.getPaymoneyType();// 付款类型
+		// whoCheckpayRemainMoney(applyStore3, applyType, paymoneyType);
 		// 把原来的记录备份
 		applyStore2.setApplyStatus(ConstantStorePower.APPLY_STATE_NOT_PAYALLMONEY);// 尾款，用户不可见
 		updateApplyStore(applyStore2);
-		return paymoneyType;
+		return applyStore3.getApplyStoreId();
 	}
 
 	/**

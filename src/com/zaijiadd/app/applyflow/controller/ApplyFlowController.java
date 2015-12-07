@@ -612,6 +612,7 @@ public class ApplyFlowController {
 			// applyStore.setYjsUserId(userId);
 
 			Integer applyStoreId = applyFlowService.payRemainMoney(applyStore);
+			param.put("applyStoreId", applyStoreId);
 			return ContainerUtils.buildResSuccessMap(param);
 		} catch (Exception e) {
 			e.printStackTrace();
