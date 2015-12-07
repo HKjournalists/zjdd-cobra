@@ -106,4 +106,12 @@ public interface ApplyStoreDao {
 
 	Integer updateWhetherStartApply(ApplyStore applyStore);
 
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	List<ApplyStore> queryApplStoreNotAllMoney(Map<String, Object> param);
+
 }
