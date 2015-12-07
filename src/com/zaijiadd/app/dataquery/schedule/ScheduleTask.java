@@ -107,6 +107,9 @@ public class ScheduleTask {
 		
 	}
 	
+	public void processExpiration() {
+		System.out.println("定时任务");
+	}
 	public static void main( String[] args ) {
 		
 		ScheduleTask s = new ScheduleTask();

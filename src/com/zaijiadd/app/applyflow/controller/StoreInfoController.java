@@ -77,8 +77,8 @@ public class StoreInfoController {
 		Map<String, Object> param = new HashMap<String, Object>();
 		try {
 			StoreInfoVO storeInfoVO = new StoreInfoVO();
-			PropertyUtils.copyProperties(storeInfoVO, this.storeInfoService.selectByPrimaryKey(storeId));
-			param.put("detail", storeInfoVO);
+			//PropertyUtils.copyProperties(storeInfoVO, this.storeInfoService.selectByPrimaryKey(storeId));
+			param.put("detail", this.storeInfoService.selectByPrimaryKey(storeId));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ContainerUtils.buildResFailMap();

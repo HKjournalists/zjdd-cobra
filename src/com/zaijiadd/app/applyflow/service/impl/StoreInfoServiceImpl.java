@@ -27,8 +27,6 @@ import com.zaijiadd.app.applyflow.entity.StoreImg;
 import com.zaijiadd.app.applyflow.entity.StoreInfo;
 import com.zaijiadd.app.applyflow.service.StoreInfoService;
 import com.zaijiadd.app.common.utils.DateUtils;
-import com.zaijiadd.app.user.dao.UserInfoDAO;
-import com.zaijiadd.app.user.entity.UserInfoEntity;
 
 @Service
 public class StoreInfoServiceImpl implements StoreInfoService {
@@ -47,8 +45,6 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 	private StoreImgDao storeImgDao;
 	@Autowired
 	private ApplyStoreDao applyStoreDao;
-	@Autowired
-	private UserInfoDAO userInfoDAO;
 	
 	
 	@Override
