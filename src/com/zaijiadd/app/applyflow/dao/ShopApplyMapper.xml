@@ -9,6 +9,7 @@
     <result column="imgs_approver" property="imgsApprover" jdbcType="INTEGER" />
     <result column="imgs_audit_status" property="imgsAuditStatus" jdbcType="TINYINT" />
     <result column="imgs_audit_opinion" property="imgsAuditOpinion" jdbcType="VARCHAR" />
+    <result column="application_shop_time" property="applicationShopTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     shop_id, store_id, shop_applicant, imgs_approval_time, imgs_approver, imgs_audit_status, 
@@ -25,12 +26,15 @@
     where shop_id = #{shopId,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.zaijiadd.app.applyflow.entity.ShopApply" >
+  <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="shopId">
+		SELECT LAST_INSERT_ID() AS id
+	</selectKey>
     insert into shop_apply (shop_id, store_id, shop_applicant, 
       imgs_approval_time, imgs_approver, imgs_audit_status, 
-      imgs_audit_opinion)
+      imgs_audit_opinion, application_shop_time)
     values (#{shopId,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{shopApplicant,jdbcType=INTEGER}, 
       #{imgsApprovalTime,jdbcType=TIMESTAMP}, #{imgsApprover,jdbcType=INTEGER}, #{imgsAuditStatus,jdbcType=TINYINT}, 
-      #{imgsAuditOpinion,jdbcType=VARCHAR})
+      #{imgsAuditOpinion,jdbcType=VARCHAR}, #{applicationShopTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.zaijiadd.app.applyflow.entity.ShopApply" >
     insert into shop_apply

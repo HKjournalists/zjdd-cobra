@@ -6,7 +6,7 @@ public interface ShopApplyMapper {
 	
     int deleteByPrimaryKey(Long shopId);
 
-    int insert(ShopApply record);
+    long insert(ShopApply record);
 
     int insertSelective(ShopApply record);
 

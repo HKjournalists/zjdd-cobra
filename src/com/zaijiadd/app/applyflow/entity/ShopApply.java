@@ -1,6 +1,6 @@
 package com.zaijiadd.app.applyflow.entity;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class ShopApply {
     private Long shopId;
@@ -9,67 +9,79 @@ public class ShopApply {
 
     private Integer shopApplicant;
 
-    private Date imgsApprovalTime;
+    private Timestamp imgsApprovalTime;
 
     private Integer imgsApprover;
 
-    private Byte imgsAuditStatus;
-
-    private String imgsAuditOpinion;
+    private Integer imgsAuditStatus;
 
     public Long getShopId() {
-        return shopId;
-    }
+		return shopId;
+	}
 
-    public void setShopId(Long shopId) {
-        this.shopId = shopId;
-    }
+	public void setShopId(Long shopId) {
+		this.shopId = shopId;
+	}
 
-    public Long getStoreId() {
-        return storeId;
-    }
+	public Long getStoreId() {
+		return storeId;
+	}
 
-    public void setStoreId(Long storeId) {
-        this.storeId = storeId;
-    }
+	public void setStoreId(Long storeId) {
+		this.storeId = storeId;
+	}
 
-    public Integer getShopApplicant() {
-        return shopApplicant;
-    }
+	public Integer getShopApplicant() {
+		return shopApplicant;
+	}
 
-    public void setShopApplicant(Integer shopApplicant) {
-        this.shopApplicant = shopApplicant;
-    }
+	public void setShopApplicant(Integer shopApplicant) {
+		this.shopApplicant = shopApplicant;
+	}
 
-    public Date getImgsApprovalTime() {
-        return imgsApprovalTime;
-    }
+	public Timestamp getImgsApprovalTime() {
+		return imgsApprovalTime;
+	}
 
-    public void setImgsApprovalTime(Date imgsApprovalTime) {
-        this.imgsApprovalTime = imgsApprovalTime;
-    }
+	public void setImgsApprovalTime(Timestamp imgsApprovalTime) {
+		this.imgsApprovalTime = imgsApprovalTime;
+	}
 
-    public Integer getImgsApprover() {
-        return imgsApprover;
-    }
+	public Integer getImgsApprover() {
+		return imgsApprover;
+	}
 
-    public void setImgsApprover(Integer imgsApprover) {
-        this.imgsApprover = imgsApprover;
-    }
+	public void setImgsApprover(Integer imgsApprover) {
+		this.imgsApprover = imgsApprover;
+	}
 
-    public Byte getImgsAuditStatus() {
-        return imgsAuditStatus;
-    }
+	public Integer getImgsAuditStatus() {
+		return imgsAuditStatus;
+	}
 
-    public void setImgsAuditStatus(Byte imgsAuditStatus) {
-        this.imgsAuditStatus = imgsAuditStatus;
-    }
+	public void setImgsAuditStatus(Integer imgsAuditStatus) {
+		this.imgsAuditStatus = imgsAuditStatus;
+	}
 
-    public String getImgsAuditOpinion() {
-        return imgsAuditOpinion;
-    }
+	public String getImgsAuditOpinion() {
+		return imgsAuditOpinion;
+	}
 
-    public void setImgsAuditOpinion(String imgsAuditOpinion) {
-        this.imgsAuditOpinion = imgsAuditOpinion == null ? null : imgsAuditOpinion.trim();
-    }
+	public void setImgsAuditOpinion(String imgsAuditOpinion) {
+		this.imgsAuditOpinion = imgsAuditOpinion;
+	}
+
+	public Timestamp getApplicationShopTime() {
+		return applicationShopTime;
+	}
+
+	public void setApplicationShopTime(Timestamp applicationShopTime) {
+		this.applicationShopTime = applicationShopTime;
+	}
+
+	private String imgsAuditOpinion;
+    
+    private Timestamp applicationShopTime;
+
+    
 }

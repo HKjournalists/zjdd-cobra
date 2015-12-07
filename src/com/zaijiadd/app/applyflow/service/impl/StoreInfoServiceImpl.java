@@ -17,12 +17,14 @@ import com.zaijiadd.app.applyflow.dao.ApplyStoreDao;
 import com.zaijiadd.app.applyflow.dao.CityMapper;
 import com.zaijiadd.app.applyflow.dao.CountryMapper;
 import com.zaijiadd.app.applyflow.dao.ProvinceMapper;
+import com.zaijiadd.app.applyflow.dao.ShopApplyMapper;
 import com.zaijiadd.app.applyflow.dao.StoreImgDao;
 import com.zaijiadd.app.applyflow.dao.StoreInfoDao;
 import com.zaijiadd.app.applyflow.dao.TownMapper;
 import com.zaijiadd.app.applyflow.dto.StoreApprovalDTO;
 import com.zaijiadd.app.applyflow.dto.StoreInfoDTO;
 import com.zaijiadd.app.applyflow.entity.ApplyStore;
+import com.zaijiadd.app.applyflow.entity.ShopApply;
 import com.zaijiadd.app.applyflow.entity.StoreImg;
 import com.zaijiadd.app.applyflow.entity.StoreInfo;
 import com.zaijiadd.app.applyflow.service.StoreInfoService;
@@ -45,6 +47,8 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 	private StoreImgDao storeImgDao;
 	@Autowired
 	private ApplyStoreDao applyStoreDao;
+	@Autowired
+	private ShopApplyMapper shopApplyMapper;
 	
 	
 	@Override
@@ -92,10 +96,16 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 		storeInfo.setShopApplicant(userId);
 		this.storeInfoDao.updateByPrimaryKeySelective(storeInfo);
 		
+		ShopApply shopApply = new ShopApply();
+		shopApply.setStoreId(storeId);
+		shopApply.setApplicationShopTime(new Timestamp(new Date().getTime()));
+		shopApply.setShopApplicant(userId);
+		shopApply.setImgsAuditStatus(0);
+		Long shopId = this.shopApplyMapper.insert(shopApply);
 		for(Object fileUrl : fileUrls) {
 			StoreImg storeImg = new StoreImg();
 			storeImg.setImgUrl(fileUrl.toString());
-			storeImg.setStoreId(storeId);
+			storeImg.setStoreId(shopId);
 			this.storeImgDao.insert(storeImg);
 		}
 	}
