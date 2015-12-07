@@ -17,6 +17,14 @@ public interface StoreInfoService {
 	  int deleteByPrimaryKey(Long storeId) throws Exception;
 
 	  int insert(StoreInfo record) throws Exception;
+	  
+	  /**
+	   * 重新申请开户
+	   * @param record
+	   * @return
+	   * @throws Exception
+	   */
+	  int reApply(StoreInfo record) throws Exception;
 
 	  int insertSelective(StoreInfo record) throws Exception;
 

@@ -38,37 +38,6 @@ import sun.misc.BASE64Decoder;
 @RequestMapping("/file")
 public class UploadController { 
 	
-	/*@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public Map<String, Object> upload(@RequestParam("file") CommonsMultipartFile[] files,HttpServletRequest request){
-		String path = request.getSession().getServletContext().getRealPath("upload"); 
-		List<String> fileUrlList = new ArrayList<>();
-		Map<String, Object> param = new HashMap<String, Object>();
-		Integer userId = Integer.parseInt(request.getParameter("userId"));
-		if(userId == null) {
-			UserInfoEntity userInfoEntity = (UserInfoEntity) request.getSession().getAttribute("user");
-			userId = userInfoEntity.getUserId();
-		}
-		path = path + File.separator + userId + File.separator;
-		for(int i = 0; i < files.length; i++) {
-			if(!files[i].isEmpty()) {
-				try {
-					String newFileName = new Date().getTime() + files[i].getOriginalFilename();
-					File targetFile = new File(path, newFileName);  
-				        if(!targetFile.exists()) {
-				            targetFile.mkdirs();
-				        }  
-				  files[i].transferTo(targetFile);
-				  fileUrlList.add(ConstantsForAccount.IMG_URL + request.getContextPath() + "/upload/" + userId + "/" + newFileName);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	
-		param.put("fileUrls", fileUrlList);
-		return ContainerUtils.buildResSuccessMap(param);
-	}*/
-	
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> upload(HttpServletRequest request) throws Exception{

@@ -59,6 +59,7 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 		record.setCityName(cityMapper.selectNameById(record.getCity()));
 		record.setDistrictName(countryMapper.selectNameById(record.getDistrict()));
 		record.setStreetName(townMapper.selectNameById(record.getStreet()));
+		record.setIsHistory(0);
 		ApplyStore applyStore = new ApplyStore();
 		applyStore.setApplyStoreId(record.getApplyStoreId().intValue());
 		applyStore.setApplyStatus(3);
@@ -277,6 +278,21 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 			
 		}
 		return returnList;
+	}
+
+	@Override
+	public int reApply(StoreInfo record) throws Exception {
+		record.setStatus(0);
+		record.setCapitalName(provinceMapper.selectNameById(record.getCapital()));
+		record.setCityName(cityMapper.selectNameById(record.getCity()));
+		record.setDistrictName(countryMapper.selectNameById(record.getDistrict()));
+		record.setStreetName(townMapper.selectNameById(record.getStreet()));
+		record.setIsHistory(0);
+		//上一个申请成为历史记录
+		StoreInfo hisInfo = this.storeInfoDao.selectByPrimaryKey(record.getStoreId());
+		hisInfo.setIsHistory(1);
+		this.updateByPrimaryKeySelective(hisInfo);
+		return storeInfoDao.insert(record);
 	}
 
 }

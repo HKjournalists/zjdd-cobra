@@ -66,6 +66,35 @@ public class StoreInfoController {
 
 	}
 	
+	
+	/**
+	 * 重新申请开户
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/reApply", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> reApply(StoreInfo info, HttpServletRequest request) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		try {
+			JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
+			info = jsonRequest.parseObject(jsonRequest.toJSONString(), StoreInfo.class);
+			
+			Integer userId = Integer.parseInt(jsonRequest.getString("userId"));
+			info.setApplicant(userId);
+			info.setApplicantTime(new Timestamp(new Date().getTime()));
+			StoreInfoVO storeInfoVO = new StoreInfoVO();
+			this.storeInfoService.reApply(info);
+			PropertyUtils.copyProperties(storeInfoVO, info);
+			param.put("detail", storeInfoVO);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ContainerUtils.buildResFailMap();
+		}
+		return ContainerUtils.buildResSuccessMap(param);
+
+	}
+	
 	/**
 	 * 开户申请查看
 	 * @param request
@@ -135,6 +164,29 @@ public class StoreInfoController {
 		}
 		return ContainerUtils.buildResSuccessMap(param);
 
+	}
+	/**
+	 * 重新申请开店
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/reApplicationShop", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> reApplicationShop(HttpServletRequest request) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		try {
+			JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
+			JSONArray fileUrls = jsonRequest.getJSONArray("fileUrls");
+			//String[] fileUrls = request.getParameterValues("fileUrls");
+			Long storeId = jsonRequest.getLong("storeId");
+			Integer userId = jsonRequest.getInteger("userId");
+			this.storeInfoService.applicationShop(fileUrls, storeId, userId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ContainerUtils.buildResFailMap();
+		}
+		return ContainerUtils.buildResSuccessMap(param);
+		
 	}
 	
 	/**

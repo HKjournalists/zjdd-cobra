@@ -67,9 +67,19 @@ public class StoreInfo implements Serializable {
     private Timestamp applicationTime;
     
     private Integer shopApplicant;
+    
+    private int isHistory;
    
 
-    public Integer getShopApplicant() {
+    public int getIsHistory() {
+		return isHistory;
+	}
+
+	public void setIsHistory(int isHistory) {
+		this.isHistory = isHistory;
+	}
+
+	public Integer getShopApplicant() {
 		return shopApplicant;
 	}
 
