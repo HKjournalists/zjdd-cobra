@@ -180,7 +180,9 @@ public class StoreInfoController {
 			//String[] fileUrls = request.getParameterValues("fileUrls");
 			Long storeId = jsonRequest.getLong("storeId");
 			Integer userId = jsonRequest.getInteger("userId");
-			this.storeInfoService.applicationShop(fileUrls, storeId, userId);
+			String username = jsonRequest.getString("username");
+			String password = jsonRequest.getString("password");
+			this.storeInfoService.applicationShop(fileUrls, storeId, userId, username, password);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ContainerUtils.buildResFailMap();
@@ -203,7 +205,9 @@ public class StoreInfoController {
 			//String[] fileUrls = request.getParameterValues("fileUrls");
 			Long storeId = jsonRequest.getLong("shopId");
 			Integer userId = jsonRequest.getInteger("userId");
-			this.storeInfoService.ReApplicationShop(fileUrls, storeId, userId);
+			String username = jsonRequest.getString("username");
+			String password = jsonRequest.getString("password");
+			this.storeInfoService.ReApplicationShop(fileUrls, storeId, userId, username, password);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ContainerUtils.buildResFailMap();

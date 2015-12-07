@@ -21,6 +21,7 @@ import com.zaijiadd.app.applyflow.dao.ShopApplyMapper;
 import com.zaijiadd.app.applyflow.dao.StoreImgDao;
 import com.zaijiadd.app.applyflow.dao.StoreInfoDao;
 import com.zaijiadd.app.applyflow.dao.TownMapper;
+import com.zaijiadd.app.applyflow.dto.ShopVO;
 import com.zaijiadd.app.applyflow.dto.StoreApprovalDTO;
 import com.zaijiadd.app.applyflow.dto.StoreInfoDTO;
 import com.zaijiadd.app.applyflow.entity.ApplyStore;
@@ -85,14 +86,14 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 	public int updateByPrimaryKeySelective(StoreInfo record, ShopApply shopApply) throws Exception {
 		if(shopApply != null) {
 			this.shopApplyMapper.updateByPrimaryKeySelective(shopApply);
+			ShopApply shop = this.shopApplyMapper.selectByPrimaryKey(shopApply.getShopId());
+			record.setStoreId(shop.getStoreId());
 		}
-		ShopApply shop = this.shopApplyMapper.selectByPrimaryKey(shopApply.getShopId());
-		record.setStoreId(shop.getStoreId());
 		return this.storeInfoDao.updateByPrimaryKeySelective(record);
 	}
 
 	@Override
-	public void applicationShop(JSONArray fileUrls, Long storeId, Integer userId) throws Exception {
+	public void applicationShop(JSONArray fileUrls, Long storeId, Integer userId, String username, String password) throws Exception {
 		StoreInfo storeInfo = new StoreInfo();
 		//图片审核中
 		storeInfo.setStatus(2);
@@ -107,6 +108,8 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 		shopApply.setShopApplicant(userId);
 		shopApply.setImgsAuditStatus(0);
 		shopApply.setIsHistory(0);
+		shopApply.setUsername(username);
+		shopApply.setPassword(password);
 		Long shopId = this.shopApplyMapper.insert(shopApply);
 		for(Object fileUrl : fileUrls) {
 			StoreImg storeImg = new StoreImg();
@@ -313,7 +316,7 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 	}
 
 	@Override
-	public void ReApplicationShop(JSONArray fileUrls, Long storeId, Integer userId) throws Exception {
+	public void ReApplicationShop(JSONArray fileUrls, Long storeId, Integer userId, String username, String password) throws Exception {
 		ShopApply hisApply = this.shopApplyMapper.selectByPrimaryKey(storeId);
 		
 		StoreInfo storeInfo = new StoreInfo();
@@ -332,6 +335,8 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 		shopApply.setShopApplicant(userId);
 		shopApply.setImgsAuditStatus(0);
 		shopApply.setIsHistory(0);
+		shopApply.setUsername(username);
+		shopApply.setPassword(password);
 		Long shopId = this.shopApplyMapper.insert(shopApply);
 		for(Object fileUrl : fileUrls) {
 			StoreImg storeImg = new StoreImg();
@@ -339,12 +344,11 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 			storeImg.setStoreId(shopApply.getShopId());
 			this.storeImgDao.insert(storeImg);
 		}
-		
 	}
 
 	@Override
-	public StoreInfo selectByShopId(Long shopId) throws Exception {
-		return this.storeInfoDao.selectByShopId(shopId);
+	public ShopVO selectByShopId(Long shopId) throws Exception {
+		return this.shopApplyMapper.selectByShopId(shopId);
 	}
 
 }

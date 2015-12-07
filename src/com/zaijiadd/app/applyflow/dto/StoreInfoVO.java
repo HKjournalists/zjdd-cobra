@@ -12,17 +12,27 @@ public class StoreInfoVO implements Serializable {
 
 	private Long storeId;
 
-	private String capitalName;
+    private Integer capital;
+    
+    private String capitalName;
+
+    private Integer city;
     
     private String cityName;
 
+    private Integer district;
+    
     private String districtName;
+
+    private Long applyStoreId;
 
     private String applyName;
 
     private String personNum;
 
     private String phone;
+
+    private Integer street;
     
     private String streetName;
     
@@ -30,7 +40,48 @@ public class StoreInfoVO implements Serializable {
 
     private String village;
 
-    public Long getStoreId() {
+
+    public Integer getCapital() {
+		return capital;
+	}
+
+	public void setCapital(Integer capital) {
+		this.capital = capital;
+	}
+
+	public Integer getCity() {
+		return city;
+	}
+
+	public void setCity(Integer city) {
+		this.city = city;
+	}
+
+	public Integer getDistrict() {
+		return district;
+	}
+
+	public void setDistrict(Integer district) {
+		this.district = district;
+	}
+
+	public Long getApplyStoreId() {
+		return applyStoreId;
+	}
+
+	public void setApplyStoreId(Long applyStoreId) {
+		this.applyStoreId = applyStoreId;
+	}
+
+	public Integer getStreet() {
+		return street;
+	}
+
+	public void setStreet(Integer street) {
+		this.street = street;
+	}
+
+	public Long getStoreId() {
 		return storeId;
 	}
 
