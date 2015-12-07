@@ -114,4 +114,12 @@ public interface ApplyStoreDao {
 
 	List<ApplyStore> queryApplStoreNotAllMoney(Map<String, Object> param);
 
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStoreId
+	 * @return
+	 */
+
+	ApplyStore selectByAppStoreId(Integer applyStoreId);
+
 }

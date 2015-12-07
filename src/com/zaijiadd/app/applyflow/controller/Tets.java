@@ -45,7 +45,8 @@ public class Tets {
 		Date date = new Date();
 		System.out.println(date);
 		System.out.println(date.getTime());
-		// Long thirdDay=1
+		Long thirdDay = (long) (3 * 72 * 60 * 60 * 1000);
+		// date.getTime()+thirdDay;
 		// System.out.println("TIAN"+);
 	}
 
