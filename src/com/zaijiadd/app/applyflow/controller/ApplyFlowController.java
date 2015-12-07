@@ -497,12 +497,14 @@ public class ApplyFlowController {
 
 		if (ConstantsRole.ROLE_MANAGERS.equals(roleId)) {// 经理
 			param.put("whoCheck", userInfoEntity.getUserId());
+
 		} else if (ConstantsRole.ROLE_FINANCE.equals(roleId)) {
 			param.put("whoCheck", userInfoEntity.getRoleId());
+			param.put("whetherStartApply", ConstantStorePower.WHETHER_STARTAPPLY_YES);
 		}
 
 		param.put("applyStatus", ConstantStorePower.apply_state_ready);
-		param.put("whetherStartApply", ConstantStorePower.WHETHER_STARTAPPLY_YES);
+
 		List<Map<String, Object>> applyStoreMap = applyFlowService.queryRoleApproveStoreTry(param);
 		mapListValueToDate(applyStoreMap);
 		param.put("result", applyStoreMap);
