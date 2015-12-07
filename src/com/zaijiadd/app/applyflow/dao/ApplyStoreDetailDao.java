@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.zaijiadd.app.applyflow.entity.ApplyStore;
+import com.zaijiadd.app.applyflow.entity.ApplyStoreDetail;
 
 /**
  * (用一句话描述类的主要功能)
@@ -24,7 +25,7 @@ public interface ApplyStoreDetailDao {
 	 * @return
 	 */
 
-	Integer addApplyStore(ApplyStore applyStore);
+	Integer addApplyStore(ApplyStoreDetail applyStore);
 
 	/**
 	 * (用一句话描述方法的主要功能)
@@ -129,5 +130,7 @@ public interface ApplyStoreDetailDao {
 	 */
 
 	List<Map<String, Object>> queryAllApplyStoreSateIn(Map<String, Object> param);
+	
+	int queryByParamCount(Map<String, Object> param);
 
 }

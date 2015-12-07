@@ -3,10 +3,11 @@ package com.zaijiadd.app.applyflow.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class ApplyStore {
+public class ApplyStoreDetail {
 
 	private Integer applyStoreId;
 	
+	private Long applyStoreDetailId;
 
 	private Integer applyType;
 
@@ -108,6 +109,14 @@ public class ApplyStore {
 		return applyStoreId;
 	}
 	
+
+	public Long getApplyStoreDetailId() {
+		return applyStoreDetailId;
+	}
+
+	public void setApplyStoreDetailId(Long applyStoreDetailId) {
+		this.applyStoreDetailId = applyStoreDetailId;
+	}
 
 	public void setApplyStoreId(Integer applyStoreId) {
 		this.applyStoreId = applyStoreId;

@@ -5,6 +5,7 @@
 
 package com.zaijiadd.app.applyflow.service.impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -16,18 +17,21 @@ import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zaijiadd.app.applyflow.dao.ApplyContractMapper;
 import com.zaijiadd.app.applyflow.dao.ApplyFlowDao;
 import com.zaijiadd.app.applyflow.dao.ApplyStoreDao;
+import com.zaijiadd.app.applyflow.dao.ApplyStoreDetailDao;
 import com.zaijiadd.app.applyflow.dao.ApplyUserRelationDao;
 import com.zaijiadd.app.applyflow.dao.BankMapper;
 import com.zaijiadd.app.applyflow.dao.CityDealershipMapper;
 import com.zaijiadd.app.applyflow.dao.CityMapper;
 import com.zaijiadd.app.applyflow.entity.ApplyContract;
 import com.zaijiadd.app.applyflow.entity.ApplyStore;
+import com.zaijiadd.app.applyflow.entity.ApplyStoreDetail;
 import com.zaijiadd.app.applyflow.entity.ApplyUserRelation;
 import com.zaijiadd.app.applyflow.entity.City;
 import com.zaijiadd.app.applyflow.entity.CityDealership;
@@ -54,6 +58,8 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	ApplyFlowDao applyFlowDao;
 	@Autowired
 	ApplyStoreDao applyStoreDao;
+	@Autowired
+	ApplyStoreDetailDao applyStoreDetailDao;
 
 	@Autowired
 	BankMapper bankMapper;
@@ -395,6 +401,25 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		ApplyStore applyStore = new ApplyStore();
 		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金
 			applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 单子的状态--in
+		}
+		if(ConstantStorePower.APPLY_PAYMONEY_ALL.equals(paymoneyType)){//全额
+			ApplyStore applyStoreCopy = this.applyStoreDao.selectByAppStoreId(applyStoreId);
+			Integer storeNumm = applyStoreCopy.getStoreNumm();
+			for(int i = 0; i < storeNumm; i ++) {
+				ApplyStoreDetail applyDetailStore = new ApplyStoreDetail();
+				try {
+					PropertyUtils.copyProperties(applyDetailStore, applyStoreCopy);
+					applyStoreDetailDao.addApplyStore(applyDetailStore);
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				} catch (NoSuchMethodException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			
 		}
 		applyStore.setApplyStoreId(applyStoreId);// id
 		applyStore.setApplyStatus(ConstantStorePower.apply_state_succ);// 单子的状态
