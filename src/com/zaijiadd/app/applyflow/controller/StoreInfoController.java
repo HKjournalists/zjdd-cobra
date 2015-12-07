@@ -19,6 +19,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zaijiadd.app.applyflow.dto.StoreAddressDTO;
 import com.zaijiadd.app.applyflow.dto.StoreInfoVO;
+import com.zaijiadd.app.applyflow.entity.ShopApply;
 import com.zaijiadd.app.applyflow.entity.StoreInfo;
 import com.zaijiadd.app.applyflow.service.StoreInfoService;
 import com.zaijiadd.app.common.utils.ContainerUtils;
@@ -258,7 +259,7 @@ public class StoreInfoController {
 			storeInfo.setAddressApprovalTime(new Timestamp(new Date().getTime()));
 			storeInfo.setAddressApprover(jsonRequest.getInteger("userId"));
 			//storeInfo.setAddressApprover(((UserInfoEntity)request.getSession().getAttribute("user")).getUserId());
-			this.storeInfoService.updateByPrimaryKeySelective(storeInfo);
+			this.storeInfoService.updateByPrimaryKeySelective(storeInfo, null);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ContainerUtils.buildResFailMap();
@@ -279,7 +280,7 @@ public class StoreInfoController {
 		try {
 			JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
 			//店铺ID
-			Long storeId = jsonRequest.getLong("storeId");
+			Long storeId = jsonRequest.getLong("shopId");
 			String auditOpinion = jsonRequest.getString("auditOpinion");
 			
 			StoreInfo storeInfo = new StoreInfo();
@@ -288,16 +289,24 @@ public class StoreInfoController {
 			//1：通过，0：不通过
 			int status = jsonRequest.getIntValue("status");
 			storeInfo.setStatus(3);
+			
+			ShopApply shopApply = new ShopApply();
 			//图片审核通过
 			if(status == 1) {
 				storeInfo.setImgsAuditStatus(1);
+				shopApply.setImgsAuditStatus(1);
 			} else {
 				storeInfo.setImgsAuditStatus(-1);
+				shopApply.setImgsAuditStatus(-1);
 			}
+			shopApply.setImgsAuditOpinion(auditOpinion);
+			shopApply.setShopId(storeId);
+			shopApply.setImgsApprovalTime(new Timestamp(new Date().getTime()));
 			storeInfo.setImgsApprovalTime(new Timestamp(new Date().getTime()));
 			//storeInfo.setImgsApprover(((UserInfoEntity)request.getSession().getAttribute("user")).getUserId());
 			storeInfo.setImgsApprover(jsonRequest.getInteger("userId"));
-			this.storeInfoService.updateByPrimaryKeySelective(storeInfo);
+			shopApply.setImgsApprover(jsonRequest.getInteger("userId"));
+			this.storeInfoService.updateByPrimaryKeySelective(storeInfo, shopApply);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ContainerUtils.buildResFailMap();

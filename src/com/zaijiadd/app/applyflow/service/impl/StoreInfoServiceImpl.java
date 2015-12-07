@@ -82,7 +82,12 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 	}
 
 	@Override
-	public int updateByPrimaryKeySelective(StoreInfo record) throws Exception {
+	public int updateByPrimaryKeySelective(StoreInfo record, ShopApply shopApply) throws Exception {
+		if(shopApply != null) {
+			this.shopApplyMapper.updateByPrimaryKeySelective(shopApply);
+		}
+		ShopApply shop = this.shopApplyMapper.selectByPrimaryKey(shopApply.getShopId());
+		record.setStoreId(shop.getStoreId());
 		return this.storeInfoDao.updateByPrimaryKeySelective(record);
 	}
 
@@ -168,7 +173,7 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 				map.put("imgsAuditStatus", -1);
 				map.put("shopApplicant", map.get("userId"));
 				resultMap.put("data", this.storeInfoDao.selectShopByApplicant(map));
-				resultMap.put("total", this.storeInfoDao.selectShopByApplicant(map));
+				resultMap.put("total", this.storeInfoDao.applicantShopCount(map));
 				return resultMap;
 				default:
 					break;
@@ -302,7 +307,7 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 		//上一个申请成为历史记录
 		StoreInfo hisInfo = this.storeInfoDao.selectByPrimaryKey(record.getStoreId());
 		hisInfo.setIsHistory(1);
-		this.updateByPrimaryKeySelective(hisInfo);
+		this.storeInfoDao.updateByPrimaryKeySelective(hisInfo);
 		record.setStoreId(null);
 		return storeInfoDao.insert(record);
 	}

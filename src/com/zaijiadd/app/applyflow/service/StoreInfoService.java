@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSONArray;
+import com.zaijiadd.app.applyflow.entity.ShopApply;
 import com.zaijiadd.app.applyflow.entity.StoreImg;
 import com.zaijiadd.app.applyflow.entity.StoreInfo;
 
@@ -30,7 +31,7 @@ public interface StoreInfoService {
 
 	  StoreInfo selectByPrimaryKey(Long storeId) throws Exception;
 
-	  int updateByPrimaryKeySelective(StoreInfo record) throws Exception;
+	  int updateByPrimaryKeySelective(StoreInfo record, ShopApply shopApply) throws Exception;
 	  
 	  void applicationShop(JSONArray fileUrls, Long storeId, Integer userId) throws Exception;
 	  
