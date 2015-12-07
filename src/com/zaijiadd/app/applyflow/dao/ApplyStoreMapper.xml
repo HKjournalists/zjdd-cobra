@@ -125,7 +125,7 @@
 			</if>
 			<if test="applyStatus != null">
 				and apply_status = #{applyStatus} 
-				or apply_status=3
+				or apply_status=2
 			</if>
 			order by created_date desc
 			limit #{start,jdbcType=INTEGER}, #{end}
