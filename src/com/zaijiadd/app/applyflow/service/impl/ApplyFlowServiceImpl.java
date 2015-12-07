@@ -583,7 +583,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	 */
 
 	@Override
-	public Integer payRemainMoney(ApplyStore applyStore) throws Exception {
+	public String payRemainMoney(ApplyStore applyStore) throws Exception {
 		BigDecimal contractAmount = applyStore.getContractAmount();
 		BigDecimal needPaymoney = applyStore.getNeedPaymoney();
 		BigDecimal paidMoney = applyStore.getPaidMoney();
@@ -616,7 +616,8 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		// 把原来的记录备份
 		applyStore2.setApplyStatus(ConstantStorePower.APPLY_STATE_NOT_PAYALLMONEY);// 尾款，用户不可见
 		updateApplyStore(applyStore2);
-		return applyStore3.getApplyStoreId();
+		String possNum = generateSerialNum();// 生成流水号
+		return possNum;
 	}
 
 	/**

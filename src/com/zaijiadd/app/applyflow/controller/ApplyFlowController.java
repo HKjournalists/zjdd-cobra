@@ -611,8 +611,8 @@ public class ApplyFlowController {
 			// Integer userId = user.getUserId();
 			// applyStore.setYjsUserId(userId);
 
-			Integer applyStoreId = applyFlowService.payRemainMoney(applyStore);
-			param.put("applyStoreId", applyStoreId);
+			String possNum = applyFlowService.payRemainMoney(applyStore);
+			param.put("possNum", possNum);
 			return ContainerUtils.buildResSuccessMap(param);
 		} catch (Exception e) {
 			e.printStackTrace();

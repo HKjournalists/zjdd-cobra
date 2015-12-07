@@ -252,7 +252,7 @@ public interface ApplyFlowService {
 	 * @throws Exception
 	 */
 
-	Integer payRemainMoney(ApplyStore applyStore) throws Exception;
+	String payRemainMoney(ApplyStore applyStore) throws Exception;
 
 	/**
 	 * (用一句话描述方法的主要功能)
