@@ -638,6 +638,8 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		applyStore3.setWhoCheck(null);
 		//
 		Integer applyStoreId = applyStoreDao.addApplyStore(applyStore3);//
+		Integer applyStoreId2 = applyStore3.getApplyStoreId();
+		applyStore3.setApplyStoreId(applyStoreId2);
 		// 新记录
 		Integer applyType = applyStore3.getApplyType();
 		Integer paymoneyType = applyStore3.getPaymoneyType();// 付款类型
@@ -683,6 +685,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 					UserInfoEntity leader = systemUserService.getLeader(applyStore.getYjsUserId());
 					// 实际付的金额比应收的金额小，那么给主管审批
 					applyStore.setWhoCheck(leader.getUserId());
+					applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_YES);//
 				} else {// 实际付的金额比应收的金额 相等，给财务
 					applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 				}
@@ -696,6 +699,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 					UserInfoEntity leader = systemUserService.getLeader(applyStore.getYjsUserId());
 					// 实际付的金额比应收的金额小，那么给主管审批
 					applyStore.setWhoCheck(leader.getUserId());
+					applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_YES);//
 				} else {// 实际付的金额比应收的金额 相等，给财务
 					applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 				}
