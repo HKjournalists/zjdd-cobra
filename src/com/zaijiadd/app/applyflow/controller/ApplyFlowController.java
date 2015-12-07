@@ -24,6 +24,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zaijiadd.app.applyflow.entity.ApplyStore;
 import com.zaijiadd.app.applyflow.entity.InviteUserEntity;
 import com.zaijiadd.app.applyflow.service.ApplyFlowService;
+import com.zaijiadd.app.applyflow.service.AreaService;
 import com.zaijiadd.app.common.utils.ContainerUtils;
 import com.zaijiadd.app.common.utils.DateUtils;
 import com.zaijiadd.app.common.utils.ParseUtils;
@@ -42,6 +43,8 @@ public class ApplyFlowController {
 
 	@Autowired
 	private ApplyFlowService applyFlowService;
+	@Autowired
+	AreaService areaService;
 
 	/**
 	 * 增加用户信息
@@ -514,20 +517,26 @@ public class ApplyFlowController {
 	@RequestMapping(value = "/approveStore", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> approveStore(HttpServletRequest request) {
-		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
-		Map<String, Object> param = new HashMap<String, Object>();
-		Integer applyStoreId = jsonRequest.getInteger("applyStoreId");
-		UserInfoEntity user = getUserMsg(request, jsonRequest);// 用户信息
-		Integer userId = user.getUserId();
-		Integer roleId = user.getRoleId();
-		param.put("roleId", roleId);
-		param.put("userId", userId);
+		try {
+			JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+			Map<String, Object> param = new HashMap<String, Object>();
+			Integer applyStoreId = jsonRequest.getInteger("applyStoreId");
+			UserInfoEntity user = getUserMsg(request, jsonRequest);// 用户信息
+			Integer userId = user.getUserId();
+			Integer roleId = user.getRoleId();
+			param.put("roleId", roleId);
+			param.put("userId", userId);
 
-		param.put("applyStoreId", applyStoreId);
-		param.put("approveState", jsonRequest.getInteger("approveState"));// 状态
-		Integer applyStoreMap = applyFlowService.roleApproveStore(param);
-		param.put("result", applyStoreMap);
-		return ContainerUtils.buildResSuccessMap(param);
+			param.put("applyStoreId", applyStoreId);
+			param.put("approveState", jsonRequest.getInteger("approveState"));// 状态
+			Integer applyStoreMap = applyFlowService.roleApproveStore(param);
+			param.put("result", applyStoreMap);
+			return ContainerUtils.buildResSuccessMap(param);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ContainerUtils.buildResFailMap();
+		}
+
 	}
 
 	/**
@@ -584,13 +593,24 @@ public class ApplyFlowController {
 	@RequestMapping(value = "/queryDealershipNumAble", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> queryDealershipNumAble(HttpServletRequest request) {
-		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
-		Map<String, Object> param = new HashMap<String, Object>();
-		Integer cityId = jsonRequest.getInteger("cityId");
-		param.put("cityId", cityId);
-		Map<String, Object> cityDealership = applyFlowService.queryDealershipNumAble(cityId);
-		param.put("result", cityDealership);
-		return ContainerUtils.buildResSuccessMap(param);
+
+		try {
+			JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+			Map<String, Object> param = new HashMap<String, Object>();
+			Integer cityId = jsonRequest.getInteger("cityId");
+			Integer districtId = jsonRequest.getInteger("districtId");
+			Map<String, Object> findCitySellInfo = areaService.findCitySellInfo(cityId, districtId);
+			BigDecimal money = (BigDecimal) findCitySellInfo.get("money");
+			BigDecimal dealershipNumAble = (BigDecimal) findCitySellInfo.get("laveNum");
+			// Map<String, Object> cityDealership =
+			// applyFlowService.queryDealershipNumAble(cityId);
+			param.put("result", dealershipNumAble);
+			return ContainerUtils.buildResSuccessMap(param);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ContainerUtils.buildResFailMap();
+		}
+
 	}
 
 	/**

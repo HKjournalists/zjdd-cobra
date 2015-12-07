@@ -139,9 +139,10 @@ public interface ApplyFlowService {
 	 * (用一句话描述方法的主要功能)
 	 * @param param
 	 * @return
+	 * @throws Exception
 	 */
 
-	Integer roleApproveStore(Map<String, Object> param);
+	Integer roleApproveStore(Map<String, Object> param) throws Exception;
 
 	/**
 	 * (用一句话描述方法的主要功能)
