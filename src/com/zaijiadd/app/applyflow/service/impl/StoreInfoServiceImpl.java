@@ -256,13 +256,15 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 			resultMap.put("total", this.storeInfoDao.approvalCount(map));
 			return resultMap;
 		} else if(type == 2){ // 图片未审批
-			map.put("status", 2);
+			//map.put("status", 2);
+			map.put("imgsAuditStatus", 0);
 			resultMap.put("data", this.storeInfoDao.getShopApproval(map));
 			resultMap.put("total", this.storeInfoDao.approvalShopCount(map));
 			return resultMap;
 		} else {
-			map.put("status", 3);
+			//map.put("status", 3);
 			map.put("imgsApprover", map.get("userId"));
+			map.put("imgsAuditStatus", 1);
 			resultMap.put("data", this.storeInfoDao.getShopApproval(map));
 			resultMap.put("total", this.storeInfoDao.approvalShopCount(map));
 			return resultMap;
