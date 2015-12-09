@@ -429,7 +429,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		ApplyStore applyStore = new ApplyStore();
 		applyStore.setApplyStoreId(applyStoreId);// id
 		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金
-			applyStore.setApplyStatus(ConstantStorePower.apply_state_succ);// 单子的定金通过--in
+			applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 单子的定金通过--in
 			applyStore.setFinanceCheck(ConstantStorePower.apply_state_succ);// 单子的财务状态
 			applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_NO);// 没有
 		} else {// 全款
