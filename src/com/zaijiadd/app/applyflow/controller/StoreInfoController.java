@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -327,10 +328,11 @@ public class StoreInfoController {
 	 */
 	@RequestMapping(value = "/applicationAccount/list", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> applicationList(HttpServletRequest request) {
+	public Map<String, Object> applicationList(@RequestBody String body) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
-			JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
+			//JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
+			JSONObject jsonRequest = JSONObject.parseObject(body);
 			int type = jsonRequest.getIntValue("type");
 			Map<String, Object> param = new HashMap<String, Object>();
 			String page = jsonRequest.getString("page");// 当前页

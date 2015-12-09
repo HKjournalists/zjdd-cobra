@@ -9,9 +9,11 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zaijiadd.app.applyflow.entity.ApplyStore;
 import com.zaijiadd.app.common.utils.DateUtils;
@@ -34,6 +36,28 @@ public class Tets {
 		// testBigDecimal();
 		// testJson();
 		// testrand();
+		//testTime1();
+		json2Map();
+	}
+	
+	private static void json2Map() {
+		String jsonData = "{type:1,userId:1,page:1,pageCount:10}";
+		Map<String, Object> jsonMap = JSON.parseObject(jsonData, HashMap.class);
+		
+		//
+		if(jsonMap.containsKey("page")) {
+			int pageCount = (int) jsonMap.get("pageCount");// 每页的数量
+			int page = (int) jsonMap.get("page");
+			jsonMap.put("start", (page - 1) * pageCount);
+		};
+		List<HashMap> configDataList = (List<HashMap>)jsonMap.get("configs");
+		
+		for(HashMap configData : configDataList ){//这行出错
+		    int roleId = (Integer)configData.get("type");
+		    System.out.println("config.type:" + roleId);
+		}
+
+		
 		// testTime1();
 		testIf();
 	}
