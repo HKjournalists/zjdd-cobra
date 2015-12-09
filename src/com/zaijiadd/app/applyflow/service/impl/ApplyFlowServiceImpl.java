@@ -187,13 +187,13 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	BigDecimal getDealershipMoney(ApplyStore applyStore) throws Exception {
 		Integer dealershipNum = applyStore.getDealershipNum();// 经销权个数
 		BigDecimal dealershipNumBig = new BigDecimal(dealershipNum);
-		// BigDecimal cityDealershipMoney = new BigDecimal(1);
+		BigDecimal cityDealershipMoney = new BigDecimal(1);
 		Map<String, Object> findCitySellInfo = areaService.findCitySellInfo(applyStore.getCityId(),
 				applyStore.getDistrictId());
 
 		BigDecimal needPaymoneyCount = new BigDecimal(0);
 		if (findCitySellInfo != null) {
-			BigDecimal cityDealershipMoney = (BigDecimal) findCitySellInfo.get("money");
+			cityDealershipMoney = (BigDecimal) findCitySellInfo.get("money");
 			// cityDealershipMoney = new BigDecimal(money);// 钱
 			Integer dealershipNumAble = (Integer) findCitySellInfo.get("laveNum");// 总个数
 			if (dealershipNumAble - dealershipNum < 0) {
@@ -429,7 +429,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		ApplyStore applyStore = new ApplyStore();
 		applyStore.setApplyStoreId(applyStoreId);// id
 		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金
-			applyStore.setApplyStatus(ConstantStorePower.apply_state_succ);// 单子的定金通过--in
+			applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 单子的定金通过--in
 			applyStore.setFinanceCheck(ConstantStorePower.apply_state_succ);// 单子的财务状态
 			applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_NO);// 没有
 		} else {// 全款
