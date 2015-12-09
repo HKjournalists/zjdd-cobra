@@ -74,6 +74,9 @@
 	<if test="status != null" >
         and status = #{status,jdbcType=INTEGER}
      </if>
+     <if test="type != null" >
+        or status =3 or status=2
+     </if>
      <if test="addressAuditStatus != null" >
         and address_audit_status = #{addressAuditStatus,jdbcType=INTEGER}
      </if>
@@ -95,6 +98,9 @@
 	where 1=1 and is_history=0
 	<if test="status != null" >
         and status = #{status,jdbcType=INTEGER}
+     </if>
+     <if test="type != null" >
+        or status =3 or status=2
      </if>
      <if test="addressAuditStatus != null" >
         and address_audit_status = #{addressAuditStatus,jdbcType=INTEGER}

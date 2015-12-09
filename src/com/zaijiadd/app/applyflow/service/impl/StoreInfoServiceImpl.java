@@ -147,6 +147,7 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 				return resultMap;
 			case 1://开户成功
 				map.put("status", 1);
+				map.put("type", 1);
 				map.put("addressAuditStatus", 1);
 				map.put("applicant", map.get("userId"));
 				resultMap.put("data", this.storeInfoDao.selectByApplicant(map));
