@@ -130,4 +130,20 @@ public interface ApplyStoreDao {
 
 	List<Map<String, Object>> queryAllApplyStoreSateIn(Map<String, Object> param);
 
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	Integer queryByParamCount(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	List<Map<String, Object>> queryApplyDealershipNum(Map<String, Object> param);
+
 }

@@ -33,4 +33,12 @@ public interface ApplyUserRelationDao {
 
 	void insertApplyRoleRelation(ApplyUserRelation applyUserRelation);
 
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	Integer queryApproveMsgCount(Map<String, Object> param);
+
 }
