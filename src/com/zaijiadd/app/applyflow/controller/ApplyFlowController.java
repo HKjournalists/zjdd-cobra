@@ -687,6 +687,7 @@ public class ApplyFlowController {
 		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
 		Map<String, Object> param = new HashMap<String, Object>();
 		ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
+		applyStore.setRoleApprove(ConstantsRole.ROLE_FINANCE);
 		Integer applyStoreId = applyFlowService.updateWhetherStartApply(applyStore);
 		return ContainerUtils.buildResSuccessMap(param);
 	}
