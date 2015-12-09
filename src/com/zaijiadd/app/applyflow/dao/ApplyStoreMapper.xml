@@ -123,16 +123,16 @@
   
     <!-- 查询待申请的经销权个数  注意是未成功的 -->
   <select id="queryApplyDealershipNum" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
-    select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
+    select <include refid="Base_Column_queryApplyDealershipNum_List" /> from cobra_apply_store
     	<where>
 		<if test="cityId != null" >
-		city_id = #{cityId,jdbcType=INTEGER},
+		city_id = #{cityId,jdbcType=INTEGER}
       </if>
       <if test="districtId != null" >
-        district_id = #{districtId,jdbcType=INTEGER},
+       and  district_id = #{districtId,jdbcType=INTEGER}
       </if>
 	   <if test="applyStatus != null" >
-        apply_status = #{applyStatus,jdbcType=INTEGER},
+        and apply_status = #{applyStatus,jdbcType=INTEGER}
       </if>
 		</where>
   </select>

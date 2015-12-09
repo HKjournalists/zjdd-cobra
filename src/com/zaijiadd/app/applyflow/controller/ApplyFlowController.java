@@ -611,21 +611,26 @@ public class ApplyFlowController {
 			Integer applyStatus = jsonRequest.getInteger("applyStatus");
 			param.put("cityId", cityId);
 			param.put("districtId", districtId);
-			param.put("applyStatus", applyStatus);
+			param.put("applyStatus", ConstantStorePower.apply_state_succ);
 
 			Map<String, Object> findCitySellInfo = areaService.findCitySellInfo(cityId, districtId);
 			BigDecimal money = (BigDecimal) findCitySellInfo.get("money");
-			BigDecimal laveNum = (BigDecimal) findCitySellInfo.get("laveNum");// 可以用的
-			BigDecimal totalDealership = (BigDecimal) findCitySellInfo.get("total");// 总共的
-
-			BigDecimal dealershipAble = new BigDecimal(0);// 用户可用的
+			Integer laveNum = (Integer) findCitySellInfo.get("laveNum");// 可以用的
+			Integer totalDealership = (Integer) findCitySellInfo.get("total");// 总共的
 			// 查询提交了的申请单,待申请中的
 			List<Map<String, Object>> applyStoreOrderMap = applyFlowService.queryApplyDealershipNum(param);
 			for (Map<String, Object> map : applyStoreOrderMap) {
-				BigDecimal dealershipNum = (BigDecimal) map.get("dealershipNum");
-				dealershipAble = laveNum.subtract(dealershipNum);
+				Integer dealershipNum = (Integer) map.get("dealershipNum");
+				if (laveNum != null && dealershipNum != null) {
+					laveNum = laveNum - dealershipNum;
+				}
+				if (laveNum < 0) {
+					laveNum = 0;
+					break;
+				}
+
 			}
-			param.put("dealershipAble", dealershipAble);
+			param.put("dealershipAble", laveNum);
 			param.put("totalDealership", totalDealership);
 			return ContainerUtils.buildResSuccessMap(param);
 		} catch (Exception e) {
