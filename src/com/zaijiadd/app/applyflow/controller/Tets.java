@@ -47,13 +47,8 @@ public class Tets {
 	 */
 
 	private static void testInteger() {
-		Integer q = 100;
-		Integer q1 = 8;
-		if (q - q1 < 0) {
-			System.out.println("ss");
-		}
-		System.out.println(q - q1);
-
+		BigDecimal cityDealershipMoney = new BigDecimal(1);
+		System.out.println(cityDealershipMoney);
 	}
 
 	/**

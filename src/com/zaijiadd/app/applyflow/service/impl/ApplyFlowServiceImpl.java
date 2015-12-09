@@ -187,13 +187,14 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	BigDecimal getDealershipMoney(ApplyStore applyStore) throws Exception {
 		Integer dealershipNum = applyStore.getDealershipNum();// 经销权个数
 		BigDecimal dealershipNumBig = new BigDecimal(dealershipNum);
-		BigDecimal cityDealershipMoney = new BigDecimal(1);
+		// BigDecimal cityDealershipMoney = new BigDecimal(1);
 		Map<String, Object> findCitySellInfo = areaService.findCitySellInfo(applyStore.getCityId(),
 				applyStore.getDistrictId());
 
 		BigDecimal needPaymoneyCount = new BigDecimal(0);
 		if (findCitySellInfo != null) {
-			cityDealershipMoney = (BigDecimal) findCitySellInfo.get("money");// 钱
+			BigDecimal cityDealershipMoney = (BigDecimal) findCitySellInfo.get("money");
+			// cityDealershipMoney = new BigDecimal(money);// 钱
 			Integer dealershipNumAble = (Integer) findCitySellInfo.get("laveNum");// 总个数
 			if (dealershipNumAble - dealershipNum < 0) {
 				throw new RuntimeException("超过经销权个数");
@@ -676,7 +677,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		applyStore.setStoreNumm(storeNumm);
 		applyStore.setYjsUserId(userId);
 		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金直接给财务
-			applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
+			applyStore.setRoleApprove(ConstantsRole.ROLE_FINANCE);
 		} else {// 全额
 			if (applyType.equals(ConstantStorePower.APPLY_TYPE_DEALERSHIP)) {// 经销权
 
@@ -690,7 +691,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 					applyStore.setWhoCheck(leader.getUserId());
 					applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_YES);//
 				} else {// 实际付的金额比应收的金额 相等，给财务
-					applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
+					applyStore.setRoleApprove(ConstantsRole.ROLE_FINANCE);
 				}
 			} else if (applyType.equals(ConstantStorePower.APPLY_TYPE_SMALLSTORE)) {// 小店
 
@@ -704,7 +705,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 					applyStore.setWhoCheck(leader.getUserId());
 					applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_YES);//
 				} else {// 实际付的金额比应收的金额 相等，给财务
-					applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
+					applyStore.setRoleApprove(ConstantsRole.ROLE_FINANCE);
 				}
 			}
 		}
