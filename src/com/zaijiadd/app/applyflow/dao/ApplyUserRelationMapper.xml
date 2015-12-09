@@ -22,12 +22,14 @@
    apply_id as applyStoreId,caur_approve_state as approveState,apply_name as applyName,paid_money as paidMoney,need_paymoney as needPaymoney,
    paymoney_type as paymoneyType,caur_created_date as createdDate,phone as phone
   </sql>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from cobra_apply_user_relation
     where apply_user_relation_id = #{applyUserRelationId,jdbcType=INTEGER}
   </select>
+  <!-- 查询审批的信息 -->
    <select id="queryApproveMsg" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
    	select <include refid="Base_Column_query_ApproveMsg_List" />  from cobra_apply_user_relation cpur
    	 LEFT JOIN cobra_apply_store cas ON cpur.apply_id=cas.apply_store_id 
@@ -42,7 +44,34 @@
 			limit #{start,jdbcType=INTEGER}, #{end}
 		</where>
   </select>
-  
+  <!-- 分页使用 -->
+     <select id="queryApproveMsgCount" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+   	select count(1)  from cobra_apply_user_relation cpur
+   	 LEFT JOIN cobra_apply_store cas ON cpur.apply_id=cas.apply_store_id 
+   	 <where>
+		  <if test="userid != null" >
+        userId = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="roleid != null" >
+        roleId = #{roleid,jdbcType=INTEGER},
+      </if>
+      <if test="caurCreatedDate != null" >
+        caur_created_date = #{caurCreatedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="caurUpdatedDate != null" >
+        caur_updated_date = #{caurUpdatedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applyId != null" >
+        apply_id = #{applyId,jdbcType=INTEGER},
+      </if>
+      <if test="caurApplyState != null" >
+        caur_apply_state = #{caurApplyState,jdbcType=INTEGER},
+      </if>
+      <if test="caurApproveState != null" >
+        caur_approve_state = #{caurApproveState,jdbcType=INTEGER},
+      </if>
+		</where>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from cobra_apply_user_relation
     where apply_user_relation_id = #{applyUserRelationId,jdbcType=INTEGER}

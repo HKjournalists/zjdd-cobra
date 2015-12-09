@@ -462,6 +462,9 @@ public class ApplyFlowController {
 			applyStoreOrderMap = applyFlowService.queryAllApplyStoreSate(param);
 		}
 		mapListValueToDate(applyStoreOrderMap);
+
+		Integer dataCount = applyFlowService.queryByParamCount(param);
+		param.put("result", dataCount);
 		param.put("result", applyStoreOrderMap);
 		return ContainerUtils.buildResSuccessMap(param);
 	}
@@ -507,6 +510,8 @@ public class ApplyFlowController {
 
 		List<Map<String, Object>> applyStoreMap = applyFlowService.queryRoleApproveStoreTry(param);
 		mapListValueToDate(applyStoreMap);
+		Integer dataCount = applyFlowService.queryByParamCount(param);
+		param.put("result", dataCount);
 		param.put("result", applyStoreMap);
 		return ContainerUtils.buildResSuccessMap(param);
 	}
@@ -568,6 +573,7 @@ public class ApplyFlowController {
 			String createDateStr = DateUtils.getSysDate(createDate, "yyyy-MM-dd");
 			map.put("createdDate", createDateStr);
 		}
+		Integer dataCount = applyFlowService.queryApproveMsgCount(param);
 		param.put("result", applyStoreMap);
 		return ContainerUtils.buildResSuccessMap(param);
 	}
@@ -604,6 +610,11 @@ public class ApplyFlowController {
 			Map<String, Object> findCitySellInfo = areaService.findCitySellInfo(cityId, districtId);
 			BigDecimal money = (BigDecimal) findCitySellInfo.get("money");
 			BigDecimal dealershipNumAble = (BigDecimal) findCitySellInfo.get("laveNum");
+			// 查询提交了的申请单,待申请中的
+			List<Map<String, Object>> applyStoreOrderMap = applyFlowService.queryApplyDealershipNum(param);
+			for (Map<String, Object> map : applyStoreOrderMap) {
+				map.get("");
+			}
 			// Map<String, Object> cityDealership =
 			// applyFlowService.queryDealershipNumAble(cityId);
 			param.put("result", dealershipNumAble);
