@@ -72,5 +72,24 @@ public class AreaServiceImpl implements AreaService {
 		}
 		return resultMap;
 	}
+	
+	@Override
+	public void updateCitySellInfo(int cityId, int countryId, int num) throws Exception {
+		if(this.cityMapper.selectSpecialByCityId(cityId) == 1) {
+			List<City> cityList = this.cityMapper.selectCityByID(cityId);
+			if(cityList != null && cityList.size() > 0) {
+				City city = cityList.get(0);
+				city.setAlreadySoldNum(city.getAlreadySoldNum() + num);
+				this.cityMapper.updateByPrimaryKeySelective(city);
+			}
+		} else {
+			List<Country> countryList = this.countryMapper.selectByCounryId(countryId);
+			if(countryList != null && countryList.size() > 0) {
+				Country country = countryList.get(0);
+				country.setAlreadySoldNum(country.getAlreadySoldNum() + num);
+				this.countryMapper.updateByPrimaryKeySelective(country);
+			}
+		}
+	}
 
 }
