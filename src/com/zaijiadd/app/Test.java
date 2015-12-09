@@ -16,7 +16,7 @@ public class Test {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             conn = DriverManager.getConnection(
-                    "jdbc:mysql://127.0.0.1:3306/cobra?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull", "root",
+                    "jdbc:mysql://192.168.11.61:3306/cobra?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull", "root",
                     "123456");
             stmt = conn.prepareStatement("select * from province");
             stmt.setInt(1, 10);
