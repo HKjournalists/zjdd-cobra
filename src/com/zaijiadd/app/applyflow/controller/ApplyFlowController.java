@@ -5,6 +5,7 @@
 
 package com.zaijiadd.app.applyflow.controller;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -642,11 +643,33 @@ public class ApplyFlowController {
 	@RequestMapping(value = "/updateApplyStore", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> updateApplyStore(HttpServletRequest request) {
-		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
-		Map<String, Object> param = new HashMap<String, Object>();
-		ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
-		Integer applyStoreId = applyFlowService.updateApplyStore(applyStore);
-		return ContainerUtils.buildResSuccessMap(param);
+
+		try {
+			JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+			Map<String, Object> param = new HashMap<String, Object>();
+			ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
+
+			ApplyStore applyStore2 = applyFlowService.selectByAppStoreId(applyStore.getApplyStoreId());// 老的记录
+			Integer applyStatus = applyStore2.getApplyStatus();
+			Integer managersCheck = applyStore2.getManagersCheck();
+			if (ConstantStorePower.apply_state_fail.equals(applyStatus)
+					&& (ConstantStorePower.apply_state_fail.equals(managersCheck))) {// 被主管拒绝
+				String possNum = applyFlowService.handleUpdate(applyStore);
+				param.put("possNum", possNum);
+
+			} else {
+				Integer applyStoreId = applyFlowService.updateApplyStore(applyStore);
+			}
+
+			return ContainerUtils.buildResSuccessMap(param);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO 尚未处理异常
+			e.printStackTrace();
+		}
+		return null;
+
 	}
 
 	/**

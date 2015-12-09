@@ -5,6 +5,7 @@
 
 package com.zaijiadd.app.applyflow.service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -309,5 +310,31 @@ public interface ApplyFlowService {
 	 */
 
 	List<Map<String, Object>> queryApplyDealershipNum(Map<String, Object> param);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStoreId
+	 * @return
+	 */
+
+	ApplyStore selectByAppStoreId(Integer applyStoreId);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStore3
+	 * @return
+	 */
+
+	Integer addApplyStoreNew(ApplyStore applyStore3);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStore
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 * @throws Exception
+	 */
+
+	String handleUpdate(ApplyStore applyStore) throws IllegalAccessException, InvocationTargetException, Exception;
 
 }
