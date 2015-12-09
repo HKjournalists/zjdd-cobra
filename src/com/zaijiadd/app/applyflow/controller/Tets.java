@@ -36,28 +36,55 @@ public class Tets {
 		// testBigDecimal();
 		// testJson();
 		// testrand();
-		//testTime1();
-		json2Map();
+		// testTime1();
+		// json2Map();
+		// testBigDecimal2();
+		testInteger();
 	}
-	
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 */
+
+	private static void testInteger() {
+		Integer q = 100;
+		Integer q1 = 8;
+		if (q - q1 < 0) {
+			System.out.println("ss");
+		}
+		System.out.println(q - q1);
+
+	}
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 */
+
+	private static void testBigDecimal2() {
+		Integer q = 7;
+		BigDecimal bigDecimal = new BigDecimal(q);
+		System.out.println(bigDecimal);
+
+	}
+
 	private static void json2Map() {
 		String jsonData = "{type:1,userId:1,page:1,pageCount:10}";
 		Map<String, Object> jsonMap = JSON.parseObject(jsonData, HashMap.class);
-		
+
 		//
-		if(jsonMap.containsKey("page")) {
+		if (jsonMap.containsKey("page")) {
 			int pageCount = (int) jsonMap.get("pageCount");// 每页的数量
 			int page = (int) jsonMap.get("page");
 			jsonMap.put("start", (page - 1) * pageCount);
-		};
-		List<HashMap> configDataList = (List<HashMap>)jsonMap.get("configs");
-		
-		for(HashMap configData : configDataList ){//这行出错
-		    int roleId = (Integer)configData.get("type");
-		    System.out.println("config.type:" + roleId);
+		}
+		;
+		List<HashMap> configDataList = (List<HashMap>) jsonMap.get("configs");
+
+		for (HashMap configData : configDataList) {// 这行出错
+			int roleId = (Integer) configData.get("type");
+			System.out.println("config.type:" + roleId);
 		}
 
-		
 		// testTime1();
 		testIf();
 	}
