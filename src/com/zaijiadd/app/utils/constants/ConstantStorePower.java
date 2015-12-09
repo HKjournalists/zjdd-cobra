@@ -21,7 +21,6 @@ public class ConstantStorePower {
 	public final static Integer apply_state_fail = 2;// 失败
 	public final static Integer apply_state_account = 3;// 开户
 	public final static Integer APPLY_STATE_NOT_PAYALLMONEY = 4;// 尾款,备份原来的
-	public final static Integer APPLY_THIRD_NOT_PAYMONEY = 5;// 定金三天没有处理
 
 	public final static Integer approve_state_ready = 0;//
 	public final static Integer approve_state_succ = 1;//

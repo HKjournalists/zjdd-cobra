@@ -6,7 +6,6 @@ import java.util.Date;
 public class ApplyStore {
 
 	private Integer applyStoreId;
-	
 
 	private Integer applyType;
 
@@ -91,10 +90,18 @@ public class ApplyStore {
 	private Integer whetherStartApply;
 
 	private String payBankName;
-	
+	private Integer roleApprove;
 
 	private BigDecimal contractAmount;
 	private String payBankCode;
+
+	public Integer getRoleApprove() {
+		return roleApprove;
+	}
+
+	public void setRoleApprove(Integer roleApprove) {
+		this.roleApprove = roleApprove;
+	}
 
 	public String getPayBankCode() {
 		return payBankCode;
@@ -107,7 +114,6 @@ public class ApplyStore {
 	public Integer getApplyStoreId() {
 		return applyStoreId;
 	}
-	
 
 	public void setApplyStoreId(Integer applyStoreId) {
 		this.applyStoreId = applyStoreId;

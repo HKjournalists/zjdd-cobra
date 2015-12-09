@@ -47,6 +47,7 @@
     <result column="pay_bank_name" property="payBankName" jdbcType="VARCHAR" />
     <result column="contract_Amount" property="contractAmount" jdbcType="DECIMAL" />
     <result column="pay_bank_code" property="payBankCode" jdbcType="VARCHAR" />
+    <result column="role_approve" property="roleApprove" jdbcType="INTEGER" />
       
   </resultMap>
   <sql id="Base_Column_List" >
@@ -344,6 +345,9 @@
 			<if test="whetherStartApply != null">
 				and whether_start_apply = #{whetherStartApply}
 			</if>
+			<if test="roleApprove != null">
+				and role_approve = #{roleApprove}
+			</if>
 			order by created_date desc
 			limit #{start,jdbcType=INTEGER}, #{end}
 		</where>
@@ -379,7 +383,7 @@
       created_date, updated_date, whether_self, 
       pay_bank, pay_subbranch_bank, pay_person_name, 
       pay_alipay_num, poss_num, whether_start_apply, 
-      pay_bank_name, contract_Amount, pay_bank_code
+      pay_bank_name, contract_Amount, pay_bank_code, role_approve
       )
     values (#{applyType,jdbcType=INTEGER}, #{applyPersonType,jdbcType=INTEGER}, 
       #{capital,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{district,jdbcType=VARCHAR}, 
@@ -395,13 +399,16 @@
       #{createdDate,jdbcType=TIMESTAMP}, #{updatedDate,jdbcType=TIMESTAMP}, #{whetherSelf,jdbcType=INTEGER}, 
       #{payBank,jdbcType=INTEGER}, #{paySubbranchBank,jdbcType=VARCHAR}, #{payPersonName,jdbcType=VARCHAR}, 
       #{payAlipayNum,jdbcType=VARCHAR}, #{possNum,jdbcType=VARCHAR}, #{whetherStartApply,jdbcType=INTEGER}, 
-      #{payBankName,jdbcType=VARCHAR}, #{contractAmount,jdbcType=DECIMAL}, #{payBankCode,jdbcType=VARCHAR}
+      #{payBankName,jdbcType=VARCHAR}, #{contractAmount,jdbcType=DECIMAL}, #{payBankCode,jdbcType=VARCHAR},#{roleApprove,jdbcType=VARCHAR}
       )
   </insert>
  
   <update id="updateApplyStore" parameterType="com.zaijiadd.app.applyflow.entity.ApplyStore" >
    update cobra_apply_store
     <set >
+    	<if test="roleApprove != null" >
+        role_approve = #{roleApprove,jdbcType=INTEGER},
+      </if>
       <if test="applyType != null" >
         apply_type = #{applyType,jdbcType=INTEGER},
       </if>
@@ -544,6 +551,9 @@
     <set >
       <if test="whetherStartApply != null" >
         whether_start_apply = #{whetherStartApply,jdbcType=INTEGER},
+      </if>
+      <if test="roleApprove != null" >
+        role_approve = #{roleApprove,jdbcType=INTEGER},
       </if>
     </set>
     where apply_store_id = #{applyStoreId,jdbcType=INTEGER}

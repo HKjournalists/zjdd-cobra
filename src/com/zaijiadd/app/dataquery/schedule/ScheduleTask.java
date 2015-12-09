@@ -64,7 +64,7 @@ public class ScheduleTask {
 				param.put("remark", map.get("remark"));// 备注
 
 				service.dataInsert(param);
-				// applyFlowService.cleanLoseEfficacyApplyStore();
+				applyFlowService.cleanLoseEfficacyApplyStore();
 			}
 
 		} catch (Exception e) {
