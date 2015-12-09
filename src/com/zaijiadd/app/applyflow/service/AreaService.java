@@ -45,4 +45,6 @@ public interface AreaService {
     List<Town> selectByCountryId(Integer countryId) throws Exception;
     
     Map<String, Object> findCitySellInfo(int cityId, int countryId) throws Exception;
+    
+    void updateCitySellInfo(int cityId, int countryId, int num) throws Exception;
 }
