@@ -9,8 +9,10 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import com.zaijiadd.app.applyflow.entity.ApplyContract;
 import com.zaijiadd.app.applyflow.entity.ApplyStore;
 import com.zaijiadd.app.applyflow.entity.InviteUserEntity;
+import com.zaijiadd.app.user.entity.UserInfoEntity;
 
 /**
  * (用一句话描述类的主要功能)
@@ -137,9 +139,10 @@ public interface ApplyFlowService {
 	 * (用一句话描述方法的主要功能)
 	 * @param param
 	 * @return
+	 * @throws Exception
 	 */
 
-	Integer roleApproveStore(Map<String, Object> param);
+	Integer roleApproveStore(Map<String, Object> param) throws Exception;
 
 	/**
 	 * (用一句话描述方法的主要功能)
@@ -251,12 +254,36 @@ public interface ApplyFlowService {
 	 * @throws Exception
 	 */
 
-	Integer payRemainMoney(ApplyStore applyStore) throws Exception;
+	String payRemainMoney(ApplyStore applyStore) throws Exception;
 
 	/**
 	 * (用一句话描述方法的主要功能)
 	 */
 
 	void cleanLoseEfficacyApplyStore();
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyContractParam
+	 * @return
+	 */
+
+	ApplyContract getApplyContract(Map<String, Object> applyContractParam);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param userId
+	 * @return
+	 */
+
+	UserInfoEntity getUserInfoById(Integer userId);
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param param
+	 * @return
+	 */
+
+	List<Map<String, Object>> queryAllApplyStoreSateIn(Map<String, Object> param);
 
 }

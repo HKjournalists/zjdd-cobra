@@ -5,6 +5,10 @@
     <id column="country_id" property="countryId" jdbcType="INTEGER" />
     <result column="country_name" property="countryName" jdbcType="VARCHAR" />
     <result column="city_id" property="cityId" jdbcType="INTEGER" />
+    <result column="total_dealership" property="totalDealership" jdbcType="INTEGER" />
+    <result column="already_sold_num" property="alreadySoldNum" jdbcType="INTEGER" />
+    <result column="deposit_num" property="depositNum" jdbcType="INTEGER" />
+    <result column="country_money" property="countryMoney" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     country_id, country_name, city_id
@@ -19,6 +23,16 @@
   <select id="selectNameById" resultType="String" parameterType="Integer">
     select country_name
     	from country  where country_id = #{countryId,jdbcType=INTEGER} 
+  </select>
+  
+  <select id="selectByCounryId" resultMap="BaseResultMap" parameterType="Integer">
+    select *
+    	from country  where country_id = #{countryId,jdbcType=INTEGER} 
+  </select>
+  
+   <select id="selectByName" resultMap="BaseResultMap" parameterType="string">
+    select *
+    	from country  where country_name = #{countryName,jdbcType=VARCHAR} 
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
@@ -70,6 +84,15 @@
       </if>
       <if test="cityId != null" >
         city_id = #{cityId,jdbcType=INTEGER},
+      </if>
+       <if test="totalDealership != null" >
+        total_dealership = #{totalDealership,jdbcType=INTEGER},
+      </if>
+      <if test="alreadySoldNum != null" >
+        already_sold_num = #{alreadySoldNum,jdbcType=INTEGER},
+      </if>
+      <if test="depositNum != null" >
+        deposit_num = #{depositNum,jdbcType=INTEGER},
       </if>
     </set>
     where country_id = #{countryId,jdbcType=INTEGER}

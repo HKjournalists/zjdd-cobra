@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSONArray;
+import com.zaijiadd.app.applyflow.dto.ShopVO;
+import com.zaijiadd.app.applyflow.entity.ShopApply;
 import com.zaijiadd.app.applyflow.entity.StoreImg;
 import com.zaijiadd.app.applyflow.entity.StoreInfo;
 
@@ -30,9 +32,11 @@ public interface StoreInfoService {
 
 	  StoreInfo selectByPrimaryKey(Long storeId) throws Exception;
 
-	  int updateByPrimaryKeySelective(StoreInfo record) throws Exception;
+	  int updateByPrimaryKeySelective(StoreInfo record, ShopApply shopApply) throws Exception;
 	  
-	  void applicationShop(JSONArray fileUrls, Long storeId, Integer userId) throws Exception;
+	  void applicationShop(JSONArray fileUrls, Long storeId, Integer userId, String username, String password) throws Exception;
+	  
+	  void ReApplicationShop(JSONArray fileUrls, Long storeId, Integer userId, String username, String password) throws Exception;
 	  
 	  List<StoreImg> selectImgsByStoreId(Long storeId) throws Exception;
 	  
@@ -50,5 +54,7 @@ public interface StoreInfoService {
 	   * @throws Exception
 	   */
 	  Map<String, Object> getMyApproval(Map<String, Object> map) throws Exception;
+	  
+	  ShopVO selectByShopId(Long shopId)throws Exception;
 
 }

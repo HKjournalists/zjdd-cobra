@@ -1,6 +1,7 @@
 package com.zaijiadd.app.applyflow.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.zaijiadd.app.applyflow.entity.City;
 import com.zaijiadd.app.applyflow.entity.Country;
@@ -42,4 +43,6 @@ public interface AreaService {
      * @return
      */
     List<Town> selectByCountryId(Integer countryId) throws Exception;
+    
+    Map<String, Object> findCitySellInfo(int cityId, int countryId) throws Exception;
 }

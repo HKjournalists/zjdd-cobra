@@ -65,6 +65,11 @@
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
 	</bean>
 	
+	<bean id="shopApplyMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.zaijiadd.app.applyflow.dao.ShopApplyMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	
 	<bean id="provinceMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="com.zaijiadd.app.applyflow.dao.ProvinceMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
@@ -93,6 +98,10 @@
 		<property name="mapperInterface" value="com.zaijiadd.app.applyflow.dao.ApplyStoreDao" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
 	</bean>
+	<bean id="applyStoreDetailDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.zaijiadd.app.applyflow.dao.ApplyStoreDetailDao" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
 	<bean id="applyUserRelationDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="com.zaijiadd.app.applyflow.dao.ApplyUserRelationDao" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
@@ -105,6 +114,21 @@
 	
 	<bean id="bankMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="com.zaijiadd.app.applyflow.dao.BankMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	
+	<bean id="applyContractMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.zaijiadd.app.applyflow.dao.ApplyContractMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	
+	<bean id="excelMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.zaijiadd.app.applyflow.dao.ExcelMapper" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	
+	<bean id="specialCityMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.zaijiadd.app.applyflow.dao.SpecialCityMapper" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
 	</bean>
 </beans>

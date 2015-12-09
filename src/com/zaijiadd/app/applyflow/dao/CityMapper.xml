@@ -6,6 +6,9 @@
     <result column="city_name" property="cityName" jdbcType="VARCHAR" />
     <result column="province_id" property="provinceId" jdbcType="INTEGER" />
     <result column="city_money" property="cityMoney" jdbcType="DECIMAL" />
+    <result column="total_dealership" property="totalDealership" jdbcType="INTEGER" />
+    <result column="already_sold_num" property="alreadySoldNum" jdbcType="INTEGER" />
+    <result column="deposit_num" property="depositNum" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     city_id, city_name, province_id,city_money
@@ -24,18 +27,32 @@
     where city_name = #{cityName,jdbcType=VARCHAR}
   </select>
   
+   <select id="selectCityByID" resultMap="BaseResultMap" parameterType="Integer" >
+    select 
+  	*
+    from city
+    where city_id = #{cityId,jdbcType=INTEGER}
+  </select>
+  
   <select id="selectNameById" resultType="String" parameterType="Integer">
     select city_name
     	from city  where city_id = #{cityId,jdbcType=INTEGER} 
   </select>
+  
+  <select id="selectSpecialByCityId" resultType="Integer" parameterType="Integer">
+    select count(*)
+    	from special_city  where city_id = #{cityId,jdbcType=INTEGER} 
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from city
     where city_id = #{cityId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.zaijiadd.app.applyflow.entity.City" >
-    insert into city (city_id, city_name, province_id
+    insert into city (city_id, city_name, province_id,total_dealership,already_sold_num,deposit_num
       )
-    values (#{cityId,jdbcType=INTEGER}, #{cityName,jdbcType=VARCHAR}, #{provinceId,jdbcType=INTEGER}
+    values (#{cityId,jdbcType=INTEGER}, #{cityName,jdbcType=VARCHAR}, #{provinceId,jdbcType=INTEGER},
+    	#{totalDealership,jdbcType=INTEGER},#{alreadySoldNum,jdbcType=INTEGER},#{depositNum,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.zaijiadd.app.applyflow.entity.City" >
@@ -71,6 +88,15 @@
       </if>
       <if test="provinceId != null" >
         province_id = #{provinceId,jdbcType=INTEGER},
+      </if>
+      <if test="totalDealership != null" >
+        total_dealership = #{totalDealership,jdbcType=INTEGER},
+      </if>
+      <if test="alreadySoldNum != null" >
+        already_sold_num = #{alreadySoldNum,jdbcType=INTEGER},
+      </if>
+      <if test="depositNum != null" >
+        deposit_num = #{depositNum,jdbcType=INTEGER},
       </if>
     </set>
     where city_id = #{cityId,jdbcType=INTEGER}

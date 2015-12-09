@@ -9,7 +9,37 @@ public class City {
 	private String cityName;
 
 	private Integer provinceId;
+	private Integer totalDealership;
+	private Integer alreadySoldNum;
+	private Integer depositNum;
+	
+	public Integer getTotalDealership() {
+		return totalDealership;
+	}
+
+	public void setTotalDealership(Integer totalDealership) {
+		this.totalDealership = totalDealership;
+	}
+
+	public Integer getAlreadySoldNum() {
+		return alreadySoldNum;
+	}
+
+	public void setAlreadySoldNum(Integer alreadySoldNum) {
+		this.alreadySoldNum = alreadySoldNum;
+	}
+
+	public Integer getDepositNum() {
+		return depositNum;
+	}
+
+	public void setDepositNum(Integer depositNum) {
+		this.depositNum = depositNum;
+	}
+
 	private BigDecimal cityMoney;
+	
+	
 
 	public BigDecimal getCityMoney() {
 		return cityMoney;

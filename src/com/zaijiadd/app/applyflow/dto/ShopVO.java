@@ -1,14 +1,17 @@
-package com.zaijiadd.app.applyflow.entity;
+package com.zaijiadd.app.applyflow.dto;
 
 import java.sql.Timestamp;
 
-public class ShopApply {
+public class ShopVO extends StoreInfoVO{
 	
-    private Long shopId;
+	 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6931549750342434254L;
 
-    private Long storeId;
+	private Long shopId;
 
-    private Integer shopApplicant;
+	private Integer shopApplicant;
 
     private Timestamp imgsApprovalTime;
 
@@ -16,17 +19,17 @@ public class ShopApply {
 
     private Integer imgsAuditStatus;
     
-    private int isHistory;
-    
-	private String imgsAuditOpinion;
+    private String imgsAuditOpinion;
     
     private Timestamp applicationShopTime;
+    
+    private int isHistory;
     
     private String username;
     
     private String password;
     
-
+    
     public String getUsername() {
 		return username;
 	}
@@ -43,13 +46,23 @@ public class ShopApply {
 		this.password = password;
 	}
 
-	public int getIsHistory() {
-		return isHistory;
+    
+    public String getImgsAuditOpinion() {
+		return imgsAuditOpinion;
 	}
 
-	public void setIsHistory(int isHistory) {
-		this.isHistory = isHistory;
+	public void setImgsAuditOpinion(String imgsAuditOpinion) {
+		this.imgsAuditOpinion = imgsAuditOpinion;
 	}
+
+	public Timestamp getApplicationShopTime() {
+		return applicationShopTime;
+	}
+
+	public void setApplicationShopTime(Timestamp applicationShopTime) {
+		this.applicationShopTime = applicationShopTime;
+	}
+
 
     public Long getShopId() {
 		return shopId;
@@ -57,14 +70,6 @@ public class ShopApply {
 
 	public void setShopId(Long shopId) {
 		this.shopId = shopId;
-	}
-
-	public Long getStoreId() {
-		return storeId;
-	}
-
-	public void setStoreId(Long storeId) {
-		this.storeId = storeId;
 	}
 
 	public Integer getShopApplicant() {
@@ -99,22 +104,13 @@ public class ShopApply {
 		this.imgsAuditStatus = imgsAuditStatus;
 	}
 
-	public String getImgsAuditOpinion() {
-		return imgsAuditOpinion;
+	public int getIsHistory() {
+		return isHistory;
 	}
 
-	public void setImgsAuditOpinion(String imgsAuditOpinion) {
-		this.imgsAuditOpinion = imgsAuditOpinion;
-	}
-
-	public Timestamp getApplicationShopTime() {
-		return applicationShopTime;
-	}
-
-	public void setApplicationShopTime(Timestamp applicationShopTime) {
-		this.applicationShopTime = applicationShopTime;
+	public void setIsHistory(int isHistory) {
+		this.isHistory = isHistory;
 	}
 
 
-    
 }

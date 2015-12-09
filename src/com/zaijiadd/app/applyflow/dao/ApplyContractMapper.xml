@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zaijiadd.app.applyflow.dao.ApplyContractMapper" >
+  <resultMap id="BaseResultMap" type="com.zaijiadd.app.applyflow.entity.ApplyContract" >
+    <id column="apply_contract_id" property="applyContractId" jdbcType="INTEGER" />
+    <result column="apply_contract_type" property="applyContractType" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.zaijiadd.app.applyflow.entity.ApplyContract" extends="BaseResultMap" >
+    <result column="apply_contract_content" property="applyContractContent" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    apply_contract_id, apply_contract_type
+  </sql>
+  <sql id="Blob_Column_List" >
+    apply_contract_content
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from apply_contract
+    where apply_contract_id = #{applyContractId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="getApplyContract" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from apply_contract
+    where apply_contract_type = #{applyContractType,jdbcType=INTEGER}
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from apply_contract
+    where apply_contract_id = #{applyContractId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zaijiadd.app.applyflow.entity.ApplyContract" >
+    insert into apply_contract (apply_contract_id, apply_contract_type, 
+      apply_contract_content)
+    values (#{applyContractId,jdbcType=INTEGER}, #{applyContractType,jdbcType=INTEGER}, 
+      #{applyContractContent,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zaijiadd.app.applyflow.entity.ApplyContract" >
+    insert into apply_contract
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="applyContractId != null" >
+        apply_contract_id,
+      </if>
+      <if test="applyContractType != null" >
+        apply_contract_type,
+      </if>
+      <if test="applyContractContent != null" >
+        apply_contract_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="applyContractId != null" >
+        #{applyContractId,jdbcType=INTEGER},
+      </if>
+      <if test="applyContractType != null" >
+        #{applyContractType,jdbcType=INTEGER},
+      </if>
+      <if test="applyContractContent != null" >
+        #{applyContractContent,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zaijiadd.app.applyflow.entity.ApplyContract" >
+    update apply_contract
+    <set >
+      <if test="applyContractType != null" >
+        apply_contract_type = #{applyContractType,jdbcType=INTEGER},
+      </if>
+      <if test="applyContractContent != null" >
+        apply_contract_content = #{applyContractContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where apply_contract_id = #{applyContractId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.zaijiadd.app.applyflow.entity.ApplyContract" >
+    update apply_contract
+    set apply_contract_type = #{applyContractType,jdbcType=INTEGER},
+      apply_contract_content = #{applyContractContent,jdbcType=LONGVARCHAR}
+    where apply_contract_id = #{applyContractId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zaijiadd.app.applyflow.entity.ApplyContract" >
+    update apply_contract
+    set apply_contract_type = #{applyContractType,jdbcType=INTEGER}
+    where apply_contract_id = #{applyContractId,jdbcType=INTEGER}
+  </update>
+</mapper>

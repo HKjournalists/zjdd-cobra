@@ -9,6 +9,36 @@
     <result column="imgs_approver" property="imgsApprover" jdbcType="INTEGER" />
     <result column="imgs_audit_status" property="imgsAuditStatus" jdbcType="TINYINT" />
     <result column="imgs_audit_opinion" property="imgsAuditOpinion" jdbcType="VARCHAR" />
+    <result column="application_shop_time" property="applicationShopTime" jdbcType="TIMESTAMP" />
+    <result column="is_history" property="isHistory" jdbcType="INTEGER" />
+  </resultMap>
+  
+   <resultMap id="VOResultMap" type="com.zaijiadd.app.applyflow.dto.ShopVO" >
+    <id column="shop_id" property="shopId" jdbcType="BIGINT" />
+    <result column="store_id" property="storeId" jdbcType="BIGINT" />
+    <result column="shop_applicant" property="shopApplicant" jdbcType="INTEGER" />
+    <result column="imgs_approval_time" property="imgsApprovalTime" jdbcType="TIMESTAMP" />
+    <result column="imgs_approver" property="imgsApprover" jdbcType="INTEGER" />
+    <result column="imgs_audit_status" property="imgsAuditStatus" jdbcType="TINYINT" />
+    <result column="imgs_audit_opinion" property="imgsAuditOpinion" jdbcType="VARCHAR" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="application_shop_time" property="applicationShopTime" jdbcType="TIMESTAMP" />
+    <result column="is_history" property="isHistory" jdbcType="INTEGER" />
+    <result column="capital" property="capital" jdbcType="INTEGER" />
+    <result column="capital_name" property="capitalName" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="INTEGER" />
+    <result column="city_name" property="cityName" jdbcType="VARCHAR" />
+    <result column="district" property="district" jdbcType="INTEGER" />
+    <result column="district_name" property="districtName" jdbcType="VARCHAR" />
+    <result column="apply_store_id" property="applyStoreId" jdbcType="BIGINT" />
+    <result column="apply_name" property="applyName" jdbcType="VARCHAR" />
+    <result column="person_num" property="personNum" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="street" property="street" jdbcType="INTEGER" />
+    <result column="street_name" property="streetName" jdbcType="VARCHAR" />
+    <result column="detail_address" property="detailAddress" jdbcType="VARCHAR" />
+    <result column="village" property="village" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     shop_id, store_id, shop_applicant, imgs_approval_time, imgs_approver, imgs_audit_status, 
@@ -25,12 +55,16 @@
     where shop_id = #{shopId,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.zaijiadd.app.applyflow.entity.ShopApply" >
+  <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="shopId">
+		SELECT LAST_INSERT_ID() AS id
+	</selectKey>
     insert into shop_apply (shop_id, store_id, shop_applicant, 
       imgs_approval_time, imgs_approver, imgs_audit_status, 
-      imgs_audit_opinion)
+      imgs_audit_opinion, application_shop_time, is_history, username, password)
     values (#{shopId,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{shopApplicant,jdbcType=INTEGER}, 
       #{imgsApprovalTime,jdbcType=TIMESTAMP}, #{imgsApprover,jdbcType=INTEGER}, #{imgsAuditStatus,jdbcType=TINYINT}, 
-      #{imgsAuditOpinion,jdbcType=VARCHAR})
+      #{imgsAuditOpinion,jdbcType=VARCHAR}, #{applicationShopTime,jdbcType=TIMESTAMP}, #{isHistory,jdbcType=INTEGER},
+      #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.zaijiadd.app.applyflow.entity.ShopApply" >
     insert into shop_apply
@@ -102,6 +136,9 @@
       <if test="imgsAuditOpinion != null" >
         imgs_audit_opinion = #{imgsAuditOpinion,jdbcType=VARCHAR},
       </if>
+       <if test="isHistory != null" >
+        	is_history = #{isHistory,jdbcType=INTEGER},
+      </if>
     </set>
     where shop_id = #{shopId,jdbcType=BIGINT}
   </update>
@@ -115,4 +152,13 @@
       imgs_audit_opinion = #{imgsAuditOpinion,jdbcType=VARCHAR}
     where shop_id = #{shopId,jdbcType=BIGINT}
   </update>
+  
+   <select id="selectByShopId" resultMap="VOResultMap" parameterType="map" >
+    select t3.store_id, capital,  t1.username, t1.password, city, district, apply_store_id, apply_name, person_num, phone, 
+    street, detail_address, village, status,t1.shop_id,  t1.shop_applicant, t1.imgs_approval_time, t1.imgs_approver, t1.imgs_audit_status, 
+    t1.imgs_audit_opinion
+     from shop_apply t1  
+    left join store_info t3 on t1.store_id=t3.store_id
+	where 1=1 and shop_id=#{shopId,jdbcType=BIGINT}
+  </select>
 </mapper>

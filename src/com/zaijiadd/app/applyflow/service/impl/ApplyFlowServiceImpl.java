@@ -5,6 +5,7 @@
 
 package com.zaijiadd.app.applyflow.service.impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -15,21 +16,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zaijiadd.app.applyflow.dao.ApplyContractMapper;
 import com.zaijiadd.app.applyflow.dao.ApplyFlowDao;
 import com.zaijiadd.app.applyflow.dao.ApplyStoreDao;
+import com.zaijiadd.app.applyflow.dao.ApplyStoreDetailDao;
 import com.zaijiadd.app.applyflow.dao.ApplyUserRelationDao;
 import com.zaijiadd.app.applyflow.dao.BankMapper;
 import com.zaijiadd.app.applyflow.dao.CityDealershipMapper;
 import com.zaijiadd.app.applyflow.dao.CityMapper;
+import com.zaijiadd.app.applyflow.entity.ApplyContract;
 import com.zaijiadd.app.applyflow.entity.ApplyStore;
+import com.zaijiadd.app.applyflow.entity.ApplyStoreDetail;
 import com.zaijiadd.app.applyflow.entity.ApplyUserRelation;
 import com.zaijiadd.app.applyflow.entity.City;
 import com.zaijiadd.app.applyflow.entity.CityDealership;
 import com.zaijiadd.app.applyflow.entity.InviteUserEntity;
 import com.zaijiadd.app.applyflow.service.ApplyFlowService;
+import com.zaijiadd.app.applyflow.service.AreaService;
 import com.zaijiadd.app.system.service.SystemUserService;
 import com.zaijiadd.app.user.dao.UserInfoDAO;
 import com.zaijiadd.app.user.entity.UserInfoEntity;
@@ -52,9 +60,15 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	@Autowired
 	ApplyStoreDao applyStoreDao;
 	@Autowired
+	ApplyStoreDetailDao applyStoreDetailDao;
+
+	@Autowired
 	BankMapper bankMapper;
 	@Autowired
 	CityDealershipMapper cityDealershipMapper;
+
+	@Autowired
+	AreaService areaService;
 	@Autowired
 	ApplyUserRelationDao applyUserRelationDao;
 	@Autowired
@@ -63,6 +77,9 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	private CityMapper cityMapper;
 	@Autowired
 	private SystemUserService systemUserService;
+
+	@Autowired
+	private ApplyContractMapper applyContractMapper;
 
 	@Override
 	public Integer addInviteUser(InviteUserEntity inviteUserEntity) {
@@ -95,40 +112,17 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 
 	@Override
 	public String addApplyStore(ApplyStore applyStore) throws Exception {
-		ArrayList<Integer> applyStoreIdList = new ArrayList<Integer>();
+
 		Integer applyType = applyStore.getApplyType();// 申请类型
 		Integer paymoneyType = applyStore.getPaymoneyType();// 付款类型
-		if (ConstantStorePower.APPLY_TYPE_SMALLSTORE.equals(applyType)) {// 小店
-			Integer storeNumm = applyStore.getStoreNumm();
-			if (applyStore != null && storeNumm > 0) {// 有几个小店就插入几次
-				for (int i = 0; i < storeNumm; i++) {
-					whoCheck(applyStore, applyType, paymoneyType);
-					Integer applyStoreId = applyStoreDao.addApplyStore(applyStore);
-					Integer applyStoreId2 = applyStore.getApplyStoreId();
-					if (applyStoreId2 != null) {
-						applyStoreIdList.add(applyStoreId2);
+		whoCheck(applyStore, applyType, paymoneyType);
+		Integer applyStoreId = applyStoreDao.addApplyStore(applyStore);
 
-					}
-
-				}
-			}
-		} else {// 经销权
-			whoCheck(applyStore, applyType, paymoneyType);// 由谁审核
-			Integer addApplyStoreId = applyStoreDao.addApplyStore(applyStore);
-			Integer applyStoreId2 = applyStore.getApplyStoreId();
-			if (applyStoreId2 != null) {
-				applyStoreIdList.add(applyStoreId2);
-
-			}
-
-		}
 		String possNum = generateSerialNum();// 生成流水号
-		for (Integer applyStoreId : applyStoreIdList) {
-			ApplyStore applyStore3 = new ApplyStore();
-			applyStore3.setPossNum(possNum);
-			applyStore3.setApplyStoreId(applyStoreId);
-			updateApplyStore(applyStore3);
-		}
+		ApplyStore applyStore2 = new ApplyStore();
+		applyStore2.setPossNum(possNum);
+		applyStore2.setApplyStoreId(applyStore.getApplyStoreId());
+		updateApplyStore(applyStore2);
 		return possNum;
 	}
 
@@ -141,6 +135,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	 */
 
 	void whoCheck(ApplyStore applyStore, Integer applyType, Integer paymoneyType) throws Exception {
+
 		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金直接给财务
 			applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 		} else {// 全额
@@ -154,6 +149,8 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 					UserInfoEntity leader = systemUserService.getLeader(applyStore.getYjsUserId());
 					// 实际付的金额比应收的金额小，那么给主管审批
 					applyStore.setWhoCheck(leader.getUserId());
+					applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_YES);//
+					// 没有发起收款申请
 				} else {// 实际付的金额比应收的金额 相等，给财务
 					applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 				}
@@ -167,6 +164,8 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 					UserInfoEntity leader = systemUserService.getLeader(applyStore.getYjsUserId());
 					// 实际付的金额比应收的金额小，那么给主管审批
 					applyStore.setWhoCheck(leader.getUserId());
+					applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_YES);//
+					// 没有发起收款申请
 				} else {// 实际付的金额比应收的金额 相等，给财务
 					applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 				}
@@ -178,15 +177,22 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	 * (用一句话描述方法的主要功能)
 	 * @param applyStore
 	 * @return
+	 * @throws Exception
 	 */
 
-	BigDecimal getDealershipMoney(ApplyStore applyStore) {
+	BigDecimal getDealershipMoney(ApplyStore applyStore) throws Exception {
 		Integer dealershipNum = applyStore.getDealershipNum();// 经销权个数
 		BigDecimal dealershipNumBig = new BigDecimal(dealershipNum);
 		BigDecimal cityDealershipMoney = new BigDecimal(1);
+		// Map<String, Object> findCitySellInfo =
+		// areaService.findCitySellInfo(applyStore.getCityId(),
+		// applyStore.getDistrictId());
 		CityDealership cityDealership = cityDealershipMapper.getCityMoneyByCityId(applyStore.getCityId());
 		if (cityDealership != null) {
 			cityDealershipMoney = cityDealership.getCityDealershipMoney();
+			// cityDealershipMoney = (BigDecimal) findCitySellInfo.get("money");
+			// BigDecimal dealershipNumAble = (BigDecimal)
+			// findCitySellInfo.get("laveNum");
 		}
 		BigDecimal needPaymoneyCount = new BigDecimal(0);
 		if (dealershipNumBig.compareTo(BigDecimal.ZERO) == 0) {
@@ -204,10 +210,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	 */
 
 	BigDecimal getNeedPaymoneyCount(ApplyStore applyStore) {
-		Integer storeNumm = applyStore.getStoreNumm();
-		BigDecimal storeNummBig = new BigDecimal(storeNumm);
-		BigDecimal needPaymoneyCount = ConstantStorePower.STORE_MONEY.multiply(storeNummBig);
-		return needPaymoneyCount;
+		return ConstantStorePower.STORE_MONEY;
 	}
 
 	/**
@@ -323,11 +326,12 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	}
 
 	/**
+	 * @throws Exception
 	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#roleApproveStore(java.util.Map)
 	 */
 
 	@Override
-	public Integer roleApproveStore(Map<String, Object> param) {
+	public Integer roleApproveStore(Map<String, Object> param) throws Exception {
 		Integer roleId = (Integer) param.get("roleId");
 		Integer userId = (Integer) param.get("userId");
 		Integer applyStoreId = (Integer) param.get("applyStoreId");
@@ -369,7 +373,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 
 		ApplyStore applyStore = new ApplyStore();
 		applyStore.setApplyStoreId(applyStoreId);
-		applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 单子的状态
+		applyStore.setApplyStatus(ConstantStorePower.approve_state_fail);// 单子的状态
 		applyStore.setManagersCheck(ConstantStorePower.approve_state_fail);// 单子的经理审核状态
 		this.updateApplyStore(applyStore);
 	}
@@ -391,6 +395,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
 		applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 单子的状态
 		applyStore.setManagersCheck(ConstantStorePower.approve_state_succ);// 单子的经理审核状态
+		applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_NO);// 重置
 		this.updateApplyStore(applyStore);
 	}
 
@@ -399,41 +404,77 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	 * @param applyStoreId
 	 * @param approveState
 	 * @param applyUserRelation
+	 * @throws Exception
 	 */
 
-	void financeApproveApply(Integer applyStoreId, Integer approveState, ApplyUserRelation applyUserRelation) {
+	void financeApproveApply(Integer applyStoreId, Integer approveState, ApplyUserRelation applyUserRelation)
+			throws Exception {
 		applyUserRelation.setApplyId(applyStoreId);
 		applyUserRelation.setCaurApproveState(approveState);
 		this.insertApplyRoleRelation(applyUserRelation);
 
-		updateDealershipNum(applyStoreId);// 更新城市的经销权个数
+		// updateDealershipNum(applyStoreId);// 更新城市的经销权个数
 
 		Map<String, Object> queryApplyStoreDetails = this.queryApplyStoreDetails(applyStoreId);
 		Integer paymoneyType = (Integer) queryApplyStoreDetails.get("paymoneyType");
 		ApplyStore applyStore = new ApplyStore();
 		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金
-			applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 单子的状态--in
+			applyStore.setApplyStatus(ConstantStorePower.apply_state_fail);// 单子的状态--in
 		}
 		applyStore.setApplyStoreId(applyStoreId);// id
 		applyStore.setApplyStatus(ConstantStorePower.apply_state_succ);// 单子的状态
 		applyStore.setFinanceCheck(ConstantStorePower.apply_state_succ);// 单子的财务状态
 		this.updateApplyStore(applyStore);
+		if (ConstantStorePower.APPLY_PAYMONEY_ALL.equals(paymoneyType)) {// 全额
+			ApplyStore applyStoreCopy = this.applyStoreDao.selectByAppStoreId(applyStoreId);
+			Integer storeNumm = applyStoreCopy.getStoreNumm();
+			if(storeNumm != null) {
+				for (int i = 0; i < storeNumm; i++) {
+					ApplyStoreDetail applyDetailStore = new ApplyStoreDetail();
+					try {
+						PropertyUtils.copyProperties(applyDetailStore, applyStoreCopy);
+						applyDetailStore.setApplyStatus(1);
+						applyStoreDetailDao.addApplyStore(applyDetailStore);
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					} catch (NoSuchMethodException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+		}
+
+	}
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStoreId
+	 * @return
+	 */
+
+	private ApplyStore selectByAppStoreId(Integer applyStoreId) {
+		return applyStoreDao.selectByAppStoreId(applyStoreId);
 	}
 
 	/**
 	 * 更新城市的经销权个数
 	 * @param applyStoreId
+	 * @throws Exception
 	 */
 
-	void updateDealershipNum(Integer applyStoreId) {
+	void updateDealershipNum(Integer applyStoreId) throws Exception {
 		Map<String, Object> queryApplyStoreDetails = applyStoreDao.queryApplyStoreDetails(applyStoreId);
 		Integer cityId = (Integer) queryApplyStoreDetails.get("cityId");// 用户的城市id
+		Integer districtId = (Integer) queryApplyStoreDetails.get("districtId");// 用户的城市id
 		Integer dealershipNum = (Integer) queryApplyStoreDetails.get("dealershipNum");// 用户的经销权个数
 		if (dealershipNum != null && dealershipNum != 0) {
 			CityDealership cityDealership = cityDealershipMapper.getCityMoneyByCityId(cityId);
+			Map<String, Object> findCitySellInfo = areaService.findCitySellInfo(cityId, districtId);
 			if (cityDealership != null) {
-				Integer sellDealershipNum = cityDealership.getSellDealershipNum();// 城市经销权总的个数
-				Integer dealershipNumAble = cityDealership.getDealershipNumAble();
+				Integer dealershipNumAble = (Integer) findCitySellInfo.get("laveNum");
 				dealershipNumAble = dealershipNumAble - dealershipNum;
 				if (dealershipNumAble >= 0) {
 					CityDealership cityDealership2 = new CityDealership(cityDealership.getCityDealershipId(), cityId,
@@ -574,14 +615,100 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	 */
 
 	@Override
-	public Integer payRemainMoney(ApplyStore applyStore) throws Exception {
-		Integer applyType = applyStore.getApplyType();
-		applyStore.setFinanceCheck(ConstantStorePower.approve_state_ready);
-		applyStore.setManagersCheck(ConstantStorePower.approve_state_ready);
-		Integer paymoneyType = applyStore.getPaymoneyType();// 付款类型
-		whoCheck(applyStore, applyType, paymoneyType);
-		updateApplyStore(applyStore);
-		return paymoneyType;
+	public String payRemainMoney(ApplyStore applyStore) throws Exception {
+		BigDecimal contractAmount = applyStore.getContractAmount();
+		BigDecimal needPaymoney = applyStore.getNeedPaymoney();
+		BigDecimal paidMoney = applyStore.getPaidMoney();
+		Integer payWay = applyStore.getPayWay();
+		Integer paymoneyType2 = applyStore.getPaymoneyType();
+		Integer whetherSelf = applyStore.getWhetherSelf();
+
+		ApplyStore applyStore2 = this.selectByAppStoreId(applyStore.getApplyStoreId());// 老的记录
+
+		ApplyStore applyStore3 = new ApplyStore();
+
+		BeanUtils.copyProperties(applyStore3, applyStore2);
+		applyStore3.setFinanceCheck(ConstantStorePower.approve_state_ready);
+		applyStore3.setManagersCheck(ConstantStorePower.approve_state_ready);
+		applyStore3.setApplyStatus(ConstantStorePower.apply_state_ready);
+		applyStore3.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_NO);
+		applyStore3.setContractAmount(contractAmount);
+		applyStore3.setNeedPaymoney(needPaymoney);
+		applyStore3.setPaidMoney(paidMoney);
+		applyStore3.setPayWay(payWay);
+		applyStore3.setPaymoneyType(paymoneyType2);
+		applyStore3.setWhetherSelf(whetherSelf);
+		applyStore3.setWhoCheck(null);
+		//
+		Integer applyStoreId = applyStoreDao.addApplyStore(applyStore3);//
+		Integer applyStoreId2 = applyStore3.getApplyStoreId();
+		applyStore3.setApplyStoreId(applyStoreId2);
+		// 新记录
+		Integer applyType = applyStore3.getApplyType();
+		Integer paymoneyType = applyStore3.getPaymoneyType();// 付款类型
+		whoCheckpayRemainMoney(applyStore3, applyType, paymoneyType);
+		updateApplyStore(applyStore3);
+		// 把原来的记录备份
+		applyStore2.setApplyStatus(ConstantStorePower.APPLY_STATE_NOT_PAYALLMONEY);// 尾款，用户不可见
+		updateApplyStore(applyStore2);
+		String possNum = generateSerialNum();// 生成流水号
+		return possNum;
+	}
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 * @param applyStore
+	 * @param applyType
+	 * @param paymoneyType
+	 * @throws Exception
+	 */
+
+	private void whoCheckpayRemainMoney(ApplyStore applyStore, Integer applyType, Integer paymoneyType)
+			throws Exception {
+		Map<String, Object> applyStoreMap = queryApplyStoreDetails(applyStore.getApplyStoreId());
+		applyType = (Integer) applyStoreMap.get("applyType");
+		Integer cityId = (Integer) applyStoreMap.get("cityId");
+		Integer dealershipNum = (Integer) applyStoreMap.get("dealershipNum");
+		Integer storeNumm = (Integer) applyStoreMap.get("storeNumm");
+		Integer userId = (Integer) applyStoreMap.get("userId");
+
+		applyStore.setCityId(cityId);
+		applyStore.setDealershipNum(dealershipNum);
+		applyStore.setStoreNumm(storeNumm);
+		applyStore.setYjsUserId(userId);
+		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金直接给财务
+			applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
+		} else {// 全额
+			if (applyType.equals(ConstantStorePower.APPLY_TYPE_DEALERSHIP)) {// 经销权
+
+				BigDecimal personPaymoneyCount = getPersonPaymoneyCount(applyStore);
+				// 经销权价格计算
+				BigDecimal needPaymoneyCount = getDealershipMoney(applyStore);
+
+				if (personPaymoneyCount.compareTo(needPaymoneyCount) < 0) {// 没有支付全额
+					UserInfoEntity leader = systemUserService.getLeader(applyStore.getYjsUserId());
+					// 实际付的金额比应收的金额小，那么给主管审批
+					applyStore.setWhoCheck(leader.getUserId());
+					applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_YES);//
+				} else {// 实际付的金额比应收的金额 相等，给财务
+					applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
+				}
+			} else if (applyType.equals(ConstantStorePower.APPLY_TYPE_SMALLSTORE)) {// 小店
+
+				BigDecimal personPaymoneyCount = getPersonPaymoneyCount(applyStore);
+				// 小店价格计算
+				BigDecimal needPaymoneyCount = getNeedPaymoneyCount(applyStore);
+
+				if (personPaymoneyCount.compareTo(needPaymoneyCount) < 0) {// 没有支付全额
+					UserInfoEntity leader = systemUserService.getLeader(applyStore.getYjsUserId());
+					// 实际付的金额比应收的金额小，那么给主管审批
+					applyStore.setWhoCheck(leader.getUserId());
+					applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_YES);//
+				} else {// 实际付的金额比应收的金额 相等，给财务
+					applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
+				}
+			}
+		}
 	}
 
 	/**
@@ -626,6 +753,33 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 
 		}
 
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#getApplyContract(java.util.Map)
+	 */
+
+	@Override
+	public ApplyContract getApplyContract(Map<String, Object> applyContractParam) {
+		return applyContractMapper.getApplyContract(applyContractParam);
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#getUserInfoById(java.lang.Integer)
+	 */
+
+	@Override
+	public UserInfoEntity getUserInfoById(Integer userId) {
+		return userInfoDao.getUserInfoById(userId);
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#queryAllApplyStoreSateIn(java.util.Map)
+	 */
+
+	@Override
+	public List<Map<String, Object>> queryAllApplyStoreSateIn(Map<String, Object> param) {
+		return applyStoreDao.queryAllApplyStoreSateIn(param);
 	}
 
 }

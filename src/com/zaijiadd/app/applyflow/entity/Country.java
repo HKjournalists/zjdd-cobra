@@ -6,8 +6,44 @@ public class Country {
     private String countryName;
 
     private Integer cityId;
+    private Integer totalDealership;
+	private Integer alreadySoldNum;
+	private Integer depositNum;
+	private int countryMoney;
 
-    public Integer getCountryId() {
+    public int getCountryMoney() {
+		return countryMoney;
+	}
+
+	public void setCountryMoney(int countryMoney) {
+		this.countryMoney = countryMoney;
+	}
+
+	public Integer getTotalDealership() {
+		return totalDealership;
+	}
+
+	public void setTotalDealership(Integer totalDealership) {
+		this.totalDealership = totalDealership;
+	}
+
+	public Integer getAlreadySoldNum() {
+		return alreadySoldNum;
+	}
+
+	public void setAlreadySoldNum(Integer alreadySoldNum) {
+		this.alreadySoldNum = alreadySoldNum;
+	}
+
+	public Integer getDepositNum() {
+		return depositNum;
+	}
+
+	public void setDepositNum(Integer depositNum) {
+		this.depositNum = depositNum;
+	}
+
+	public Integer getCountryId() {
         return countryId;
     }
 

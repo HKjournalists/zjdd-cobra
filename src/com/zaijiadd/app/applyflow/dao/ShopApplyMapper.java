@@ -1,16 +1,19 @@
 package com.zaijiadd.app.applyflow.dao;
 
+import com.zaijiadd.app.applyflow.dto.ShopVO;
 import com.zaijiadd.app.applyflow.entity.ShopApply;
 
 public interface ShopApplyMapper {
 	
     int deleteByPrimaryKey(Long shopId);
 
-    int insert(ShopApply record);
+    long insert(ShopApply record);
 
     int insertSelective(ShopApply record);
 
     ShopApply selectByPrimaryKey(Long shopId);
+    
+    ShopVO selectByShopId(Long shopId);
 
     int updateByPrimaryKeySelective(ShopApply record);
 

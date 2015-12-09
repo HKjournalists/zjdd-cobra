@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.zaijiadd.app.applyflow.dao.ApplyStoreDao" >
-  <resultMap id="BaseResultMap" type="com.zaijiadd.app.applyflow.entity.ApplyStore" >
-    <id column="apply_store_id" property="applyStoreId" jdbcType="INTEGER" />
+<mapper namespace="com.zaijiadd.app.applyflow.dao.ApplyStoreDetailDao" >
+  <resultMap id="BaseResultMap" type="com.zaijiadd.app.applyflow.entity.ApplyStoreDetail" >
+    <id column="apply_store_detail_id" property="applyStoreDetailId" jdbcType="INTEGER" />
+    <result column="apply_store_id" property="applyStoreId" jdbcType="INTEGER" />
     <result column="apply_type" property="applyType" jdbcType="INTEGER" />
     <result column="apply_person_type" property="applyPersonType" jdbcType="INTEGER" />
     <result column="capital" property="capital" jdbcType="VARCHAR" />
@@ -85,7 +86,7 @@
     apply_store_id as applyStoreId, apply_name as applyName, apply_type as applyType, phone as phone,
     paymoney_type as paymoneyType, created_date as createdDate, 
     apply_status as applyStatus,whether_start_apply as whetherStartApply,
-    finance_check as financeCheck, managers_check as managersCheck
+    finance_check as financeCheck, managers_check as managersCheck, apply_store_detail_id as applyStoreDetailId
   </sql>
   
    <!-- 角色审批首页 -->
@@ -102,9 +103,9 @@
     where apply_store_id = #{applyStoreId,jdbcType=INTEGER}
   </select>
   
-  <!-- 查询订单状态 -->
+     <!-- 查询订单状态 -->
   <select id="queryAllApplyStoreSate" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
-    select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
+    select <include refid="Base_Column_order_state_List" /> from cobra_apply_store_detail
     	<where>
 			<if test="yjsUserId != null and yjsUserId !=''">
 				yjs_user_id = #{yjsUserId}
@@ -118,14 +119,14 @@
   </select>
     <!-- 查询订单状态 -->
   <select id="queryAllApplyStoreSateIn" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
-    select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
+    select <include refid="Base_Column_order_state_List" /> from cobra_apply_store_detail
     	<where>
 			<if test="yjsUserId != null and yjsUserId !=''">
 				yjs_user_id = #{yjsUserId}
 			</if>
 			<if test="applyStatus != null">
 				and apply_status = #{applyStatus} 
-				or apply_status=2
+				or apply_status=3
 			</if>
 			order by created_date desc
 			limit #{start,jdbcType=INTEGER}, #{end}
@@ -135,7 +136,7 @@
     <select id="queryByParamCount" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
   		 select
 		count(1)
-		 from cobra_apply_store
+		 from cobra_apply_store_detail
     	<where>
 			<if test="yjsUserId != null and yjsUserId !=''">
 				yjs_user_id = #{yjsUserId}
@@ -164,16 +165,9 @@
 		</where>
   </select>
   
-  
-   <select id="queryApplStoreById" resultMap="BaseResultMap" parameterType="Long" >
-    select 
-       *
-    from cobra_apply_store
-   		where apply_store_id=#{applyStoreId}
-  </select>
     <!-- 查询待审批的 不用-->
    <select id="queryApproveStoreSate" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
-    select <include refid="Base_Column_order_state_List" /> from cobra_apply_store_detail
+    select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
     	<where>
 			<if test="yjsUserId != null and yjsUserId !=''">
 				yjs_user_id = #{yjsUserId}
@@ -219,8 +213,8 @@
   </select>
   
   <!-- 增加单子-->
-  <insert id="addApplyStore" parameterType="com.zaijiadd.app.applyflow.entity.ApplyStore"  useGeneratedKeys="true" keyProperty="applyStoreId">
-    insert into cobra_apply_store (apply_type, apply_person_type, 
+  <insert id="addApplyStore" parameterType="com.zaijiadd.app.applyflow.entity.ApplyStoreDetail"  useGeneratedKeys="true" keyProperty="applyStoreDetailId">
+    insert into cobra_apply_store_detail (apply_type, apply_person_type, 
       capital, city, district, 
       agency_type, agency_time, dealership_num, 
       apply_name, person_num, phone, 
@@ -234,7 +228,8 @@
       created_date, updated_date, whether_self, 
       pay_bank, pay_subbranch_bank, pay_person_name, 
       pay_alipay_num, poss_num, whether_start_apply, 
-      pay_bank_name, contract_Amount, pay_bank_code
+      pay_bank_name, contract_Amount, pay_bank_code,
+      apply_store_id
       )
     values (#{applyType,jdbcType=INTEGER}, #{applyPersonType,jdbcType=INTEGER}, 
       #{capital,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{district,jdbcType=VARCHAR}, 
@@ -250,12 +245,13 @@
       #{createdDate,jdbcType=TIMESTAMP}, #{updatedDate,jdbcType=TIMESTAMP}, #{whetherSelf,jdbcType=INTEGER}, 
       #{payBank,jdbcType=INTEGER}, #{paySubbranchBank,jdbcType=VARCHAR}, #{payPersonName,jdbcType=VARCHAR}, 
       #{payAlipayNum,jdbcType=VARCHAR}, #{possNum,jdbcType=VARCHAR}, #{whetherStartApply,jdbcType=INTEGER}, 
-      #{payBankName,jdbcType=VARCHAR}, #{contractAmount,jdbcType=DECIMAL}, #{payBankCode,jdbcType=VARCHAR}
+      #{payBankName,jdbcType=VARCHAR}, #{contractAmount,jdbcType=DECIMAL}, #{payBankCode,jdbcType=VARCHAR},
+      #{applyStoreId,jdbcType=INTEGER}
       )
   </insert>
  
-  <update id="updateApplyStore" parameterType="com.zaijiadd.app.applyflow.entity.ApplyStore" >
-   update cobra_apply_store
+  <update id="updateApplyStore" parameterType="com.zaijiadd.app.applyflow.entity.ApplyStoreDetail" >
+   update cobra_apply_store_detail
     <set >
       <if test="applyType != null" >
         apply_type = #{applyType,jdbcType=INTEGER},
@@ -390,7 +386,7 @@
         pay_bank_code = #{payBankCode,jdbcType=VARCHAR},
       </if>
     </set>
-    where apply_store_id = #{applyStoreId,jdbcType=INTEGER}
+    where apply_store_detail_id = #{applyStoreDetailId,jdbcType=INTEGER}
   </update>
   
   
