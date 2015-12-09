@@ -476,20 +476,6 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		Integer districtId = (Integer) queryApplyStoreDetails.get("districtId");// 用户的城市id
 		Integer dealershipNum = (Integer) queryApplyStoreDetails.get("dealershipNum");// 用户的经销权个数
 		if (dealershipNum != null && dealershipNum != 0) {
-			CityDealership cityDealership = cityDealershipMapper.getCityMoneyByCityId(cityId);
-			Map<String, Object> findCitySellInfo = areaService.findCitySellInfo(cityId, districtId);
-			if (cityDealership != null) {
-				Integer dealershipNumAble = (Integer) findCitySellInfo.get("laveNum");
-				dealershipNumAble = dealershipNumAble - dealershipNum;
-				if (dealershipNumAble >= 0) {
-					CityDealership cityDealership2 = new CityDealership(cityDealership.getCityDealershipId(), cityId,
-							dealershipNumAble);
-					cityDealershipMapper.updateCityDealership(cityDealership2);
-				} else {
-					throw new RuntimeException("超出了城市的经销权总个数");
-				}
-
-			}
 		}
 
 	}
