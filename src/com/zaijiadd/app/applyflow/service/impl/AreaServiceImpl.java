@@ -58,6 +58,7 @@ public class AreaServiceImpl implements AreaService {
 			if(cityList != null && cityList.size() > 0) {
 				City city = cityList.get(0);
 				resultMap.put("money", city.getCityMoney());
+				resultMap.put("total", city.getTotalDealership());
 				resultMap.put("laveNum", city.getTotalDealership()  - (city.getAlreadySoldNum() == null ? 0:city.getAlreadySoldNum()));
 			}
 		} else {
@@ -65,6 +66,7 @@ public class AreaServiceImpl implements AreaService {
 			if(countryList != null && countryList.size() > 0) {
 				Country country = countryList.get(0);
 				resultMap.put("money", country.getCountryMoney());
+				resultMap.put("total", country.getTotalDealership());
 				resultMap.put("laveNum", country.getTotalDealership()  - (country.getAlreadySoldNum() == null ? 0:country.getAlreadySoldNum()));
 			}
 		}

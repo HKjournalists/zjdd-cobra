@@ -373,8 +373,8 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 
 		ApplyStore applyStore = new ApplyStore();
 		applyStore.setApplyStoreId(applyStoreId);
-		applyStore.setApplyStatus(ConstantStorePower.approve_state_fail);// 单子的状态
-		applyStore.setManagersCheck(ConstantStorePower.approve_state_fail);// 单子的经理审核状态
+		applyStore.setApplyStatus(ConstantStorePower.approve_state_fail);// 单子的状态2
+		applyStore.setManagersCheck(ConstantStorePower.approve_state_fail);// 单子的经理审核状态2
 		this.updateApplyStore(applyStore);
 	}
 
@@ -393,9 +393,9 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		ApplyStore applyStore = new ApplyStore();
 		applyStore.setApplyStoreId(applyStoreId);
 		applyStore.setWhoCheck(ConstantsRole.ROLE_FINANCE);
-		applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 单子的状态
-		applyStore.setManagersCheck(ConstantStorePower.approve_state_succ);// 单子的经理审核状态
-		applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_NO);// 重置
+		applyStore.setApplyStatus(ConstantStorePower.apply_state_ready);// 单子的状态0
+		applyStore.setManagersCheck(ConstantStorePower.approve_state_succ);// 单子的经理审核状态1
+		applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_NO);// 重置0
 		this.updateApplyStore(applyStore);
 	}
 
@@ -409,6 +409,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 
 	void financeApproveApply(Integer applyStoreId, Integer approveState, ApplyUserRelation applyUserRelation)
 			throws Exception {
+		// 插入到记录表
 		applyUserRelation.setApplyId(applyStoreId);
 		applyUserRelation.setCaurApproveState(approveState);
 		this.insertApplyRoleRelation(applyUserRelation);
@@ -418,17 +419,21 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		Map<String, Object> queryApplyStoreDetails = this.queryApplyStoreDetails(applyStoreId);
 		Integer paymoneyType = (Integer) queryApplyStoreDetails.get("paymoneyType");
 		ApplyStore applyStore = new ApplyStore();
-		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金
-			applyStore.setApplyStatus(ConstantStorePower.apply_state_fail);// 单子的状态--in
-		}
 		applyStore.setApplyStoreId(applyStoreId);// id
-		applyStore.setApplyStatus(ConstantStorePower.apply_state_succ);// 单子的状态
-		applyStore.setFinanceCheck(ConstantStorePower.apply_state_succ);// 单子的财务状态
+		if (ConstantStorePower.APPLY_PAYMONEY_NOTALL.equals(paymoneyType)) {// 定金
+			applyStore.setApplyStatus(ConstantStorePower.apply_state_succ);// 单子的定金通过--in
+			applyStore.setFinanceCheck(ConstantStorePower.apply_state_succ);// 单子的财务状态
+			applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_NO);// 没有
+		} else {// 全款
+			applyStore.setApplyStatus(ConstantStorePower.apply_state_succ);// 单子的状态
+			applyStore.setFinanceCheck(ConstantStorePower.apply_state_succ);// 单子的财务状态
+		}
+
 		this.updateApplyStore(applyStore);
 		if (ConstantStorePower.APPLY_PAYMONEY_ALL.equals(paymoneyType)) {// 全额
 			ApplyStore applyStoreCopy = this.applyStoreDao.selectByAppStoreId(applyStoreId);
 			Integer storeNumm = applyStoreCopy.getStoreNumm();
-			if(storeNumm != null) {
+			if (storeNumm != null) {
 				for (int i = 0; i < storeNumm; i++) {
 					ApplyStoreDetail applyDetailStore = new ApplyStoreDetail();
 					try {
@@ -748,8 +753,18 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 		Map<String, Object> param = new HashMap<String, Object>();
 		List<ApplyStore> applyStoreList = applyStoreDao.queryApplStoreNotAllMoney(param);
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Long thirdTime = (long) (1 * 72 * 60 * 60 * 1000);
 		for (ApplyStore applyStore : applyStoreList) {
 			Date createdDate = applyStore.getCreatedDate();
+			long time = createdDate.getTime();
+			long createdDatetTimeThird = time + thirdTime;
+			long todayTime = new Date().getTime();
+			if (createdDatetTimeThird > todayTime) {// 超过了三天
+				ApplyStore applyStore2 = new ApplyStore();
+				applyStore2.setApplyStoreId(applyStore.getApplyStoreId());
+				applyStore2.setApplyStatus(ConstantStorePower.APPLY_THIRD_NOT_PAYMONEY);
+				updateApplyStore(applyStore2);// 更新状态
+			}
 
 		}
 
@@ -780,6 +795,33 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	@Override
 	public List<Map<String, Object>> queryAllApplyStoreSateIn(Map<String, Object> param) {
 		return applyStoreDao.queryAllApplyStoreSateIn(param);
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#queryByParamCount(java.util.Map)
+	 */
+
+	@Override
+	public Integer queryByParamCount(Map<String, Object> param) {
+		return applyStoreDao.queryByParamCount(param);
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#queryApproveMsgCount(java.util.Map)
+	 */
+
+	@Override
+	public Integer queryApproveMsgCount(Map<String, Object> param) {
+		return applyUserRelationDao.queryApproveMsgCount(param);
+	}
+
+	/**
+	 * @see com.zaijiadd.app.applyflow.service.ApplyFlowService#queryApplyDealershipNum(java.util.Map)
+	 */
+
+	@Override
+	public List<Map<String, Object>> queryApplyDealershipNum(Map<String, Object> param) {
+		return applyStoreDao.queryApplyDealershipNum(param);
 	}
 
 }

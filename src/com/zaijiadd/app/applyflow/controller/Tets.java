@@ -58,6 +58,27 @@ public class Tets {
 		}
 
 		
+		// testTime1();
+		testIf();
+	}
+
+	/**
+	 * (用一句话描述方法的主要功能)
+	 */
+
+	private static void testIf() {
+		if (3 > 2) {
+			System.out.println(1);
+		}
+		System.out.println(2);
+		System.out.println(3);
+		if (3 > 2) {
+			System.out.println(1);
+		} else {
+			System.out.println(2);
+		}
+
+		System.out.println(3);
 	}
 
 	/**
@@ -65,11 +86,21 @@ public class Tets {
 	 */
 
 	private static void testTime1() {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date date = new Date();
 		System.out.println(date);
+		System.out.println(simpleDateFormat.format(date));
+		long time = date.getTime();
 		System.out.println(date.getTime());
-		Long thirdDay = (long) (3 * 72 * 60 * 60 * 1000);
-		// date.getTime()+thirdDay;
+		Long thirdDayTime = (long) (1 * 72 * 60 * 60 * 1000);
+		System.out.println("thirdDay:" + thirdDayTime);
+		long thirdDay = time + thirdDayTime;
+		System.out.println(thirdDay);
+		Date date2 = new Date(thirdDay);
+
+		String format = simpleDateFormat.format(date2);
+		System.out.println(format);
+		// date.getTime()+thirdDay;thirdDay
 		// System.out.println("TIAN"+);
 	}
 

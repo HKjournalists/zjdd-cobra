@@ -87,7 +87,10 @@
     apply_status as applyStatus,whether_start_apply as whetherStartApply,
     finance_check as financeCheck, managers_check as managersCheck
   </sql>
-  
+     <!-- 经销权个数 -->
+   <sql id="Base_Column_queryApplyDealershipNum_List" >
+    apply_store_id as applyStoreId, capital_id as capitalId , city_id as cityId, district_id as districtId,dealership_num as dealershipNum
+  </sql>
    <!-- 角色审批首页 -->
    <sql id="Base_Column_Role_Approve_state" >
     apply_store_id as applyStoreId, apply_name as applyName,need_paymoney as needPaymoney, paid_money as paidMoney,
@@ -116,6 +119,22 @@
 			limit #{start,jdbcType=INTEGER}, #{end}
 		</where>
   </select>
+  
+    <!-- 查询待申请的经销权个数  注意是未成功的 -->
+  <select id="queryApplyDealershipNum" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+    select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
+    	<where>
+		<if test="cityId != null" >
+		city_id = #{cityId,jdbcType=INTEGER},
+      </if>
+      <if test="districtId != null" >
+        district_id = #{districtId,jdbcType=INTEGER},
+      </if>
+	   <if test="applyStatus != null" >
+        apply_status = #{applyStatus,jdbcType=INTEGER},
+      </if>
+		</where>
+  </select>
     <!-- 查询订单状态 -->
   <select id="queryAllApplyStoreSateIn" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
     select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
@@ -126,6 +145,7 @@
 			<if test="applyStatus != null">
 				and apply_status = #{applyStatus} 
 				or apply_status=2
+				
 			</if>
 			order by created_date desc
 			limit #{start,jdbcType=INTEGER}, #{end}
@@ -137,13 +157,138 @@
 		count(1)
 		 from cobra_apply_store
     	<where>
-			<if test="yjsUserId != null and yjsUserId !=''">
-				yjs_user_id = #{yjsUserId}
-			</if>
-			<if test="applyStatus != null">
-				and apply_status = #{applyStatus}
-			</if>
-			
+	  <if test="applyType != null" >
+        apply_type = #{applyType,jdbcType=INTEGER},
+      </if>
+      <if test="applyPersonType != null" >
+        apply_person_type = #{applyPersonType,jdbcType=INTEGER},
+      </if>
+      <if test="capital != null" >
+        capital = #{capital,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="district != null" >
+        district = #{district,jdbcType=VARCHAR},
+      </if>
+      <if test="agencyType != null" >
+        agency_type = #{agencyType,jdbcType=INTEGER},
+      </if>
+      <if test="agencyTime != null" >
+        agency_time = #{agencyTime,jdbcType=INTEGER},
+      </if>
+      <if test="dealershipNum != null" >
+        dealership_num = #{dealershipNum,jdbcType=INTEGER},
+      </if>
+      <if test="applyName != null" >
+        apply_name = #{applyName,jdbcType=VARCHAR},
+      </if>
+      <if test="personNum != null" >
+        person_num = #{personNum,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="postAddr != null" >
+        post_addr = #{postAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="maiAddr != null" >
+        mai_addr = #{maiAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="urgencyPerson != null" >
+        urgency_person = #{urgencyPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="urgencyPhone != null" >
+        urgency_phone = #{urgencyPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="companyname != null" >
+        CompanyName = #{companyname,jdbcType=VARCHAR},
+      </if>
+      <if test="payWay != null" >
+        pay_way = #{payWay,jdbcType=INTEGER},
+      </if>
+      <if test="paymoneyType != null" >
+        paymoney_type = #{paymoneyType,jdbcType=INTEGER},
+      </if>
+      <if test="paidMoney != null" >
+        paid_money = #{paidMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="needPaymoney != null" >
+        need_paymoney = #{needPaymoney,jdbcType=DECIMAL},
+      </if>
+      <if test="yjsUserId != null" >
+        yjs_user_id = #{yjsUserId,jdbcType=INTEGER},
+      </if>
+      <if test="financeCheck != null" >
+        finance_check = #{financeCheck,jdbcType=INTEGER},
+      </if>
+      <if test="managersCheck != null" >
+        managers_check = #{managersCheck,jdbcType=INTEGER},
+      </if>
+      <if test="applyStatus != null" >
+        apply_status = #{applyStatus,jdbcType=INTEGER},
+      </if>
+      <if test="approveState != null" >
+        approve_state = #{approveState,jdbcType=INTEGER},
+      </if>
+      <if test="whoCheck != null" >
+        who_check = #{whoCheck,jdbcType=INTEGER},
+      </if>
+      <if test="storeNumm != null" >
+        store_numm = #{storeNumm,jdbcType=INTEGER},
+      </if>
+      <if test="bankNumone != null" >
+        bank_numOne = #{bankNumone,jdbcType=VARCHAR},
+      </if>
+      <if test="bankNumtwo != null" >
+        bank_numTwo = #{bankNumtwo,jdbcType=VARCHAR},
+      </if>
+      <if test="capitalId != null" >
+        capital_id = #{capitalId,jdbcType=INTEGER},
+      </if>
+      <if test="cityId != null" >
+        city_id = #{cityId,jdbcType=INTEGER},
+      </if>
+      <if test="districtId != null" >
+        district_id = #{districtId,jdbcType=INTEGER},
+      </if>
+      <if test="createdDate != null" >
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedDate != null" >
+        updated_date = #{updatedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="whetherSelf != null" >
+        whether_self = #{whetherSelf,jdbcType=INTEGER},
+      </if>
+      <if test="payBank != null" >
+        pay_bank = #{payBank,jdbcType=INTEGER},
+      </if>
+      <if test="paySubbranchBank != null" >
+        pay_subbranch_bank = #{paySubbranchBank,jdbcType=VARCHAR},
+      </if>
+      <if test="payPersonName != null" >
+        pay_person_name = #{payPersonName,jdbcType=VARCHAR},
+      </if>
+      <if test="payAlipayNum != null" >
+        pay_alipay_num = #{payAlipayNum,jdbcType=VARCHAR},
+      </if>
+      <if test="possNum != null" >
+        poss_num = #{possNum,jdbcType=VARCHAR},
+      </if>
+      <if test="whetherStartApply != null" >
+        whether_start_apply = #{whetherStartApply,jdbcType=INTEGER},
+      </if>
+      <if test="payBankName != null" >
+        pay_bank_name = #{payBankName,jdbcType=VARCHAR},
+      </if>
+      <if test="contractAmount != null" >
+        contract_Amount = #{contractAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="payBankCode != null" >
+        pay_bank_code = #{payBankCode,jdbcType=VARCHAR},
+      </if>
 		</where>
   </select>
   
