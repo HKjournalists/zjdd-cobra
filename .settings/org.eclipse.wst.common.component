@@ -2,8 +2,6 @@
     <wb-module deploy-name="zaijiadd-app">
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/res"/>
         <property name="context-root" value="cobra"/>
         <property name="java-output-path" value="/cobra/target/classes"/>
     </wb-module>
