@@ -147,6 +147,7 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 				return resultMap;
 			case 1://开户成功
 				map.put("status", 1);
+				map.put("type", 1);
 				map.put("addressAuditStatus", 1);
 				map.put("applicant", map.get("userId"));
 				resultMap.put("data", this.storeInfoDao.selectByApplicant(map));
@@ -256,13 +257,15 @@ public class StoreInfoServiceImpl implements StoreInfoService {
 			resultMap.put("total", this.storeInfoDao.approvalCount(map));
 			return resultMap;
 		} else if(type == 2){ // 图片未审批
-			map.put("status", 2);
+			//map.put("status", 2);
+			map.put("imgsAuditStatus", 0);
 			resultMap.put("data", this.storeInfoDao.getShopApproval(map));
 			resultMap.put("total", this.storeInfoDao.approvalShopCount(map));
 			return resultMap;
 		} else {
-			map.put("status", 3);
+			//map.put("status", 3);
 			map.put("imgsApprover", map.get("userId"));
+			map.put("imgsAuditStatus", 1);
 			resultMap.put("data", this.storeInfoDao.getShopApproval(map));
 			resultMap.put("total", this.storeInfoDao.approvalShopCount(map));
 			return resultMap;

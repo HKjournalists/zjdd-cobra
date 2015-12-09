@@ -79,14 +79,14 @@ public class AreaServiceImpl implements AreaService {
 			List<City> cityList = this.cityMapper.selectCityByID(cityId);
 			if(cityList != null && cityList.size() > 0) {
 				City city = cityList.get(0);
-				city.setAlreadySoldNum(city.getAlreadySoldNum() + num);
+				city.setAlreadySoldNum(city.getAlreadySoldNum() == null ? 0:city.getAlreadySoldNum() + num);
 				this.cityMapper.updateByPrimaryKeySelective(city);
 			}
 		} else {
 			List<Country> countryList = this.countryMapper.selectByCounryId(countryId);
 			if(countryList != null && countryList.size() > 0) {
 				Country country = countryList.get(0);
-				country.setAlreadySoldNum(country.getAlreadySoldNum() + num);
+				country.setAlreadySoldNum(country.getAlreadySoldNum() == null ? 0 : country.getAlreadySoldNum() + num);
 				this.countryMapper.updateByPrimaryKeySelective(country);
 			}
 		}

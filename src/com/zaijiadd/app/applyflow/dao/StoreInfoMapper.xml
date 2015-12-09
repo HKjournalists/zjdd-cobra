@@ -74,6 +74,9 @@
 	<if test="status != null" >
         and status = #{status,jdbcType=INTEGER}
      </if>
+     <if test="type != null" >
+        or status =3 or status=2
+     </if>
      <if test="addressAuditStatus != null" >
         and address_audit_status = #{addressAuditStatus,jdbcType=INTEGER}
      </if>
@@ -95,6 +98,9 @@
 	where 1=1 and is_history=0
 	<if test="status != null" >
         and status = #{status,jdbcType=INTEGER}
+     </if>
+     <if test="type != null" >
+        or status =3 or status=2
      </if>
      <if test="addressAuditStatus != null" >
         and address_audit_status = #{addressAuditStatus,jdbcType=INTEGER}
@@ -233,33 +239,33 @@
         	and t3.imgs_approver = #{imgsApprover,jdbcType=INTEGER}
      </if>
      
-     <if test="imgsAuditStatus != null" >
-        and t3.imgs_audit_status = #{imgsAuditStatus,jdbcType=INTEGER}
+     <if test="imgsAuditStatus == 0" >
+        and t3.imgs_audit_status =0
+     </if>
+     
+     <if test="imgsAuditStatus == 1" >
+        and t3.imgs_audit_status !=0
      </if>
        order by application_time desc
 			limit #{start,jdbcType=INTEGER}, #{end}
   </select>
   
    <select id="approvalShopCount" resultType="Integer" parameterType="map" >
-    select  count(t1.store_id) from store_info t1  
+    select  count(1) from shop_apply t1  
 	where 1=1
-	<if test="status != null" >
-        and status = #{status,jdbcType=INTEGER}
-     </if>
-     <if test="addressAuditStatus != null" >
-        and address_audit_status = #{addressAuditStatus,jdbcType=INTEGER}
-     </if>
-     
-     <if test="addressApprover != null" >
-        	and address_approver = #{addressApprover,jdbcType=INTEGER}
-     </if>
+	
+    
      
      <if test="imgsApprover != null" >
         	and imgs_approver = #{imgsApprover,jdbcType=INTEGER}
      </if>
      
-     <if test="imgsAuditStatus != null" >
-        and imgs_audit_status = #{imgsAuditStatus,jdbcType=INTEGER}
+     <if test="imgsAuditStatus == 0" >
+        and imgs_audit_status =0
+     </if>
+     
+     <if test="imgsAuditStatus == 1" >
+        and imgs_audit_status !=0
      </if>
     
   </select>

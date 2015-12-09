@@ -1,5 +1,7 @@
 package com.zaijiadd.app.applyflow.entity;
 
+import java.math.BigDecimal;
+
 public class Country {
     private Integer countryId;
 
@@ -9,13 +11,15 @@ public class Country {
     private Integer totalDealership;
 	private Integer alreadySoldNum;
 	private Integer depositNum;
-	private int countryMoney;
+	private BigDecimal countryMoney;
 
-    public int getCountryMoney() {
+    
+
+	public BigDecimal getCountryMoney() {
 		return countryMoney;
 	}
 
-	public void setCountryMoney(int countryMoney) {
+	public void setCountryMoney(BigDecimal countryMoney) {
 		this.countryMoney = countryMoney;
 	}
 
