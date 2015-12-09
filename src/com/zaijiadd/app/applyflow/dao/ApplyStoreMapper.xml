@@ -158,136 +158,136 @@
 		 from cobra_apply_store
     	<where>
 	  <if test="applyType != null" >
-        apply_type = #{applyType,jdbcType=INTEGER},
+        apply_type = #{applyType,jdbcType=INTEGER}
       </if>
       <if test="applyPersonType != null" >
-        apply_person_type = #{applyPersonType,jdbcType=INTEGER},
+        and apply_person_type = #{applyPersonType,jdbcType=INTEGER}
       </if>
       <if test="capital != null" >
-        capital = #{capital,jdbcType=VARCHAR},
+        and capital = #{capital,jdbcType=VARCHAR}
       </if>
       <if test="city != null" >
-        city = #{city,jdbcType=VARCHAR},
+       and city = #{city,jdbcType=VARCHAR}
       </if>
       <if test="district != null" >
-        district = #{district,jdbcType=VARCHAR},
+       and district = #{district,jdbcType=VARCHAR}
       </if>
       <if test="agencyType != null" >
-        agency_type = #{agencyType,jdbcType=INTEGER},
+        and agency_type = #{agencyType,jdbcType=INTEGER}
       </if>
       <if test="agencyTime != null" >
-        agency_time = #{agencyTime,jdbcType=INTEGER},
+        and agency_time = #{agencyTime,jdbcType=INTEGER}
       </if>
       <if test="dealershipNum != null" >
-        dealership_num = #{dealershipNum,jdbcType=INTEGER},
+       and dealership_num = #{dealershipNum,jdbcType=INTEGER}
       </if>
       <if test="applyName != null" >
-        apply_name = #{applyName,jdbcType=VARCHAR},
+        and apply_name = #{applyName,jdbcType=VARCHAR}
       </if>
       <if test="personNum != null" >
-        person_num = #{personNum,jdbcType=VARCHAR},
+        and person_num = #{personNum,jdbcType=VARCHAR}
       </if>
       <if test="phone != null" >
-        phone = #{phone,jdbcType=VARCHAR},
+        and phone = #{phone,jdbcType=VARCHAR}
       </if>
       <if test="postAddr != null" >
-        post_addr = #{postAddr,jdbcType=VARCHAR},
+       and post_addr = #{postAddr,jdbcType=VARCHAR}
       </if>
       <if test="maiAddr != null" >
-        mai_addr = #{maiAddr,jdbcType=VARCHAR},
+        and mai_addr = #{maiAddr,jdbcType=VARCHAR}
       </if>
       <if test="urgencyPerson != null" >
-        urgency_person = #{urgencyPerson,jdbcType=VARCHAR},
+        and urgency_person = #{urgencyPerson,jdbcType=VARCHAR}
       </if>
       <if test="urgencyPhone != null" >
-        urgency_phone = #{urgencyPhone,jdbcType=VARCHAR},
+        and urgency_phone = #{urgencyPhone,jdbcType=VARCHAR}
       </if>
       <if test="companyname != null" >
-        CompanyName = #{companyname,jdbcType=VARCHAR},
+       and CompanyName = #{companyname,jdbcType=VARCHAR}
       </if>
       <if test="payWay != null" >
-        pay_way = #{payWay,jdbcType=INTEGER},
+       and pay_way = #{payWay,jdbcType=INTEGER}
       </if>
       <if test="paymoneyType != null" >
-        paymoney_type = #{paymoneyType,jdbcType=INTEGER},
+        and paymoney_type = #{paymoneyType,jdbcType=INTEGER}
       </if>
       <if test="paidMoney != null" >
-        paid_money = #{paidMoney,jdbcType=DECIMAL},
+       and paid_money = #{paidMoney,jdbcType=DECIMAL}
       </if>
       <if test="needPaymoney != null" >
-        need_paymoney = #{needPaymoney,jdbcType=DECIMAL},
+        and need_paymoney = #{needPaymoney,jdbcType=DECIMAL}
       </if>
       <if test="yjsUserId != null" >
-        yjs_user_id = #{yjsUserId,jdbcType=INTEGER},
+       and yjs_user_id = #{yjsUserId,jdbcType=INTEGER}
       </if>
       <if test="financeCheck != null" >
-        finance_check = #{financeCheck,jdbcType=INTEGER},
+       and finance_check = #{financeCheck,jdbcType=INTEGER}
       </if>
       <if test="managersCheck != null" >
-        managers_check = #{managersCheck,jdbcType=INTEGER},
+       and managers_check = #{managersCheck,jdbcType=INTEGER}
       </if>
       <if test="applyStatus != null" >
-        apply_status = #{applyStatus,jdbcType=INTEGER},
+        and apply_status = #{applyStatus,jdbcType=INTEGER}
       </if>
       <if test="approveState != null" >
-        approve_state = #{approveState,jdbcType=INTEGER},
+       and approve_state = #{approveState,jdbcType=INTEGER}
       </if>
       <if test="whoCheck != null" >
-        who_check = #{whoCheck,jdbcType=INTEGER},
+       and who_check = #{whoCheck,jdbcType=INTEGER}
       </if>
       <if test="storeNumm != null" >
-        store_numm = #{storeNumm,jdbcType=INTEGER},
+      and  store_numm = #{storeNumm,jdbcType=INTEGER}
       </if>
       <if test="bankNumone != null" >
-        bank_numOne = #{bankNumone,jdbcType=VARCHAR},
+      and  bank_numOne = #{bankNumone,jdbcType=VARCHAR}
       </if>
       <if test="bankNumtwo != null" >
-        bank_numTwo = #{bankNumtwo,jdbcType=VARCHAR},
+       and bank_numTwo = #{bankNumtwo,jdbcType=VARCHAR}
       </if>
       <if test="capitalId != null" >
-        capital_id = #{capitalId,jdbcType=INTEGER},
+       and capital_id = #{capitalId,jdbcType=INTEGER}
       </if>
       <if test="cityId != null" >
-        city_id = #{cityId,jdbcType=INTEGER},
+        and city_id = #{cityId,jdbcType=INTEGER}
       </if>
       <if test="districtId != null" >
-        district_id = #{districtId,jdbcType=INTEGER},
+        and district_id = #{districtId,jdbcType=INTEGER}
       </if>
       <if test="createdDate != null" >
-        created_date = #{createdDate,jdbcType=TIMESTAMP},
+        and created_date = #{createdDate,jdbcType=TIMESTAMP}
       </if>
       <if test="updatedDate != null" >
-        updated_date = #{updatedDate,jdbcType=TIMESTAMP},
+        and updated_date = #{updatedDate,jdbcType=TIMESTAMP}
       </if>
       <if test="whetherSelf != null" >
-        whether_self = #{whetherSelf,jdbcType=INTEGER},
+        and whether_self = #{whetherSelf,jdbcType=INTEGER}
       </if>
       <if test="payBank != null" >
-        pay_bank = #{payBank,jdbcType=INTEGER},
+        and pay_bank = #{payBank,jdbcType=INTEGER}
       </if>
       <if test="paySubbranchBank != null" >
-        pay_subbranch_bank = #{paySubbranchBank,jdbcType=VARCHAR},
+       and pay_subbranch_bank = #{paySubbranchBank,jdbcType=VARCHAR}
       </if>
       <if test="payPersonName != null" >
-        pay_person_name = #{payPersonName,jdbcType=VARCHAR},
+       and pay_person_name = #{payPersonName,jdbcType=VARCHAR}
       </if>
       <if test="payAlipayNum != null" >
-        pay_alipay_num = #{payAlipayNum,jdbcType=VARCHAR},
+         and pay_alipay_num = #{payAlipayNum,jdbcType=VARCHAR}
       </if>
       <if test="possNum != null" >
-        poss_num = #{possNum,jdbcType=VARCHAR},
+       and poss_num = #{possNum,jdbcType=VARCHAR}
       </if>
       <if test="whetherStartApply != null" >
-        whether_start_apply = #{whetherStartApply,jdbcType=INTEGER},
+       and whether_start_apply = #{whetherStartApply,jdbcType=INTEGER}
       </if>
       <if test="payBankName != null" >
-        pay_bank_name = #{payBankName,jdbcType=VARCHAR},
+      and  pay_bank_name = #{payBankName,jdbcType=VARCHAR}
       </if>
       <if test="contractAmount != null" >
-        contract_Amount = #{contractAmount,jdbcType=DECIMAL},
+       and contract_Amount = #{contractAmount,jdbcType=DECIMAL}
       </if>
       <if test="payBankCode != null" >
-        pay_bank_code = #{payBankCode,jdbcType=VARCHAR},
+       and  pay_bank_code = #{payBankCode,jdbcType=VARCHAR}
       </if>
 		</where>
   </select>
