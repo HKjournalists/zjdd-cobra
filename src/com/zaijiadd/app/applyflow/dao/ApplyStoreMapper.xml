@@ -552,6 +552,9 @@
       <if test="whetherStartApply != null" >
         whether_start_apply = #{whetherStartApply,jdbcType=INTEGER},
       </if>
+      <if test="roleApprove != null" >
+        role_approve = #{roleApprove,jdbcType=INTEGER},
+      </if>
     </set>
     where apply_store_id = #{applyStoreId,jdbcType=INTEGER}
   </update>
