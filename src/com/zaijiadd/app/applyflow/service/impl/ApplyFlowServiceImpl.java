@@ -151,7 +151,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 
 				if (personPaymoneyCount.compareTo(needPaymoneyCount) < 0) {// 没有支付全额
 					UserInfoEntity leader = systemUserService.getLeader(applyStore.getYjsUserId());
-					// 实际付的金额比应收的金额小，那么给主管审批
+					// 实际付的金额比应收的金额小，那么给经理审批
 					applyStore.setWhoCheck(leader.getUserId());
 					applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_NO);//
 					// 没有发起收款申请

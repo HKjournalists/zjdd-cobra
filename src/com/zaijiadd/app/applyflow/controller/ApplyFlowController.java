@@ -417,6 +417,11 @@ public class ApplyFlowController {
 
 		Integer applyStoreId = jsonRequest.getInteger("applyStoreId");
 		Map<String, Object> applyStoreMap = applyFlowService.queryApplyStoreDetails(applyStoreId);
+		Integer roleApprove = (java.lang.Integer) applyStoreMap.get("roleApprove");
+		if (roleApprove != null) {
+			applyStoreMap.put("whoCheck", roleApprove);
+		}
+
 		applyStoreMapDateToString(applyStoreMap);
 		param.put("result", applyStoreMap);
 		return ContainerUtils.buildResSuccessMap(param);
