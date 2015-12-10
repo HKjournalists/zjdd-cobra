@@ -5,6 +5,7 @@
 
 package com.zaijiadd.app.applyflow.controller;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -416,6 +417,11 @@ public class ApplyFlowController {
 
 		Integer applyStoreId = jsonRequest.getInteger("applyStoreId");
 		Map<String, Object> applyStoreMap = applyFlowService.queryApplyStoreDetails(applyStoreId);
+		Integer roleApprove = (java.lang.Integer) applyStoreMap.get("roleApprove");
+		if (roleApprove != null) {
+			applyStoreMap.put("whoCheck", roleApprove);
+		}
+
 		applyStoreMapDateToString(applyStoreMap);
 		param.put("result", applyStoreMap);
 		return ContainerUtils.buildResSuccessMap(param);
@@ -503,9 +509,9 @@ public class ApplyFlowController {
 
 		} else if (ConstantsRole.ROLE_FINANCE.equals(roleId)) {
 			param.put("roleApprove", userInfoEntity.getRoleId());
-
+			param.put("whetherStartApply", ConstantStorePower.WHETHER_STARTAPPLY_YES);
 		}
-		param.put("whetherStartApply", ConstantStorePower.WHETHER_STARTAPPLY_YES);
+
 		param.put("applyStatus", ConstantStorePower.apply_state_ready);
 
 		List<Map<String, Object>> applyStoreMap = applyFlowService.queryRoleApproveStoreTry(param);
@@ -610,21 +616,26 @@ public class ApplyFlowController {
 			Integer applyStatus = jsonRequest.getInteger("applyStatus");
 			param.put("cityId", cityId);
 			param.put("districtId", districtId);
-			param.put("applyStatus", applyStatus);
+			param.put("applyStatus", ConstantStorePower.apply_state_succ);
 
 			Map<String, Object> findCitySellInfo = areaService.findCitySellInfo(cityId, districtId);
 			BigDecimal money = (BigDecimal) findCitySellInfo.get("money");
-			BigDecimal laveNum = (BigDecimal) findCitySellInfo.get("laveNum");// 可以用的
-			BigDecimal totalDealership = (BigDecimal) findCitySellInfo.get("total");// 总共的
-
-			BigDecimal dealershipAble = new BigDecimal(0);// 用户可用的
+			Integer laveNum = (Integer) findCitySellInfo.get("laveNum");// 可以用的
+			Integer totalDealership = (Integer) findCitySellInfo.get("total");// 总共的
 			// 查询提交了的申请单,待申请中的
 			List<Map<String, Object>> applyStoreOrderMap = applyFlowService.queryApplyDealershipNum(param);
 			for (Map<String, Object> map : applyStoreOrderMap) {
-				BigDecimal dealershipNum = (BigDecimal) map.get("dealershipNum");
-				dealershipAble = laveNum.subtract(dealershipNum);
+				Integer dealershipNum = (Integer) map.get("dealershipNum");
+				if (laveNum != null && dealershipNum != null) {
+					laveNum = laveNum - dealershipNum;
+				}
+				if (laveNum < 0) {
+					laveNum = 0;
+					break;
+				}
+
 			}
-			param.put("dealershipAble", dealershipAble);
+			param.put("dealershipAble", laveNum);
 			param.put("totalDealership", totalDealership);
 			return ContainerUtils.buildResSuccessMap(param);
 		} catch (Exception e) {
@@ -642,11 +653,33 @@ public class ApplyFlowController {
 	@RequestMapping(value = "/updateApplyStore", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> updateApplyStore(HttpServletRequest request) {
-		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
-		Map<String, Object> param = new HashMap<String, Object>();
-		ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
-		Integer applyStoreId = applyFlowService.updateApplyStore(applyStore);
-		return ContainerUtils.buildResSuccessMap(param);
+
+		try {
+			JSONObject jsonRequest = ParseUtils.loadJsonPostRequest(request);
+			Map<String, Object> param = new HashMap<String, Object>();
+			ApplyStore applyStore = jsonToaddApplyStore(jsonRequest);
+
+			ApplyStore applyStore2 = applyFlowService.selectByAppStoreId(applyStore.getApplyStoreId());// 老的记录
+			Integer applyStatus = applyStore2.getApplyStatus();
+			Integer managersCheck = applyStore2.getManagersCheck();
+			if (ConstantStorePower.apply_state_fail.equals(applyStatus)
+					&& (ConstantStorePower.apply_state_fail.equals(managersCheck))) {// 被主管拒绝
+				String possNum = applyFlowService.handleUpdate(applyStore);
+				param.put("possNum", possNum);
+
+			} else {
+				Integer applyStoreId = applyFlowService.updateApplyStore(applyStore);
+			}
+
+			return ContainerUtils.buildResSuccessMap(param);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO 尚未处理异常
+			e.printStackTrace();
+		}
+		return null;
+
 	}
 
 	/**
