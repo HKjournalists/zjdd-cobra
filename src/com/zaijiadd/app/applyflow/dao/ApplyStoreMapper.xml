@@ -63,7 +63,7 @@
      whether_self as whetherSelf , pay_bank as payBank, pay_subbranch_bank as paySubbranchBank, 
      pay_person_name as payPersonName, pay_alipay_num as payAlipayNum, 
     poss_num as possNum , whether_start_apply as whetherStartApply,pay_bank_name as payBankName,contract_Amount as contractAmount,
-    pay_bank_code as payBankCode
+    pay_bank_code as payBankCode,role_approve as roleApprove
   </sql>
    <sql id="Base_Column_List_two" >
     apply_store_id, apply_type, apply_person_type, capital, city, district, agency_type, 
@@ -123,16 +123,16 @@
   
     <!-- 查询待申请的经销权个数  注意是未成功的 -->
   <select id="queryApplyDealershipNum" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
-    select <include refid="Base_Column_order_state_List" /> from cobra_apply_store
+    select <include refid="Base_Column_queryApplyDealershipNum_List" /> from cobra_apply_store
     	<where>
 		<if test="cityId != null" >
-		city_id = #{cityId,jdbcType=INTEGER},
+		city_id = #{cityId,jdbcType=INTEGER}
       </if>
       <if test="districtId != null" >
-        district_id = #{districtId,jdbcType=INTEGER},
+       and  district_id = #{districtId,jdbcType=INTEGER}
       </if>
 	   <if test="applyStatus != null" >
-        apply_status = #{applyStatus,jdbcType=INTEGER},
+        and apply_status = #{applyStatus,jdbcType=INTEGER}
       </if>
 		</where>
   </select>

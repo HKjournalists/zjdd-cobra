@@ -39,7 +39,8 @@ public class Tets {
 		// testTime1();
 		// json2Map();
 		// testBigDecimal2();
-		testInteger();
+		// testInteger();
+		testBigDecimal2();
 	}
 
 	/**
