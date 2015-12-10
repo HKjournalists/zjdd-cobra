@@ -71,11 +71,11 @@
     from store_info t1  
     LEFT JOIN  cobra_apply_store_detail t2 ON t1.apply_store_id=t2.apply_store_detail_id 
 	where 1=1 and is_history=0
-	<if test="status != null" >
+	<if test="status != null and type == null" >
         and status = #{status,jdbcType=INTEGER}
      </if>
      <if test="type != null" >
-        or status =3 or status=2
+       	and status in(1,2,3)
      </if>
      <if test="addressAuditStatus != null" >
         and address_audit_status = #{addressAuditStatus,jdbcType=INTEGER}
