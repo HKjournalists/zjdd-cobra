@@ -278,14 +278,14 @@
   	<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="storeId">
 		SELECT LAST_INSERT_ID() AS id
 	</selectKey>
-    insert into store_info (store_id, capital, city, 
+    insert into store_info (capital, city, 
       district, apply_store_id, apply_name, 
       person_num, phone, street, 
       detail_address, village, status, capital_name, city_name,
       district_name, street_name, applicant, application_time, is_history
       
       )
-    values (#{storeId,jdbcType=BIGINT}, #{capital,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+    values (#{capital,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
       #{district,jdbcType=VARCHAR}, #{applyStoreId,jdbcType=BIGINT}, #{applyName,jdbcType=VARCHAR}, 
       #{personNum,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{street,jdbcType=VARCHAR}, 
       #{detailAddress,jdbcType=VARCHAR}, #{village,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},
