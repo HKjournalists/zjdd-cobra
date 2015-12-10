@@ -153,7 +153,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 					UserInfoEntity leader = systemUserService.getLeader(applyStore.getYjsUserId());
 					// 实际付的金额比应收的金额小，那么给主管审批
 					applyStore.setWhoCheck(leader.getUserId());
-					applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_YES);//
+					applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_NO);//
 					// 没有发起收款申请
 				} else {// 实际付的金额比应收的金额 相等，给财务
 					applyStore.setRoleApprove(ConstantsRole.ROLE_FINANCE);
@@ -168,7 +168,7 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 					UserInfoEntity leader = systemUserService.getLeader(applyStore.getYjsUserId());
 					// 实际付的金额比应收的金额小，那么给主管审批
 					applyStore.setWhoCheck(leader.getUserId());
-					applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_YES);//
+					applyStore.setWhetherStartApply(ConstantStorePower.WHETHER_STARTAPPLY_NO);//
 					// 没有发起收款申请
 				} else {// 实际付的金额比应收的金额 相等，给财务
 					applyStore.setRoleApprove(ConstantsRole.ROLE_FINANCE);
@@ -218,7 +218,16 @@ public class ApplyFlowServiceImpl implements ApplyFlowService {
 	 */
 
 	BigDecimal getNeedPaymoneyCount(ApplyStore applyStore) {
-		return ConstantStorePower.STORE_MONEY;
+		BigDecimal needPaymoneyCount = new BigDecimal(0);
+		Integer storeNumm = applyStore.getStoreNumm();
+		if (storeNumm != null) {
+			if (storeNumm == 0) {
+				storeNumm = 1;
+			}
+			BigDecimal storeNummBigDecimal = new BigDecimal(storeNumm);
+			needPaymoneyCount = storeNummBigDecimal.multiply(ConstantStorePower.STORE_MONEY);// 每个城市的价格X个数，需支付的
+		}
+		return needPaymoneyCount;
 	}
 
 	/**

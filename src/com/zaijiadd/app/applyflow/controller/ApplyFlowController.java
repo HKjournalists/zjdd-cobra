@@ -504,9 +504,9 @@ public class ApplyFlowController {
 
 		} else if (ConstantsRole.ROLE_FINANCE.equals(roleId)) {
 			param.put("roleApprove", userInfoEntity.getRoleId());
-
+			param.put("whetherStartApply", ConstantStorePower.WHETHER_STARTAPPLY_YES);
 		}
-		param.put("whetherStartApply", ConstantStorePower.WHETHER_STARTAPPLY_YES);
+
 		param.put("applyStatus", ConstantStorePower.apply_state_ready);
 
 		List<Map<String, Object>> applyStoreMap = applyFlowService.queryRoleApproveStoreTry(param);
