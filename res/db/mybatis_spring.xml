@@ -25,6 +25,11 @@
 		<property name="configLocation" value="classpath:orm/sqlMapConfig.xml"></property>
 		<property name="dataSource" ref="dataSource" />
 	</bean>
+	
+	<bean id="autoAllotFlowDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.zaijiadd.app.dataquery.dao.AutoAllotFlowDAO" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
 
 	<bean id="yjsReqMsgDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="com.zaijiadd.app.dataquery.dao.YjsReqMsgDao" />

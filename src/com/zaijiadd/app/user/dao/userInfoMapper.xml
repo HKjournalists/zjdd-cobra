@@ -19,6 +19,27 @@
 		where
 			user_id = #{userId}
 	</select>
+	<select id="getUserInfoByLeaderOrg" parameterType="java.lang.Integer" resultType="userInfoEntity">
+		select
+			user_id userId,
+			mobile mobile,
+			realname realname,
+			password password,
+			email email,
+			roleid roleId,
+			isleader isLeader,
+			orgid orgId,
+			landline_id landlineId,
+			job_id jobId
+		from
+			yjs_user
+		where
+			orgid = #{orgId}
+		and
+			roleid = 2
+		and
+			isleader = 1
+	</select>
 	
 	<select id="getLeader" parameterType="map" resultType="userInfoEntity">
 		select

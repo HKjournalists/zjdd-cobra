@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zaijiadd.app.dataquery.dao.AutoAllotFlowDAO">
+	
+	<insert id="insertUserAutoAllotSetting" parameterType="userAutoAllotSettingEntity">
+		insert into
+			user_auto_allot_setting
+			( user_id, allot_user_id, sort_num, status, batch_num, created_date )
+		values
+			( #{userId}, #{allotUserId}, #{sortNum}, #{status}, #{batchNum}, now() )
+	</insert>
+	
+	<select id="getAutoAllotUserList" resultType="java.lang.Integer">
+		select
+			user_id
+		from
+			yjs_user
+		where
+			auto_allot_status = 1
+	</select>
+	
+	<select id="getUserAutoAllotSettingList" parameterType="java.lang.Integer" resultType="userAutoAllotSettingEntity">
+		select
+			auto_allot_setting_id 	autoAllotSettingId,
+			user_id					userId,
+			allot_user_id			allotUserId,
+			sort_num				sortNum,
+			batch_num				batchNum
+		from
+			user_auto_allot_setting
+		where
+			status = 1
+		and
+			batch_num = ( select batch_num from user_auto_allot_setting where user_id = #{userId} order by batch_num desc limit 1 )
+		order by
+			sort_num
+	</select>
+
+</mapper>

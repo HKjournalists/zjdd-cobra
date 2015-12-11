@@ -39,6 +39,10 @@ public interface DataQueryService {
 	
 	public Boolean addMsg( YjsReqMsgDTO dto );
 	
+	public Boolean recoverMsg( Integer userId, Integer msgId );
+	
+	public Boolean isMobileExist( String mobile );
+	
 //	List<Map<String, Object>> externalDataImport( Map<String, Object> param );
 	
 }

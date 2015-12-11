@@ -24,6 +24,7 @@ import com.zaijiadd.app.common.utils.ParseUtils;
 import com.zaijiadd.app.dataquery.dto.YjsReqMsgDTO;
 import com.zaijiadd.app.dataquery.entity.AllotLogEntity;
 import com.zaijiadd.app.dataquery.service.AllotLogService;
+import com.zaijiadd.app.dataquery.service.AutoAllotFlowService;
 import com.zaijiadd.app.dataquery.service.DataChangeLogService;
 import com.zaijiadd.app.dataquery.service.DataQueryService;
 import com.zaijiadd.app.dataquery.utils.DataTransUtils;
@@ -41,6 +42,9 @@ public class DataQueryController {
 	
 	@Autowired
 	private DataChangeLogService dataChangeLogService;
+	
+	@Autowired
+	private AutoAllotFlowService autoAllotFlowService;
 
 	@RequestMapping ( value = "/dataList", method = RequestMethod.POST )
 	@ResponseBody
@@ -62,6 +66,7 @@ public class DataQueryController {
 		String endDate = jsonRequest.getString( "endDate" );
 		String queryDate = jsonRequest.getString( "queryDate" );
 		Integer memberId = jsonRequest.getInteger( "memberId" );
+		Integer orgId = jsonRequest.getInteger( "orgId" );
 		
 		if ( pageCount == null || pageCount == 0 ) {
 			pageCount = 20;
@@ -82,10 +87,17 @@ public class DataQueryController {
 		param.put( "endDate", endDate );
 		param.put( "queryDate", queryDate );
 		param.put( "memberId", memberId );
+		param.put( "orgId", orgId );
 
 		Map<String, Object> user = service.userInfo( param );
 		String roleid = user.get( "roleid" ).toString();
 		Integer dataCount = 0;
+		
+		if ( statusType != null || hzlx != null || searchStr != null || beginDate != null || endDate != null || memberId != null || orgId != null ) {
+			uid = null;
+			param.put( "uid", null );
+		}
+		
 		if ( "0".equals( roleid ) ) {// 管理员
 			param.put( "cuser", null );
 			resData = service.queryReqMsg( param );
@@ -283,6 +295,19 @@ public class DataQueryController {
 		res.put( "roleid", user.get( "roleid" ) );
 		res.put( "isleader", user.get( "isleader" ) );
 		res.put( "orgid", user.get( "orgid" ) );
+		
+		Integer autoAllotStatus = autoAllotFlowService.QueryAutoAllotStatus( Integer.parseInt( String.valueOf( user.get( "id" ) ) ) );
+		Integer autoAllotAuth = 0;
+		
+		String roleId = user.get( "roleid" ) + "";
+		Integer allotAuth = 1;
+		if ( roleId != null && !roleId.equals( "" ) && roleId.equals( "0" ) ) {
+			allotAuth = 0;
+		}
+		
+		res.put( "allotAuth", allotAuth );
+		res.put( "autoAllotStatus", autoAllotStatus );
+		res.put( "autoAllotAuth", autoAllotAuth );
 
 		return ContainerUtils.buildResSuccessMap( res );
 
@@ -393,8 +418,18 @@ public class DataQueryController {
 		
 		YjsReqMsgDTO yjsReqMsgDto = DataTransUtils.transViewmodelToDtoByYjsReqMsg( jsonRequest );
 		
+		if ( yjsReqMsgDto.getMobile() != null && !yjsReqMsgDto.getMobile().equals( "" ) ) {
+			if ( service.isMobileExist( yjsReqMsgDto.getMobile() ) ) {
+				return ContainerUtils.buildHeadMap( param, 0, "用户已存在" );
+			}
+		}
+		
 		if ( yjsReqMsgDto.getCcity() == null ) {
 			yjsReqMsgDto.setCcity( 21 );
+		}
+		
+		if ( yjsReqMsgDto.getCoType() == -1 ) {
+			yjsReqMsgDto.setCoType( 2 );
 		}
 		
 		yjsReqMsgDto.setCreatedType( 2 );
@@ -407,6 +442,25 @@ public class DataQueryController {
 		}
 
 		return ContainerUtils.buildResSuccessMap( param );
+
+	}
+	
+	@RequestMapping ( value = "/recoveryMsg", method = RequestMethod.POST )
+	@ResponseBody
+	public Map<String, Object> recoveryMsg( HttpServletRequest request ) {
+
+		Map<String, Object> param = new HashMap<String, Object>();
+
+		JSONObject jsonRequest = ParseUtils.loadJsonPostRequest( request );
+		
+		Integer userId = jsonRequest.getInteger( "userId" );
+		Integer msgId = jsonRequest.getInteger( "msgId" );
+		
+		if ( service.recoverMsg( userId, msgId ) ) {
+			return ContainerUtils.buildResSuccessMap( param );
+		}
+
+		return ContainerUtils.buildResFailMap();
 
 	}
 

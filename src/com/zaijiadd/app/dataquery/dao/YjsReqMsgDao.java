@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.zaijiadd.app.dataquery.dto.YjsReqMsgDTO;
+import com.zaijiadd.app.dataquery.entity.CobraRepeatFlowEntity;
 
 public interface YjsReqMsgDao {
     
@@ -43,5 +44,25 @@ public interface YjsReqMsgDao {
     public void updatePhoneInfo( Map<String, Object> params );
     
     public void insertYjsReqMsg( YjsReqMsgDTO dto );
+    
+    public Integer getReqMsgIdByMobile( String mobile );
+    
+    public Integer insertCobraRepeatFlow( CobraRepeatFlowEntity repeatFlowEntity );
+    
+    public Integer recoveryMsg( Integer msgId );
+    
+    public Integer getChannelIdByUri( String uri );
+    
+    public Integer getUserRoleByUserId( Integer userId );
+    
+    public Integer recoveryMsgByCEO( Integer msgId );
+    
+    public Integer recoveryMsgByLeader( Integer msgId );
+    
+    public YjsReqMsgDTO getMsgInfoByMsgId( Integer msgId );
+    
+    public Integer updateAutoAllotStatus( Map<String, Object> params );
+    
+    public Integer queryAutoAllotStatus( Integer userId );
     
 }

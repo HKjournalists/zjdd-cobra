@@ -6,14 +6,22 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.zaijiadd.app.dataquery.dao.AllotLogDao;
+import com.zaijiadd.app.dataquery.dao.DataChangeLogDAO;
 import com.zaijiadd.app.dataquery.dao.YjsReqMsgDao;
 import com.zaijiadd.app.dataquery.dto.YjsReqMsgDTO;
+import com.zaijiadd.app.dataquery.entity.AllotLogEntity;
 import com.zaijiadd.app.dataquery.service.DataQueryService;
 
 public class DataQueryServiceImpl implements DataQueryService {
 	@Autowired
 	YjsReqMsgDao yjsReqMsgDao;
 	
+	@Autowired
+	private DataChangeLogDAO dataChangeLogDao;
+	
+	@Autowired
+	private AllotLogDao allotLogDao;
 
 	@Override
 	public List<Map<String, Object>> queryReqMsg( Map<String, Object> param ) {
@@ -107,6 +115,63 @@ public class DataQueryServiceImpl implements DataQueryService {
 		yjsReqMsgDao.insertYjsReqMsg( dto );
 		
 		return true;
+	}
+
+	@Override
+	public Boolean recoverMsg( Integer userId, Integer msgId ) {
+		
+		// 判断user的role
+		Integer roleId = yjsReqMsgDao.getUserRoleByUserId( userId );
+		Integer queryCount = 0;
+		Integer changeStatus = 0;
+//		YjsReqMsgDTO yjsReqMsgDto = yjsReqMsgDao.getMsgInfoByMsgId( msgId );
+		
+		if ( roleId == 1 ) {
+			// 回收至组外
+			queryCount = yjsReqMsgDao.recoveryMsgByCEO( msgId );
+			changeStatus = 0;
+		} else if ( roleId == 2 ) {
+			// 回收至组内
+			queryCount = yjsReqMsgDao.recoveryMsgByLeader( msgId );
+			changeStatus = 2;
+		} else {
+			return false;
+		}
+		
+		if ( queryCount <= 0 ) {
+			return false;
+		}
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put( "userId", userId );
+		params.put( "msgId", msgId );
+		params.put( "changeStatus", changeStatus );
+		queryCount = dataChangeLogDao.insertStatusChangeLog( params );
+		
+//		AllotLogEntity entity = new AllotLogEntity();
+//		entity.setAllotStatusTypeId( 9 );
+//		entity.setAllotUserId( userId );
+//		entity.setMsgId( msgId );
+//		entity.setIsGroupLeader( 0 );
+//		entity.setAllotToUserId( yjsReqMsgDto.getCuser() );
+//		allotLogDao.addAllotLog( entity );
+		
+		if ( queryCount >= 0 ) {
+			return true;
+		}
+		return false;
+		
+	}
+
+	@Override
+	public Boolean isMobileExist( String mobile ) {
+		
+		Integer msgId = yjsReqMsgDao.getReqMsgIdByMobile( mobile );
+		if ( msgId != null && msgId > 0 ) {
+			return true;
+		}
+		
+		return false;
+		
 	}
 
 }

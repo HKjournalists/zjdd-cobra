@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.zaijiadd.app.dataquery.dao.YjsReqMsgDao">
+
 	<select id="queryByParam" resultType="java.util.HashMap"
 		parameterType="java.util.HashMap">
 		select
@@ -29,9 +30,6 @@
 		<if test="cgroup!= null and cgroup!='' ">
 			and t.cgroup = #{cgroup,jdbcType=VARCHAR}
 		</if>
-		<if test="cuser != null and cuser !='' ">
-			and t.cuser = #{cuser,jdbcType=VARCHAR}
-		</if>
 		<if test="searchStr != null and searchStr != ''">
 			and ( name like CONCAT('%','${searchStr}','%' ) 
 			or phone like CONCAT('%','${searchStr}','%' ) 
@@ -51,7 +49,10 @@
 			and date_format( protim, '%Y%m%d' ) = #{queryDate}
 		</if>
 		<if test="memberId != null and memberId != ''">
-			and cuser = #{memberId}
+			and t.cuser = #{memberId}
+		</if>
+		<if test="cuser != null and cuser !='' ">
+			and t.cuser = #{cuser,jdbcType=VARCHAR}
 		</if>
 		<if test="uid != null and uid !=''">
 			or t.operator_user_id = #{uid}
@@ -59,6 +60,7 @@
 		order by protim desc
 		limit #{start,jdbcType=INTEGER}, #{end}
 	</select>
+	
 	<select id="queryByParamCount" resultType="java.lang.Integer"
 		parameterType="java.util.HashMap">
 		select
@@ -97,6 +99,9 @@
 		</if>
 		<if test="memberId != null and memberId != ''">
 			and cuser = #{memberId}
+		</if>
+		<if test="uid != null and uid !=''">
+			or operator_user_id = #{uid}
 		</if>
 		<if test="searchStr != null and searchStr != ''">
 			and ( name like CONCAT('%','${searchStr}','%' ) 
@@ -184,7 +189,7 @@
 
 	<select id="timeInfo" resultType="java.util.HashMap"
 		parameterType="java.util.HashMap">
-		select max(protim) protim from yjs_req_msg
+		select max(protim) protim from yjs_req_msg where created_type = 1
 	</select>
 	<select id="dataImport" resultType="java.util.HashMap"
 		parameterType="java.util.HashMap">
@@ -196,11 +201,11 @@
 	</select>
 	<insert id="dataInsert" parameterType="java.util.HashMap">
 		insert into
-		yjs_req_msg(cussrc,srcdtl,protim,phncnt,name,phone,email,wx,qq,city,custype,ccity,cgroup,cuser,status_type,salman,remark)
+		yjs_req_msg(cussrc,srcdtl,protim,phncnt,name,phone,email,wx,qq,city,custype,ccity,cgroup,cuser,status_type,salman,remark, channel_id)
 		values(#{cussrc,jdbcType=VARCHAR},#{srcdtl,jdbcType=VARCHAR},#{protim,jdbcType=VARCHAR},#{phncnt,jdbcType=VARCHAR},
 		#{name,jdbcType=VARCHAR},#{phone,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},#{wx,jdbcType=VARCHAR},
 		#{qq,jdbcType=VARCHAR},#{city,jdbcType=VARCHAR},#{custype,jdbcType=VARCHAR},#{ccity,jdbcType=VARCHAR},#{cgroup,jdbcType=VARCHAR},
-		#{cuser,jdbcType=VARCHAR},#{statusType,jdbcType=VARCHAR},#{salman,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR})
+		#{cuser,jdbcType=VARCHAR},#{statusType,jdbcType=VARCHAR},#{salman,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR}, #{channelId})
 	</insert>
 	
 	<select id="getStatusType" resultType="java.util.Map">
@@ -224,5 +229,78 @@
 		values
 		( #{channelId}, now(), #{cityId}, #{operatorUserId}, #{provinceId}, #{realname}, #{mobile}, #{wechat}, #{qq}, #{coType}, #{remark}, 0, #{ccity}, #{createdType} )
 	</insert>
+	
+	<select id="getReqMsgIdByMobile" parameterType="java.lang.String" resultType="java.lang.Integer">
+		select msgid from yjs_req_msg where phone = #{mobile} order by protim desc limit 1
+	</select>
+	
+	<insert id="insertCobraRepeatFlow" parameterType="repeatFlowEntity">
+		insert into cobra_repeat_flow( resource_channel, uri, created_at, name, mobile, email, wechat, qq, city, remark, created_type )
+		values(
+			#{resourceChannel}, #{uri}, #{createdAt}, #{name}, #{mobile}, #{email}, #{wechat}, #{qq}, #{city}, #{remark}, #{createdType} 
+		)
+	</insert>
+	
+	<update id="recoveryMsg" parameterType="java.lang.Integer">
+		update yjs_req_msg set status_type = 0, cgroup = null, cuser = null
+		where msgid = #{msgId}
+	</update>
+	<update id="recoveryMsgByCEO" parameterType="java.lang.Integer">
+		update yjs_req_msg set status_type = 0, cgroup = null, cuser = null
+		where msgid = #{msgId}
+	</update>
+	<update id="recoveryMsgByLeader" parameterType="java.lang.Integer">
+		update yjs_req_msg set status_type = 2, cuser = null
+		where msgid = #{msgId}
+	</update>
+	
+	<select id="getChannelIdByUri" parameterType="java.lang.String" resultType="java.lang.Integer">
+		SELECT
+			channel_id
+		FROM
+			cobra_channel_info
+		WHERE
+			instr(
+				#{uri},
+				ori_channel_field
+			) > 0
+		AND pre_channel_id = 0
+		LIMIT 1
+	</select>
+	<select id="getUserRoleByUserId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		select roleid
+		from
+			yjs_user
+		where
+			user_id = #{userId}
+	</select>
+	
+	<select id="getMsgInfoByMsgId" parameterType="java.lang.Integer" resultType="yjsReqMsgDto">
+		select
+			msgid msgId,
+			channel_id channelId,
+			ccity ccity,
+			cuser cuser
+		from
+			yjs_req_msg
+		where
+			msgid = #{msgId}
+	</select>
+	<update id="updateAutoAllotStatus" parameterType="java.util.Map">
+		update
+			yjs_user
+		set
+			auto_allot_status = #{updateStatus}
+		where
+			user_id = #{userId}
+	</update>
+	<select id="queryAutoAllotStatus" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		select
+			auto_allot_status
+		from
+			yjs_user
+		where
+			user_id = #{userId}
+	</select>
 	
 </mapper>

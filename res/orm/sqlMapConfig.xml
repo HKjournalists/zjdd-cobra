@@ -19,7 +19,9 @@
     </settings>
 
     <typeAliases>
+    	<typeAlias type="com.zaijiadd.app.dataquery.entity.UserAutoAllotSettingEntity" alias="userAutoAllotSettingEntity"/>
     	<typeAlias type="com.zaijiadd.app.dataquery.entity.YjsReqMsg" alias="yjsReqMsg"/>
+    	<typeAlias type="com.zaijiadd.app.dataquery.entity.CobraRepeatFlowEntity" alias="repeatFlowEntity"/>
     	<typeAlias type="com.zaijiadd.app.user.entity.UserInfoEntity" alias="userInfoEntity"/>
     	<typeAlias type="com.zaijiadd.app.user.entity.UserCallingDetailEntity" alias="userCallingDetailEntity"/>
     	<typeAlias type="com.zaijiadd.app.dataquery.entity.AllotLogEntity" alias="allotLogEntity"/>
@@ -37,6 +39,7 @@
     </typeAliases>
 
     <mappers>
+    	<mapper resource="com/zaijiadd/app/dataquery/dao/autoAllotFlowMapper.xml"/>
     	<mapper resource="com/zaijiadd/app/dataquery/dao/YjsReqMsgMapper.xml"/>
     	<mapper resource="com/zaijiadd/app/dataquery/dao/AllotLogMapper.xml"/>
     	<mapper resource="com/zaijiadd/app/user/dao/userInfoMapper.xml"/>

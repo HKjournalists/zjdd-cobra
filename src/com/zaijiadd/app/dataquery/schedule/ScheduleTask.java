@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.zaijiadd.app.applyflow.service.ApplyFlowService;
+import com.zaijiadd.app.common.service.ImportFlowService;
+import com.zaijiadd.app.dataquery.dao.YjsReqMsgDao;
 import com.zaijiadd.app.dataquery.service.DataQueryService;
 import com.zaijiadd.app.external.dao.ExternalDataDAO;
 
@@ -17,19 +19,25 @@ public class ScheduleTask {
 	private static Logger logger = LoggerFactory.getLogger(ScheduleTask.class);
 
 	@Autowired
+	private ImportFlowService importFlowService;
+	
+	@Autowired
 	private DataQueryService service;
 
 	@Autowired
 	private ExternalDataDAO externalDataDao;
+//	@Autowired
+//	private ApplyFlowService applyFlowService;
+	
 	@Autowired
-	private ApplyFlowService applyFlowService;
+	private YjsReqMsgDao yjsReqMsgDao;
 
 	public void dataImport() {
 
 		// logger.info( "数据定时导入... ..." );
 		// LogUtils.asyncLog( "定时任务同步流量数据" );
 
-		try {
+//		try {
 
 			Map<String, Object> param = new HashMap<String, Object>();
 			// 获取最新导入数据的时间，查询比其时间晚的所有数据，即为最新产生的数据
@@ -39,6 +47,9 @@ public class ScheduleTask {
 			for (Map<String, Object> map : resData) {
 				// 数据插入数据表
 				// LogUtils.asyncLog( "【asyn】同步数据" + map.get( "name" ) );
+				if ( !importFlowService.checkImportRepeatFlow( map ) ) {
+					continue;
+				}
 				param.put("cussrc", map.get("channel"));// 客户来源
 				param.put("srcdtl", map.get("uri"));// 来源详情
 				param.put("protim", map.get("created_at"));// 处理时间
@@ -51,8 +62,10 @@ public class ScheduleTask {
 				param.put("qq", "");// QQ
 				param.put("city", map.get("city"));// 客户所在城市
 
+				Integer channelId = parseChannelIdByUri( map.get("uri") + "" );
 				Integer cityId = parseCityIdByName(map.get("city") + "");
 
+				param.put( "channelId", channelId );
 				param.put("ccity", cityId);// 分配城市，目前默认上海
 				param.put("custype", "2");// 客户类别 小店OR经销商，目前默认小店
 				param.put("cgroup", null);// 分配组
@@ -67,13 +80,24 @@ public class ScheduleTask {
 				// applyFlowService.cleanLoseEfficacyApplyStore();
 			}
 
-		} catch (Exception e) {
+//		} catch (Exception e) {
 			// logger.error( "同步流量数据异常", e );
 			// LogUtils.error( "同步流量数据异常", e );
-		}
+//		}
 
 	}
 
+	private Integer parseChannelIdByUri( String uri ) {
+		
+		if ( uri == null || uri.equals("") || uri.equals( "null" ) ) {
+			return 0;
+		}
+		Integer channelId = yjsReqMsgDao.getChannelIdByUri( uri );
+		
+		return channelId;
+		
+	}
+	
 	private Integer parseCityIdByName(String cityName) {
 
 		Integer cityId = 0;

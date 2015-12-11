@@ -13,6 +13,7 @@ public class YjsReqMsgDTO {
 	private String remark;
 	private Integer operatorUserId;
 	private Integer ccity;
+	private Integer cuser;
 	private Integer msgId;
 	private Integer createdType;
 	
@@ -93,6 +94,12 @@ public class YjsReqMsgDTO {
 	}
 	public void setCreatedType( Integer createdType ) {
 		this.createdType = createdType;
+	}
+	public Integer getCuser() {
+		return cuser;
+	}
+	public void setCuser(Integer cuser) {
+		this.cuser = cuser;
 	}
 
 }
