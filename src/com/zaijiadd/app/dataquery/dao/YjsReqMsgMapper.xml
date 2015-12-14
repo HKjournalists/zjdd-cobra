@@ -39,10 +39,10 @@
 		</if>
 		
 		<if test="beginDate != null and beginDate != ''">
-			<![CDATA[ and date_format( protim, '%Y%m%d' ) > #{beginDate}]]>
+			<![CDATA[ and date_format( protim, '%Y%m%d' ) >＝ #{beginDate}]]>
 		</if>
 		<if test="endDate != null and endDate != ''">
-			<![CDATA[ and date_format( protim, '%Y%m%d' ) < #{endDate}]]>
+			<![CDATA[ and date_format( protim, '%Y%m%d' ) <＝ #{endDate}]]>
 		</if>
 		
 		<if test="queryDate != null and queryDate != ''">
@@ -89,10 +89,10 @@
 			and cuser = #{cuser,jdbcType=VARCHAR}
 		</if>
 		<if test="beginDate != null and beginDate != ''">
-			<![CDATA[ and date_format( protim, '%Y%m%d' ) > #{beginDate}]]>
+			<![CDATA[ and date_format( protim, '%Y%m%d' ) >＝ #{beginDate}]]>
 		</if>
 		<if test="endDate != null and endDate != ''">
-			<![CDATA[ and date_format( protim, '%Y%m%d' ) < #{endDate}]]>
+			<![CDATA[ and date_format( protim, '%Y%m%d' ) <＝ #{endDate}]]>
 		</if>
 		<if test="queryDate != null and queryDate != ''">
 			and date_format( protim, '%Y%m%d' ) = #{queryDate}
